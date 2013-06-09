@@ -62,13 +62,6 @@ def parseName(s):
 			blank.append(False)
 	return pattern
 
-def parseList(block):
-	f = block[0].split(':')[1]
-	e = []
-	for l in [x.lstrip('\t') for x in block[1:]]:
-		e.append(parseName(l))
-	return [f, e]
-
 ##############
 # THE PARSER #
 ##############
@@ -104,8 +97,8 @@ class Parser:
 		if flag in ['R', 'W']: # If it's a macro then init if the first scanned
 			if not self.parsers.has_key(name):
 				self.parsers[name] = [None, None]
-		elif flag in ['T']: # If it's a type just parse it now.
-			self.parsers[name] = parseList(syntax)
+		elif flag in ['T']: # If it's a type just add one.
+			self.parsers[name] = None
 		else:
 			raise Exception('Invalid Syntax Type: ' + flag)
 
@@ -113,13 +106,31 @@ class Parser:
 		indentation = 1
 		stack = [1]
 		parser = []
-		l = lambda:syntax[stack[-1]]
-		getIn = lambda s:len(s)-len(s.lstrip('\t'))
+		l = lambda:syntax[stack[-1]] # Gets next line according to stack
+		getIn = lambda s:len(s)-len(s.lstrip('\t')) # 
 		while True:
 			i = getIn(l())
 			if indentation == i:
 
 
+
+	def parseObj(self, block):
+		''' Turns a list into a parser by recursively calling itself. '''
+		# Progress
+		# - Nums
+		# - Simple strings
+		# - String lists
+		# - macros
+		# output format
+		f = getFlags(block[0])
+		if f[0] == 'NUM':
+			pass
+		if not (f[0] in ['STR'] and 'strict' in f):
+			pass
+		e = []
+		for l in [x.lstrip('\t') for x in block[1:]]:
+			e.append(parseName(l))
+		return [f, e]
 
 	def parse(self, f):
 		if type(block) == str:
