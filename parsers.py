@@ -75,8 +75,8 @@ class Parser:
 		''' Generates parsers from a syntax file. '''
 		f.seek(0) # Reset file to start
 		# Get version
-		ver=f.readline().strip()[1:].split(' ')
-		print 'You are using version ' + ver[0] + ' of ' + ver[1]
+		ver=f.readline().rstrip()
+		print 'You are using ' + ver
 
 		# Pull the parsers out of the file as blocks
 		block = []
