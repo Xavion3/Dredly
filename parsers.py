@@ -111,8 +111,7 @@ class Parser:
 		while True:
 			i = getIn(l())
 			if indentation == i:
-
-
+				pass
 
 	def parseObj(self, block):
 		''' Turns a list into a parser by recursively calling itself. '''
