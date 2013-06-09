@@ -1,0 +1,158 @@
+General format
+attrname:
+	attrname: data-flag
+	attrname-flag-flag:
+		data
+
+==========
+General Rules
+==========
+Names can only be case insensitive alphanumeric strings with underscores.
+- Names may only begin with a letter.
+- All flags undergo the same rules as names with multiple flags being separated by additional hyphens.
+-- A flag can be immediately followed by an equals sign to allow for input.
+- If a name is prefixed with an @ it calls the named macro on it's contents. e.g.
+@spell calls the spell macro when reading and writing.
+- Use of a name twice will generate an error.
+----------
+All indentation must be tabs.
+----------
+Comments begin after a #.
+- Comments are ignored when parsing.
+- A full line comment is ignored when checking indentation or ending blocks.
+-- A full line comment is any line where there is only whitespace before the #.
+---====---
+Types
+---====---
+A string is a sequence of characters with a backslash used to escape characters. Notable escape characters are
+\n to denote a new line
+\\ to use a backslash
+\X to display what ever character X was
+- A string can be either multiline or single line
+-- If multiline the string must be enclosed in double quotes and will be considered to use the indentation of the line the string was started on.
+-- A single line string can optionally use double quotes which prevents it from reading non-string indentifiers until it exits the string
+----------
+A list is a sequence of objects or strings.
+- If it is a list of single var objects than it can be denoted as a comma separated list in single line format. This is horizontal list format.
+- The other format is vertical list format. In this format it contains a sequence of strings or objects with one per line, indented one level.
+----------
+The data for a object must be either
+1. a single piece of data on the same line optionally seperated from the colon by a space.
+2. Indented one level on the next line with only attributes allowed.
+----------
+A number is a integer or float.
+==========
+
+
+==========
+Syntax Definition
+==========
+General
+---====---
+Macros must have either a -R or -W flag to denote whether it is the read or write ruleset like so
+name-R:
+name-W:
+- If neither is given it is assumed to be content and with an error being raised if it is parsing a syntax file.
+There is a third flag that may be used -T which denotes a type instead of a macro, they are similar to a data attribute but can be called like a macro.
+- Current purpose is for strict strings that are used in a variety of places.
+---====---
+Read rules
+---====---
+Attribute names may have multiple forms and that should be denoted by all variable parts being stored inside () with | to separate possibilites, these can be nested. Example is shown
+(revision|ver(|sion))
+Allows for revision, ver, and version to be used.
+- The -opt flag means that the given attribute is optional.
+----------
+The format for the data of an object must be stated with one of the following: STR to represent a string, LST to represent a list, OBJ to represent an object, NUM to represent a number, @NAME to reference a macro, BOOL for a boolean.
+----- Strings
+The -multi and -single flags allow for strings to have multi-line strings allowed or blocked.
+- Defaults to single only.
+- In single only newlines are automatically swapped for spaces when used.
+If the format is a list than it can have the -strict flag which will only allow input that matches the forms given in vertical list format.
+- If -strict is used and it is a list than the -ci and -cs tags can be used denoting case insensitive and case sensitive respectively, in the case both or neither is used it defaults to case sensitive.
+----- Lists
+If the format is a list than it can have the -strict flag which will only allow input that matches the forms given in vertical list format.
+- If -strict is used and it is a list than the -ci and -cs tags can be used denoting case insensitive and case sensitive respectively, in the case both or neither is used it defaults to case sensitive.
+----- Objects
+An object may also have the -strict flag, in this case it should be in vertical list format. Valid input for the list is
+- @macroname to allow a macro
+- @all to allow all macros
+- @!macroname to block a macro
+-- By default all macros are blocked
+- An attribute.
+----- Numbers
+Allows the use of the -int and -float flags to force compliance.
+- Defaults to float.
+The -cap flag allows for limiting a number.
+- The flag must have a range input after in the form MIN/MAX
+-- If either is omitted it defaults to uncapped
+----- Reference
+Effectively just swaps type and children for referenced macro.
+----- Boolean
+---====---
+Write Rules
+---====---
+All attributes must either
+- An object which directly corresponds to a tag in the xml with attributes and children set correctly.
+-- If no children are provided it defaults to self closing. This can be blocked with the -open tag.
+-- If @attrname is used instead then it runs the macro that was used for attrname
+Example if you had bonus: @pbuff as an attribute the calling @bonus would place the output of pbuff
+- An attribute of a tag.
+-- A tag attribute uses an equals sign instead of a colon with the name on the left and the content on the right.
+-- The tag attributes may optionally be placed in horizontal list format instead of vertical.
+-- The content obeys the following rules
+--- !MAP maps the results of the read list straight to the given list to determine used values.
+---- It is followed by a round bracket enclosed list if used inline with brackets removable if there is only one MAP used in which case vertical format may be used in the following line/s.
+--- $attrname will match the corresponding name in the read rules to get data.
+---- In case of multiple options for the data $name>i may be used to use a specific option from the options.
+----- In the case of multiple options or nested options it takes the earliest option for all of them.
+----- In the case of a number being too great it generates an error.
+----- Careful planning must be used when using more than one set of options with nested options being particularly sensitive. 
+Example for (Volt(aic|)|Elec(|tric)|Lightning)
+$whatever>0 would be Voltaic, $whatever>1 would be Electric, and $whatever>2 would be Lightning,  
+---- In the case of a strict list $attrname?i may be used to get it's index in the list
+Example for the list A,B,C,D,E $X?i would give 2 for C or 5 for E
+--- !NAME allows for customization of the tag name.
+---- A placeholder tag name must be given to be changed.
+--- If no special character is found then it uses the content directly.
+
+Full example
+This is a set of rules for mod.xml
+
+info-R:
+	(revision|ver(|sion)): STR
+	auth(|or): STR
+	(title|name): STR
+	desc(|ription): STR
+	(require|need)(|s): LST-strict-ci
+		(1|ROTDG|realm of the diggle gods)
+		(2|YHTNTEP|you have to name the expansion pack)
+		(3|COTW|conquest of the wizardlands)
+
+info-W:
+	dredmormod:
+		revision:text=$revision
+		author:text=$author
+		name:text=$name
+		description:text=$desc
+		info:totalconversion=0
+		require:expansion=$require>0
+
+And this is example input for it
+info:
+	ver: Version 0.0.1
+	auth: Billy Bob Joe
+	name: ULTIMATE\nMOD\nOF\nULTIMATENESS
+	desc:"Example string here"
+	needs: ReAlM Of THE diggle GoDs
+	require:cotw
+
+and the output would be (Note: The actual output may not be nicely formatted)
+<dredmormod>
+	<revision text="Version 0.0.1" />
+	<author text="Billy Bob Joe" />
+	<name text="ULTIMATE\nMOD\nOF\nULTIMATENESS" />
+	<description text="Example string here"/>
+	<info totalconversion="0" />
+	<require expansion="2" />
+</dredmormod>
