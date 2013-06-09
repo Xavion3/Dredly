@@ -100,7 +100,7 @@ class Parser:
 		''' Creates a parser from a syntax block. '''
 		# Get basic info
 		name = syntax[0].split('-')[0]
-		flag = syntax[0].split(':')[0].split('-')[1]
+		flag = getFlags(syntax[0])
 		if flag in ['R', 'W']: # If it's a macro then init if the first scanned
 			if not self.parsers.has_key(name):
 				self.parsers[name] = [None, None]
