@@ -15,12 +15,6 @@ def makeZip(path):
 			zf.write(os.path.join(root, filename))
 			print root, filename
 	zf.close()
-
-class (object):
-	"""docstring for """
-	def __init__(self, arg):
-		super(, self).__init__()
-		self.arg = arg
 		
 def parse(filename, tmp):
 	''' Parses a given file. '''
