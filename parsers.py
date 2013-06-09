@@ -9,8 +9,14 @@ VALID_EXTENSIONS = ['.inf', '.dredly']
 ##############################
 # Util Functions for Parsers #
 ##############################
+def getFlags(s):
+	''' Gets the flags from a valid name. '''
+	# TODO: Add error checking to check if it's a name.
+	return s.split(':')[1].strip().split('-')
+
 def getInName(s, check):
-	''' Gets an option from a name. '''
+	''' Gets an option from a multi-option name. 
+	    check is index for option to get from name s'''
 	# Commented code shows how to swap to getting all options instead of just one. 
 	# parts = []
 	# check = 0
@@ -35,7 +41,7 @@ def getInName(s, check):
 	return part
 
 def parseName(s):
-	# Parses a Name/Str into valid regex and opt list
+	''' Turns a dredly name into a valid regex string. '''
 	pattern = ''
 	blank = []
 	for i in range(len(s)):
