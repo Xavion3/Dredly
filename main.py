@@ -23,7 +23,6 @@ def parse(filename, tmp):
 	except IOError, e:
 		print 'File not found'
 		raise e
-	parsers
 	f.close()
 	ET.ElementTree(data).write(os.path.join(tmp,loc))
 
