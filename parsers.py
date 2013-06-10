@@ -73,11 +73,7 @@ class Parser:
 
 	def make_parsers(self, f):
 		''' Generates parsers from a syntax file. '''
-		f.seek(0) # Reset file to start
-		# Get version
-		ver=f.readline().rstrip()
-		print 'You are using ' + ver
-
+		f.seek(0) # Reset file to start just in case
 		# Pull the parsers out of the file as blocks
 		# Extract the blocks with indentation preserved
 		lines = [[len(x)-len(x.lstrip('\t')),str.strip(x)] for x in f] # Process file into list of lines with indentation
