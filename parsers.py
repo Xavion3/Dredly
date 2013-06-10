@@ -77,21 +77,20 @@ class Parser:
 		# Pull the parsers out of the file as blocks
 		# Extract the blocks with indentation preserved
 		lines = [[len(x)-len(x.lstrip('\t')),str.strip(x)] for x in f if str.strip(x)[0] != '#'] # Process file into list of lines with indentation
-		def getBlocks(line): # Created to allow for recursion
-			bits = [lines[line]]
-			line += 1 # Process first line to simplify indentation checking
+		def getBlocks(line = 0, indent = 0): # Created to allow for recursion
+			bits = []
 			while line < len(lines):
-				if lines[line][0] == bits[0][0]: # If it's the same level add to list and move on
+				if lines[line][0] == ind: # If it's the same level add to list and move on
 					bits.append(lines[line])
 					line += 1
-				elif lines[line][0] < bits[0][0]: # If it's a lower level return indented bits
+				elif lines[line][0] < ind: # If it's a lower level return indented bits
 					return bits
-				elif lines[line][0] > bits[0][0]: # If it's a higher level change the last line to be
-					bits[-1] = [bits[-1],getBlocks(line)] # of the form [line, [indented lines]]
-					while line < len(lines) and lines[line][0] > bits[0][0]: # Skip to after indented block
+				elif lines[line][0] > ind: # If it's a higher level change the last line to be
+					bits[-1] = [bits[-1],getBlocks(line, ind+1)] # of the form [line, [indented lines]]
+					while line < len(lines) and lines[line][0] > ind: # Skip to after indented block
 						line += 1
 			return bits
-		blocks = getBlocks(0)
+		blocks = getBlocks()
 		def rIn(b): # Created to allow for recursion
 			b = b[:] # Prevent direct editing of b
 			for i in range(len(b)):
