@@ -79,15 +79,36 @@ class Parser:
 		print 'You are using ' + ver
 
 		# Pull the parsers out of the file as blocks
-		block = []
-		for l in [str.rstrip(x) for x in f]: # Auto remove the end newlines without damaging indentation
-			if not l or l[0].isaplha(): # If it's a newline or a top-level name then add block to list and reset tracker
-				self.addParser(block)
-				block = []
-				continue
-			block.append(l)
-		if block: # If it didn't end in a new line the final block would normally be skipped
-			self.addParser(block)
+		# Extract the blocks with indentation preserved
+		lines = [[len(x)-len(x.lstrip('\t')),str.strip(x)] for x in f] # Auto remove the end newlines without damaging indentation
+		def getBlocks(line):
+			bits = [lines[line]]
+			line += 1
+			try:
+				while line < len(lines):
+					if lines[line][0] == bits[0][0]:
+						bits.append(lines[line])
+						line += 1
+					elif lines[line][0] < bits[0][0]:
+						return bits
+					elif lines[line][0] > bits[0][0]:
+						bits[-1] = [bits[-1],getBlocks(line)]
+						while lines[line][0] > bits[0][0]:
+							line += 1
+			except IndexError: # If it reached the end of the file at a bad time
+				pass
+			except Exception, e:
+				raise e
+			return bits
+		blocks = getBlocks(0)
+		def rIn(b):
+			for i in range(len(b)):
+				if type(b[i][0]) == list:
+					b[i] = rIn(b[i])
+				else:
+					b[i] = b[i][1]
+			return b
+		blocks = rIn(blocks) # Strips indentation parts out
 
 	def addParser(self, syntax):
 		''' Creates a parser from a syntax block. '''
