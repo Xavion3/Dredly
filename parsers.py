@@ -76,7 +76,7 @@ class Parser:
 		f.seek(0) # Reset file to start just in case
 		# Pull the parsers out of the file as blocks
 		# Extract the blocks with indentation preserved
-		lines = [[len(x)-len(x.lstrip('\t')),str.strip(x)] for x in f] # Process file into list of lines with indentation
+		lines = [[len(x)-len(x.lstrip('\t')),str.strip(x)] for x in f if str.strip(x)[0] != '#'] # Process file into list of lines with indentation
 		def getBlocks(line): # Created to allow for recursion
 			bits = [lines[line]]
 			line += 1 # Process first line to simplify indentation checking
