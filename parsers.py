@@ -97,6 +97,7 @@ class Parser:
 			return bits
 		blocks = getBlocks(0)
 		def rIn(b):
+			b = b[:]
 			for i in range(len(b)):
 				if type(b[i][0]) == list:
 					b[i] = rIn(b[i])
