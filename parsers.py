@@ -84,21 +84,16 @@ class Parser:
 		def getBlocks(line):
 			bits = [lines[line]]
 			line += 1
-			try:
-				while line < len(lines):
-					if lines[line][0] == bits[0][0]:
-						bits.append(lines[line])
+			while line < len(lines):
+				if lines[line][0] == bits[0][0]:
+					bits.append(lines[line])
+					line += 1
+				elif lines[line][0] < bits[0][0]:
+					return bits
+				elif lines[line][0] > bits[0][0]:
+					bits[-1] = [bits[-1],getBlocks(line)]
+					while line < len(lines) and lines[line][0] > bits[0][0]:
 						line += 1
-					elif lines[line][0] < bits[0][0]:
-						return bits
-					elif lines[line][0] > bits[0][0]:
-						bits[-1] = [bits[-1],getBlocks(line)]
-						while lines[line][0] > bits[0][0]:
-							line += 1
-			except IndexError: # If it reached the end of the file at a bad time
-				pass
-			except Exception, e:
-				raise e
 			return bits
 		blocks = getBlocks(0)
 		def rIn(b):
