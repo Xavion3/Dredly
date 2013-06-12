@@ -1,8 +1,9 @@
 General format
-attrname:
-	attrname: data-flag
-	attrname-flag-flag:
-		data
+blockname-type:
+	attrname:
+		attrname: data-flag
+		attrname-flag-flag:
+			data
 
 ==========
 General Rules
@@ -12,8 +13,22 @@ Names can only be case insensitive alphanumeric strings with underscores.
 - All flags undergo the same rules as names with multiple flags being separated by additional hyphens.
 -- A flag can be immediately followed by an equals sign to allow for input.
 - If a name is prefixed with an @ it calls the named macro on it's contents. e.g.
-@spell calls the spell macro when reading and writing.
+@spell calls the macro named spell when reading and writing.
+-- This does not apply for block names.
 - Use of a name twice will generate an error.
+-- Excepting R/W Pairs.
+----------
+There are 4 available types - R, W, T, C.
+- Types are used just like flags.
+- In case of no flag it defaults to C.
+- Types:
+-- R: Read, Denotes the read half of a macro.
+-- W: Write, Denotes the write half of a macro.
+--- Both halves are required for code to compile properly.
+-- T: Type, This is effectively a reusable attr. 
+--- Currently useful for strict strings and potentially for anything with flags.
+-- C: Content, This matches against Read flags for reading it in and Write for outputting it.
+--- The name must match the name for the R/W pair it uses.
 ----------
 All indentation must be tabs.
 ----------
@@ -47,15 +62,6 @@ A number is a integer or float.
 ==========
 Syntax Definition
 ==========
-General
----====---
-Macros must have either a -R or -W flag to denote whether it is the read or write ruleset like so
-name-R:
-name-W:
-- If neither is given it is assumed to be content and with an error being raised if it is parsing a syntax file.
-There is a third flag that may be used -T which denotes a type instead of a macro, they are similar to a data attribute but can be called like a macro.
-- Current purpose is for strict strings that are used in a variety of places.
----====---
 Read rules
 ---====---
 Attribute names may have multiple forms and that should be denoted by all variable parts being stored inside () with | to separate possibilites, these can be nested. Example is shown
