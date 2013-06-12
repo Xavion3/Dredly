@@ -114,6 +114,10 @@ class Parser:
 			name = tmp[0]
 			blocktype = 'C' if len(tmp) == 1 else tmp[1] # Gets the R/W/T/C flag, Default to C
 
+			# Check name
+			if not Parser.TYPES['NAME'].match(tmp[0]):
+				raise Exception('Invalid name '+tmp[0])
+
 			# Check blocktype and create spot if none
 			if blocktype == 'R':
 				if self.parsers.has_key(name):
