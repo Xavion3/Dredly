@@ -68,6 +68,12 @@ def parseName(s):
 
 class Parser:
 	''' The generic parser. '''
+	TYPES = {'INT':re.compile(r'^[-+]?[0-9]+$'),
+	         'FLOAT':re.compile(r'^[-+]?[0-9]*\.?[0-9]+$'),
+	         'STR':re.compile(r'^.*$'),
+	         'BOOL':re.compile(r'^(0|1|TRUE|FALSE)$',re.IGNORECASE),
+	         'NAME':re.compile(r'^[a-zA-Z][a-zA-Z0-9_]*$',re.IGNORECASE)}
+
 	def __init__(self):
 		self.parsers = {}
 		self.content = {}
