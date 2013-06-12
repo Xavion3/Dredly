@@ -105,7 +105,37 @@ class Parser:
 		for block in blocks:
 			tmp = block[0].split(':')[0].strip().split('-') # Gets name and flag
 			name = tmp[0]
-			flag = 'C' if len(tmp) == 1 else tmp[1] # Gets the R/W/T/C flag + Default to C
+			blocktype = 'C' if len(tmp) == 1 else tmp[1] # Gets the R/W/T/C flag, Default to C
+
+			# Check blocktype
+			if blocktype == 'R':
+				if self.parsers.has_key(name):
+					if len(self.parsers[name]) != 2:
+						raise Exception('Read block '+name+' already taken by type')
+					elif self.parsers[0] != None:
+						raise Exception('Read block '+name+' already taken')
+			elif blocktype == 'W':
+				if self.parsers.has_key(name):
+					if len(self.parsers[name]) != 2:
+						raise Exception('Write block '+name+' already taken by type')
+					elif self.parsers[1] != None:
+						raise Exception('Write block '+name+' already taken')
+			elif blocktype == 'T':
+				if self.parsers.has_key(name):
+					if len(self.parsers[name]) != 1:
+						raise Exception('Type block '+name+' already taken by R/W')
+					elif self.parsers[0] != None:
+						raise Exception('Type block '+name+' already taken')
+			elif blocktype == 'C':
+				if self.parsers.has_key(name):
+					if len(self.parsers[name]) == 1:
+						raise Exception(name+' is used as R/W')
+					elif self.parsers[0] != None or self.parsers[1] != None:
+						raise Exception('R/W block '+name+' used while incomplete')
+				else:
+					raise Exception('No block exists for '+name)
+			else:
+				raise Exception('Invalid block type '+blocktype)
 
 	def addParser(self, syntax):
 		''' Creates a parser from a syntax block. '''
