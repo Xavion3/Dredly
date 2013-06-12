@@ -96,6 +96,10 @@ The -cap flag allows for limiting a number.
 ----- Reference
 Effectively just swaps type and children for referenced macro.
 ----- Boolean
+Must be valid true or false value.
+- Valid values for false are: 0, FALSE
+- Valid values for true are: 1, TRUE
+-- Case insensitive.
 ---====---
 Write Rules
 ---====---
