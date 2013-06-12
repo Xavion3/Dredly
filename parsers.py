@@ -103,6 +103,10 @@ class Parser:
 
 		# Now parse the blocks!
 		for block in blocks:
+			tmp = block[0].split(':')[0].strip().split('-') # Gets name and flag
+			name = tmp[0]
+			flag = 'C' if len(tmp) == 1 else tmp[1] # Gets the R/W/T/C flag + Default to C
+
 	def addParser(self, syntax):
 		''' Creates a parser from a syntax block. '''
 		# Get basic info
