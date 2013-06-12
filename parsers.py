@@ -71,10 +71,10 @@ class Parser:
 	def __init__(self):
 		self.parsers = {}
 
-	def make_parsers(self, f):
-		''' Generates parsers from a syntax file. '''
+	def parseFile(self, f):
+		''' Parses a dredly file. '''
 		f.seek(0) # Reset file to start just in case
-		# Pull the parsers out of the file as blocks
+		# Pull the parts out of the file as blocks
 		# Extract the blocks with indentation preserved
 		lines = [[len(x)-len(x.lstrip('\t')),str.strip(x)] for x in f if str.strip(x)[0] != '#'] # Process file into list of lines with indentation
 		def getBlocks(line = 0, indent = 0): # Created to allow for recursion
@@ -101,6 +101,8 @@ class Parser:
 			return b
 		blocks = rIn(blocks) # Strips indentation parts out
 
+		# Now parse the blocks!
+		for block in blocks:
 	def addParser(self, syntax):
 		''' Creates a parser from a syntax block. '''
 		# Get basic info
