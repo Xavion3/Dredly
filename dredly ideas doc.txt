@@ -77,7 +77,7 @@ The -multi and -single flags allow for strings to have multi-line strings allowe
 - In single only newlines are automatically swapped for spaces when used.
 If the format is a list than it can have the -strict flag which will only allow input that matches the forms given in vertical list format.
 - If -strict is used and it is a list than the -ci and -cs tags can be used denoting case insensitive and case sensitive respectively, in the case both or neither is used it defaults to case sensitive.
------ Lists
+----- Lists ??? Do I really need this?
 If the format is a list than it can have the -strict flag which will only allow input that matches the forms given in vertical list format.
 - If -strict is used and it is a list than the -ci and -cs tags can be used denoting case insensitive and case sensitive respectively, in the case both or neither is used it defaults to case sensitive.
 ----- Objects
