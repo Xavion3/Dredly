@@ -17,6 +17,7 @@ Names can only be case insensitive alphanumeric strings with underscores.
 -- This does not apply for block names.
 - Use of a name twice will generate an error.
 -- Excepting R/W Pairs.
+-- And content blocks.
 ----------
 There are 4 available types - R, W, T, C.
 - Types are used just like flags.
