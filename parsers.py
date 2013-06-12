@@ -70,6 +70,7 @@ class Parser:
 	''' The generic parser. '''
 	def __init__(self):
 		self.parsers = {}
+		self.content = {}
 
 	def parseFile(self, f):
 		''' Parses a dredly file. '''
@@ -107,31 +108,39 @@ class Parser:
 			name = tmp[0]
 			blocktype = 'C' if len(tmp) == 1 else tmp[1] # Gets the R/W/T/C flag, Default to C
 
-			# Check blocktype
+			# Check blocktype and create spot if none
 			if blocktype == 'R':
 				if self.parsers.has_key(name):
 					if len(self.parsers[name]) != 2:
 						raise Exception('Read block '+name+' already taken by type')
 					elif self.parsers[0] != None:
 						raise Exception('Read block '+name+' already taken')
+				else:
+					self.parsers[name] = [None, None]
 			elif blocktype == 'W':
 				if self.parsers.has_key(name):
 					if len(self.parsers[name]) != 2:
 						raise Exception('Write block '+name+' already taken by type')
 					elif self.parsers[1] != None:
 						raise Exception('Write block '+name+' already taken')
+				else:
+					self.parsers[name] = [None, None]
 			elif blocktype == 'T':
 				if self.parsers.has_key(name):
 					if len(self.parsers[name]) != 1:
 						raise Exception('Type block '+name+' already taken by R/W')
 					elif self.parsers[0] != None:
 						raise Exception('Type block '+name+' already taken')
+				else:
+					self.parsers[name] = [None]
 			elif blocktype == 'C':
 				if self.parsers.has_key(name):
 					if len(self.parsers[name]) == 1:
 						raise Exception(name+' is used as R/W')
 					elif self.parsers[0] != None or self.parsers[1] != None:
 						raise Exception('R/W block '+name+' used while incomplete')
+					elif not self.content.has_key(name):
+						self.content[name] = []
 				else:
 					raise Exception('No block exists for '+name)
 			else:
