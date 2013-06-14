@@ -4,24 +4,17 @@ import os, shutil
 import re
 import xml.etree.ElementTree as ET
 
-VALID_EXTENSIONS = ['.inf', '.dredly']
-
-##############################
-# Util Functions for Parsers #
-##############################
-
-
 ##############
 # THE PARSER #
 ##############
 
 class Parser:
 	''' The generic parser. '''
-	TYPES = {'INT':re.compile(r'^[-+]?[0-9]+$'),
-	         'FLOAT':re.compile(r'^[-+]?[0-9]*\.?[0-9]+$'),
-	         'STR':re.compile(r'^.*$'),
-	         'BOOL':re.compile(r'^(0|1|TRUE|FALSE)$',re.IGNORECASE),
-	         'NAME':re.compile(r'^[a-zA-Z][a-zA-Z0-9_]*$',re.IGNORECASE)}
+	TYPES = {'INT':r'^[-+]?[0-9]+$', # Integer, postive or negative
+	         'FLOAT':r'^[-+]?[0-9]*\.?[0-9]+$', # Floating point number, postive or negative
+	         'STR':r'^.*$', # String, no restrictions
+	         'BOOL':r'^(0|1|TRUE|FALSE)$'} # Boolean, 0, 1, true, or false
+	SYS = {'NAME':r'^[a-zA-Z][a-zA-Z0-9_]*$'} # Name, alphanumeric and _ starts with alpha
 
 	def __init__(self):
 		self.parsers = {}
@@ -72,15 +65,16 @@ class Parser:
 	# while check >= 0:
 		parts.append('')
 		for i in range(len(s)):
-			if len(stack) == stack.count(check) and not s[i] in ['(', '|', ')']:
+			if (len(stack) == stack.count(check) and # If it's at the right part in the all sets of brackets
+			((not s[i] in ['(', '|', ')']) or (i >= 1 and s[i-1] == '\\'))): # Non special or escaped
 				# parts[-1] += s[i]
 				part += s[i]
-			elif s[i] == '(':
+			elif s[i] == '(': # Start new level in stack
 				stack.append(0)
-			elif s[i] == '|':
+			elif s[i] == '|': # Next part in stack
 				stack[-1] += 1
 			elif s[i] == ')':
-				if len(stack[:-1]) == stack[:1].count(check) and stack.pop(-1) < check:
+				if len(stack[:-1]) == stack[:1].count(check) and stack.pop(-1) < check: # If a level stopped before it should've error
 					# check = -2
 					# parts.pop(-1)
 					raise IndexError('Part not in range for name')
@@ -88,25 +82,32 @@ class Parser:
 		return part
 
 	def parseName(self, s):
-		''' Turns a dredly name into a valid regex string. '''
+		''' Turns a dredly name into a valid regex string. 
+		    Returns false if invalid. '''
+		# TODO: Error checking, particularly in relevance to balancing brackets
+		# Current errors
+		# - Fails if encountering unmatched end bracket
+		# - Fails if starting with an unescaped |
 		pattern = ''
 		blank = []
 		for i in range(len(s)):
-			if (not s[i] in ['(', '|', ')']) or (i >= 1 and s[i-1] == '\\'):
+			if (not s[i] in ['(', '|', ')']) or (i >= 1 and s[i-1] == '\\'): # Non special or escaped
 				pattern += s[i]
-				continue
-			if s[i] == '|':
-				if s[i-1] in ['('] or s[i+1] in ['|', ')']:
+				continue # Skip to next char to avoid accidently going thorugh with following if's
+			if s[i] == '|': # Or separator
+				if s[i-1] in ['(', '|'] or s[i+1] in ['|', ')']: # Matches (|, ||, and |) to check for blanks
 					blank[-1] = True
-				else:
+					if re.search(r'\(\|*$', pattern) or re.search(r'^\|*\)', s[i:]) and s[i-1] != '|': # If it's not at the start or the end add if the first of a group
+						pattern += '|'
+				else: # If isn't a blank then whatevs
 					pattern += '|'
 			if s[i] == ')':
 				pattern += ')'
-				if blank.pop(-1):
+				if blank.pop(-1): # Check if the current bracket pair had a blank while removing it from the list
 					pattern += '?'
 			if s[i] == '(':
 				pattern += '('
-				blank.append(False)
+				blank.append(False) # Assume no blanks and start another set of brackets
 		return pattern
 
 	def parseMacro(self, block):
@@ -187,41 +188,18 @@ class Parser:
 					raise Exception('No block exists for '+name)
 			else:
 				raise Exception('Invalid block type '+blocktype)
+		
 
-	def parse(self, f):
-		if type(block) == str:
-			block = block.split('\n')
-		f.close()
-		ET.ElementTree(data).write(os.path.join(self.path,loc))
-
-	def parseFolder(self, path):
-		self.path = os.path.join(os.path.curdir,'tmp')
-		os.mkdir(self.path)
-		os.mkdir(os.path.join(self.path,'mod'))
-		os.mkdir(os.path.join(self.path,'sprites'))
-		os.mkdir(os.path.join(self.path,'items'))
-		for root, dirs, files in os.walk(path):
-			for filename in files:
-				if filename.split('.')[-1] in ['inf', 'dredly']:
-					self.parse(os.path.join(root, filename))
-				else:
-					print filename
-					print root
-					shutil.copy(os.path.join(root,filename), # The file to be copied
-						os.path.join(self.path,root.split(path)[1].partition(os.sep)[2],filename)) # Gets the equivalent location
-		shutil.rmtree(self.path)
-
-
-def InfoParser(f):
-	lines = [str.strip(line) for line in f.readlines()]
-	loc = os.path.join('mod','mod.xml')
-	data = ET.Element('dredmormod')
-	ET.SubElement(data, 'revision', {'text':lines[0]})
-	ET.SubElement(data, 'author', {'text':lines[1]})
-	ET.SubElement(data, 'name', {'text':lines[2]})
-	ET.SubElement(data, 'description', {'text':lines[3]})
-	ET.SubElement(data, 'info', {'totalconversion':'0'})
-	for p in lines[4].split(','):
-		ET.SubElement(data, 'require', {'expansion':p})
-	return loc, data
+# Currently retained only as xml lib reference
+# 	lines = [str.strip(line) for line in f.readlines()]
+# 	loc = os.path.join('mod','mod.xml')
+# 	data = ET.Element('dredmormod')
+# 	ET.SubElement(data, 'revision', {'text':lines[0]})
+# 	ET.SubElement(data, 'author', {'text':lines[1]})
+# 	ET.SubElement(data, 'name', {'text':lines[2]})
+# 	ET.SubElement(data, 'description', {'text':lines[3]})
+# 	ET.SubElement(data, 'info', {'totalconversion':'0'})
+# 	for p in lines[4].split(','):
+# 		ET.SubElement(data, 'require', {'expansion':p})
+# 	ET.ElementTree(data).write(os.path.join(path/to/write/to,loc))
 
