@@ -92,7 +92,7 @@ class Parser:
 		pattern = ''
 		blank = []
 		for i in range(len(s)):
-			if not s[i] in ['(', '|', ')']:
+			if (not s[i] in ['(', '|', ')']) or (i >= 1 and s[i-1] == '\\'):
 				pattern += s[i]
 				continue
 			if s[i] == '|':
