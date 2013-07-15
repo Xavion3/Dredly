@@ -76,6 +76,7 @@ info-R:
 		(COTW|conquest of the wizardlands)
 
 info-W:
+	FILENAME: mod.xml
 	dredmormod:
 		revision:text=$revision
 		author:text=$author
