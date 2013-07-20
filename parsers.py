@@ -205,11 +205,34 @@ class RWBlock:
 				blank.append(False) # Assume no blanks and start another set of brackets
 		return pattern
 
+	def parseBlock(self, block, blocktype):
+		''' Interface function, redirects to correct parsing function. '''
+		if blocktype == 'R':
+			if self.complete[0]:
+				raise Exception('Read block '+self.name+' already exists. Cannot overwrite.')
+			else:
+				self.parseRead(block)
+
 	def parseRead(self, block):
-		''' Parses a read block for use. '''
-		if self.read:
-			raise Exception('Read block '+self.name+' already exists. Cannot overwrite.')
-		
+		''' Parses a block for use. '''
+		name = block[0].split(':')[0].split('-')[0]
+		parsedBlock = {}
+		for i in block[1]:
+			if type(i) == str:
+				flags = map(str.lower, self.getFlags(i))
+				varType, flags = flags[0], flags[1:]
+				name = self.parseName(i.split(':')[0])
+				if varType in ['NUM', 'BOOL', 'STR']:
+					parsedBlock[name] = [varType, flags]
+				elif varType[0] == '@':
+					parsedBlock[name] = self.parsers[varType[1:]]
+			elif type(i) == list:
+				flags = map(str.lower, self.getFlags(i[0]))
+				varType, flags = flags[0], flags[1:]
+				name = self.parseName(i[0].split(':')[0])
+				if varType == 'STR':
+					parsedBlock[name] = [varType, flags, i[1]]
+		return parsedBlock
 
 # Currently retained only as xml lib reference
 # 	lines = [str.strip(line) for line in f.readlines()]
