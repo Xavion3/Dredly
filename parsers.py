@@ -119,7 +119,7 @@ class Parser:
 		f.seek(0) # Reset file to start just in case
 		# Pull the parts out of the file as blocks
 		# Extract the blocks with indentation preserved
-		lines = [[len(x)-len(x.lstrip('\t')),str.strip(x)] for x in f if str.strip(x)[0] != '#'] # Process file into list of lines with indentation
+		lines = [[len(x)-len(x.lstrip('\t')),str.strip(x)] for x in f if (str.strip(x) and str.strip(x)[0] != '#')] # Process file into list of lines with indentation
 		blocks = self.getBlocks(lines)
 		
 		blocks = self.rIn(blocks) # Strips indentation parts out
