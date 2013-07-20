@@ -24,7 +24,7 @@ class Parser:
 	# Util functions for parsing #
 	##############################
 
-	def getBlocks(self, lines, line = 0, indent = 0):
+	def getBlocks(self, lines, line = 0, ind = 0):
 		''' Turns processed lines into blocks. '''
 		bits = []
 		while line < len(lines):
@@ -110,23 +110,6 @@ class Parser:
 				blank.append(False) # Assume no blanks and start another set of brackets
 		return pattern
 
-	def parseMacro(self, block):
-		''' Turns a macro block into a macro by recursively calling itself. '''
-		# Progress
-		# - Nums
-		# - Simple strings
-		# - String lists
-		# - macros
-		f = getFlags(block[0])
-		if f[0] == 'NUM':
-			pass
-		if not (f[0] in ['STR'] and 'strict' in f):
-			pass
-		e = []
-		for l in [x.lstrip('\t') for x in block[1:]]:
-			e.append(parseName(l))
-		return [f, e]
-
 	##########
 	# Parser #
 	##########
@@ -152,42 +135,75 @@ class Parser:
 				raise Exception('Invalid name '+tmp[0])
 
 			# Check blocktype and create spot if none
-			if blocktype == 'R':
+			if blocktype in ['R', 'W']:
 				if self.parsers.has_key(name):
 					if len(self.parsers[name]) != 2:
-						raise Exception('Read block '+name+' already taken by type')
+						raise Exception('Read/Write block '+name+' already taken by type')
 					elif self.parsers[0] != None:
-						raise Exception('Read block '+name+' already taken')
+						raise Exception('Read/Write block '+name+' already taken by unknown object')
 				else:
-					self.parsers[name] = [None, None]
-			elif blocktype == 'W':
-				if self.parsers.has_key(name):
-					if len(self.parsers[name]) != 2:
-						raise Exception('Write block '+name+' already taken by type')
-					elif self.parsers[1] != None:
-						raise Exception('Write block '+name+' already taken')
-				else:
-					self.parsers[name] = [None, None]
+					self.parsers[name] = RWBlock(name)
 			elif blocktype == 'T':
 				if self.parsers.has_key(name):
-					if len(self.parsers[name]) != 1:
+					if isinstance(self.parsers[name], RWBlock):
 						raise Exception('Type block '+name+' already taken by R/W')
 					elif self.parsers[0] != None:
-						raise Exception('Type block '+name+' already taken')
+						raise Exception('Type block '+name+' already taken by unknown object')
 				else:
 					self.parsers[name] = [None]
 			elif blocktype == 'C':
 				if self.parsers.has_key(name):
-					if len(self.parsers[name]) == 1:
+					if not isinstance(self.parsers[name], RWBlock):
 						raise Exception(name+' is used as R/W')
-					elif self.parsers[0] != None or self.parsers[1] != None:
+					elif self.parsers[name].complete:
 						raise Exception('R/W block '+name+' used while incomplete')
 					elif not self.content.has_key(name):
 						self.content[name] = []
 				else:
-					raise Exception('No block exists for '+name)
+					raise Exception('No R/W block exists for '+name)
 			else:
 				raise Exception('Invalid block type '+blocktype)
+
+			# Now fill in that spot with out block.
+			if blocktype == 'R':
+				self.parsers[name].parseRead(block)
+			elif blocktype == 'W':
+				self.parsers[name].parseWrite(block)
+
+	# def parseMacro(self, block):
+	# 	''' Turns a macro block into a macro by recursively calling itself. '''
+	# 	# Progress
+	# 	# - Nums
+	# 	# - Simple strings
+	# 	# - String lists
+	# 	# - macros
+	# 	for attr in block:
+	# 		if type(attr) == list:
+	# 	if f[0] == 'NUM':
+	# 		pass
+	# 	if not (f[0] in ['STR'] and 'strict' in f):
+	# 		pass
+	# 	e = []
+	# 	for l in [x.lstrip('\t') for x in block[1:]]:
+	# 		e.append(parseName(l))
+	# 	return [f, e]
+	# Obselete maybe?
+		
+class RWBlock:
+	''' A parsed read/write block for use with content parsing. '''
+
+	def __init__(self, name):
+		''' Creates the block. '''
+		self.name = name
+		self.complete = False
+		self.flags = []
+		self.read = {}
+		self.write = {}
+
+	def parseRead(self, block):
+		''' Parses a read block for use. '''
+		if self.read:
+			raise Exception('Read block '+self.name+' already exists. Cannot overwrite.')
 		
 
 # Currently retained only as xml lib reference
