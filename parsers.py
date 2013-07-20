@@ -34,7 +34,7 @@ class Parser:
 			elif lines[line][0] < ind: # If it's a lower level return indented bits
 				return bits
 			elif lines[line][0] > ind: # If it's a higher level change the last line to be of the
-				bits[-1] = [bits[-1],getBlocks(lines, line, ind+1)] # form [line, [indented lines]]
+				bits[-1] = [bits[-1], self.getBlocks(lines, line, ind+1)] # form [line, [indented lines]]
 				while line < len(lines) and lines[line][0] > ind: # Skip to after indented block
 					line += 1
 		return bits
@@ -44,7 +44,7 @@ class Parser:
 		b = b[:] # Prevent direct editing of b
 		for i in range(len(b)):
 			if type(b[i][0]) == list: # If it's an indented block strip that too
-				b[i] = rIn(b[i])
+				b[i] = self.rIn(b[i])
 			else:
 				b[i] = b[i][1]
 		return b
