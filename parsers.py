@@ -81,35 +81,6 @@ class Parser:
 		# check += 1
 		return part
 
-	def parseName(self, s):
-		''' Turns a dredly name into a valid regex string. 
-		    Returns false if invalid. '''
-		# TODO: Error checking, particularly in relevance to balancing brackets
-		# Current errors
-		# - Fails if encountering unmatched end bracket
-		# - Fails if starting with an unescaped |
-		pattern = ''
-		blank = []
-		for i in range(len(s)):
-			if (not s[i] in ['(', '|', ')']) or (i >= 1 and s[i-1] == '\\'): # Non special or escaped
-				pattern += s[i]
-				continue # Skip to next char to avoid accidently going thorugh with following if's
-			if s[i] == '|': # Or separator
-				if s[i-1] in ['(', '|'] or s[i+1] in ['|', ')']: # Matches (|, ||, and |) to check for blanks
-					blank[-1] = True
-					if re.search(r'\(\|*$', pattern) or re.search(r'^\|*\)', s[i:]) and s[i-1] != '|': # If it's not at the start or the end add if the first of a group
-						pattern += '|'
-				else: # If isn't a blank then whatevs
-					pattern += '|'
-			if s[i] == ')':
-				pattern += ')'
-				if blank.pop(-1): # Check if the current bracket pair had a blank while removing it from the list
-					pattern += '?'
-			if s[i] == '(':
-				pattern += '('
-				blank.append(False) # Assume no blanks and start another set of brackets
-		return pattern
-
 	##########
 	# Parser #
 	##########
@@ -142,7 +113,7 @@ class Parser:
 					elif self.parsers[0] != None:
 						raise Exception('Read/Write block '+name+' already taken by unknown object')
 				else:
-					self.parsers[name] = RWBlock(name)
+					self.parsers[name] = RWBlock(name, self.parsers)
 			elif blocktype == 'T':
 				if self.parsers.has_key(name):
 					if isinstance(self.parsers[name], RWBlock):
@@ -155,7 +126,7 @@ class Parser:
 				if self.parsers.has_key(name):
 					if not isinstance(self.parsers[name], RWBlock):
 						raise Exception(name+' is used as R/W')
-					elif self.parsers[name].complete:
+					elif not sum(self.parsers[name].complete):
 						raise Exception('R/W block '+name+' used while incomplete')
 					elif not self.content.has_key(name):
 						self.content[name] = []
@@ -165,10 +136,9 @@ class Parser:
 				raise Exception('Invalid block type '+blocktype)
 
 			# Now fill in that spot with out block.
-			if blocktype == 'R':
-				self.parsers[name].parseRead(block)
-			elif blocktype == 'W':
-				self.parsers[name].parseWrite(block)
+			if blocktype in ['R', 'W']:
+				self.parsers[name].parseBlock(block, blocktype)
+			elif blocktype == 'C':
 
 	# def parseMacro(self, block):
 	# 	''' Turns a macro block into a macro by recursively calling itself. '''
@@ -192,13 +162,48 @@ class Parser:
 class RWBlock:
 	''' A parsed read/write block for use with content parsing. '''
 
-	def __init__(self, name):
+	def __init__(self, name, parsers):
 		''' Creates the block. '''
 		self.name = name
-		self.complete = False
+		self.parsers = parsers
+		self.complete = [False, False]
 		self.flags = []
 		self.read = {}
 		self.write = {}
+
+	def getFlags(self, s):
+		''' Gets the flags from a valid name. '''
+		# TODO: Add error checking to check if it's a name.
+		return s.split(':')[1].strip().split('-')
+
+	def parseName(self, s):
+		''' Turns a dredly name into a valid regex string. 
+		    Returns false if invalid. '''
+		# TODO: Error checking, particularly in relevance to balancing brackets
+		# Current errors
+		# - Fails if encountering unmatched end bracket
+		# - Fails if starting with an unescaped |
+		pattern = ''
+		blank = []
+		for i in range(len(s)):
+			if (not s[i] in ['(', '|', ')']) or (i >= 1 and s[i-1] == '\\'): # Non special or escaped
+				pattern += s[i]
+				continue # Skip to next char to avoid accidently going thorugh with following if's
+			if s[i] == '|': # Or separator
+				if s[i-1] in ['(', '|'] or s[i+1] in ['|', ')']: # Matches (|, ||, and |) to check for blanks
+					blank[-1] = True
+					if re.search(r'\(\|*$', pattern) or re.search(r'^\|*\)', s[i:]) and s[i-1] != '|': # If it's not at the start or the end add if the first of a group
+						pattern += '|'
+				else: # If isn't a blank then whatevs
+					pattern += '|'
+			if s[i] == ')':
+				pattern += ')'
+				if blank.pop(-1): # Check if the current bracket pair had a blank while removing it from the list
+					pattern += '?'
+			if s[i] == '(':
+				pattern += '('
+				blank.append(False) # Assume no blanks and start another set of brackets
+		return pattern
 
 	def parseRead(self, block):
 		''' Parses a read block for use. '''
