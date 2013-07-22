@@ -219,17 +219,17 @@ class RWBlock:
 		parsedBlock = {}
 		for i in block[1]:
 			if type(i) == str:
-				flags = map(str.lower, self.getFlags(i))
+				flags = map(str.upper, self.getFlags(i))
 				varType, flags = flags[0], flags[1:]
-				name = self.parseName(i.split(':')[0])
+				name = i.split(':')[0]
 				if varType in ['NUM', 'BOOL', 'STR']:
 					parsedBlock[name] = [varType, flags]
 				elif varType[0] == '@':
 					parsedBlock[name] = self.parsers[varType[1:]]
 			elif type(i) == list:
-				flags = map(str.lower, self.getFlags(i[0]))
+				flags = map(str.upper, self.getFlags(i[0]))
 				varType, flags = flags[0], flags[1:]
-				name = self.parseName(i[0].split(':')[0])
+				name = i[0].split(':')[0]
 				if varType == 'STR':
 					parsedBlock[name] = [varType, flags, i[1]]
 		return parsedBlock
