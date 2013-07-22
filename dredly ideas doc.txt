@@ -144,22 +144,24 @@ This is a set of rules for mod.xml
 
 info-R:
 	(revision|ver(|sion)): STR
-	auth(|or): STR
+	author: STR
 	(title|name): STR
 	desc(|ription): STR
-	(require|need)(|s): LST-strict-ci
-		(1|ROTDG|realm of the diggle gods)
-		(2|YHTNTEP|you have to name the expansion pack)
-		(3|COTW|conquest of the wizardlands)
+	(require|need): STR-strict-ci
+		(|)
+		(ROTDG|realm of the diggle gods)
+		(YHTNTEP|you have to name the expansion pack)
+		(COTW|conquest of the wizardlands)
 
 info-W:
+	!FILENAME=mod.xml
 	dredmormod:
 		revision:text=$revision
 		author:text=$author
 		name:text=$name
 		description:text=$desc
 		info:totalconversion=0
-		require:expansion=$require>0
+		require:expansion=$require?i
 
 And this is example input for it
 info:
