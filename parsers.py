@@ -139,6 +139,7 @@ class Parser:
 			if blocktype in ['R', 'W']:
 				self.parsers[name].parseBlock(block, blocktype)
 			elif blocktype == 'C':
+				pass
 
 	# def parseMacro(self, block):
 	# 	''' Turns a macro block into a macro by recursively calling itself. '''
