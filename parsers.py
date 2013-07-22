@@ -167,7 +167,7 @@ class RWBlock:
 		self.name = name
 		self.parsers = parsers
 		self.complete = [False, False]
-		self.flags = []
+		self.flags = {}
 		self.read = {}
 		self.write = {}
 
@@ -212,6 +212,11 @@ class RWBlock:
 				raise Exception('Read block '+self.name+' already exists. Cannot overwrite.')
 			else:
 				self.parseRead(block)
+		elif blocktype == 'W':
+			if self.complete[1]:
+				raise Exception('Write block '+self.name+' already exists. Cannot overwrite.')
+			else:
+				self.parseWrite(block)
 
 	def parseRead(self, block):
 		''' Parses a block for use. '''
@@ -234,6 +239,49 @@ class RWBlock:
 					parsedBlock[name] = [varType, flags, i[1]]
 		return parsedBlock
 
+	def parseWrite(self, block):
+		''' Parses a block for use. '''
+		name = block[0].split(':')[0].split('-')[0]
+		parsedBlock = {}
+		for i in block[1]:
+			if type(i) == str:
+				# Special first
+				if i[0] == '!':
+					if i.startswith('!FILENAME'):
+						self.flags['FILENAME'] = i.split('=')[1]
+					elif i.startswith('!NAME'):
+						# TODO: (H) Add functionality for !NAME
+						print '!NAME flag is currently unhandled.\nSkipping...'
+					else:
+						raise Exception('Unknown special attribute.')
+				if i.find(':') != -1:
+					name, attrs = i.split(':')
+					name, flags = name.split('-')[0], name.split('-')[1:]
+					if attrs:
+						attrs = attrs.split('=')
+						attrs = {attrs[0]:attrs[1]}
+					parsedBlock[name] = [flags, attrs, {}]
+				elif i.find('=') != -1:
+					pass #TODO: (VH) Attributes of parent class
+				else:
+					raise Exception('Line "'+i+'" not attribute or tag. Unable to parse.')
+			elif type(i) == list:
+				if i[0][0] == '!':
+					if i[0].startswith('!NAME'):
+						# TODO: (H) Add functionality for !NAME
+						print '!NAME flag is currently unhandled.\nSkipping...'
+					else:
+						raise Exception('Unknown special attribute: '+i[0])
+				else:
+					name = i[0].split(':')[0]
+					parsedBlock[name] = [[],{},self.parseWrite(i)]
+				# flags = map(str.upper, self.getFlags(i[0]))
+				# varType, flags = flags[0], flags[1:]
+				# name = self.parseName(i[0].split(':')[0])
+				# if varType == 'STR':
+				# 	parsedBlock[name] = [varType, flags, i[1]]
+		return parsedBlock
+		
 # Currently retained only as xml lib reference
 # 	lines = [str.strip(line) for line in f.readlines()]
 # 	loc = os.path.join('mod','mod.xml')
