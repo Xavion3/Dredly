@@ -23,7 +23,7 @@ def makeZip(path):
 	zf.close()
 
 def parseFolder(path, tmp_path = os.path.join(os.path.curdir,'tmp')):
-	# TODO: Hook up to parsers
+	# TODO: (VH) Hook up to parsers
 	os.mkdir(tmp_path)
 	os.mkdir(os.path.join(tmp_path,'mod'))
 	os.mkdir(os.path.join(tmp_path,'sprites'))

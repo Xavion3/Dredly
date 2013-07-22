@@ -51,7 +51,7 @@ class Parser:
 
 	def getFlags(self, s):
 		''' Gets the flags from a valid name. '''
-		# TODO: Add error checking to check if it's a name.
+		# TODO: (VL) Add error checking to check if it's a name.
 		return s.split(':')[1].strip().split('-')
 
 	def getInName(self, s, check):
@@ -174,13 +174,14 @@ class RWBlock:
 
 	def getFlags(self, s):
 		''' Gets the flags from a valid name. '''
-		# TODO: Add error checking to check if it's a name.
+		# TODO: (VL) Add error checking to check if it's a name.
+		# TODO: (L) Figure out why I've got two copies of this.
 		return s.split(':')[1].strip().split('-')
 
 	def parseName(self, s):
 		''' Turns a dredly name into a valid regex string. 
 		    Returns false if invalid. '''
-		# TODO: Error checking, particularly in relevance to balancing brackets
+		# TODO: (M) Error checking, particularly in relevance to balancing brackets
 		# Current errors
 		# - Fails if encountering unmatched end bracket
 		# - Fails if starting with an unescaped |
