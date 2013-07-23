@@ -222,7 +222,6 @@ class RWBlock:
 
 	def parseRead(self, block):
 		''' Parses a block for use. '''
-		name = block[0].split(':')[0].split('-')[0]
 		parsedBlock = {}
 		for i in block[1]:
 			if type(i) == str:
@@ -239,11 +238,13 @@ class RWBlock:
 				name = i[0].split(':')[0]
 				if varType == 'STR':
 					parsedBlock[name] = [varType, flags, i[1]]
-		return parsedBlock
+		if self.name == (block[0].split(':')[0].split('-')[0]):
+			self.read = parsedBlock
+		else:
+			return parsedBlock
 
 	def parseWrite(self, block):
 		''' Parses a block for use. '''
-		name = block[0].split(':')[0].split('-')[0]
 		parsedBlock = {}
 		for i in block[1]:
 			if type(i) == str:
@@ -277,12 +278,10 @@ class RWBlock:
 				else:
 					name = i[0].split(':')[0]
 					parsedBlock[name] = [[],{},self.parseWrite(i)]
-				# flags = map(str.upper, self.getFlags(i[0]))
-				# varType, flags = flags[0], flags[1:]
-				# name = self.parseName(i[0].split(':')[0])
-				# if varType == 'STR':
-				# 	parsedBlock[name] = [varType, flags, i[1]]
-		return parsedBlock
+		if self.name == (block[0].split(':')[0].split('-')[0]):
+			self.write = parsedBlock
+		else:
+			return parsedBlock
 		
 # Currently retained only as xml lib reference
 # 	lines = [str.strip(line) for line in f.readlines()]
