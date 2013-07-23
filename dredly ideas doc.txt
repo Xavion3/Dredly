@@ -176,7 +176,7 @@ and the output would be (Note: The actual output may not be nicely formatted)
 <dredmormod>
 	<revision text="Version 0.0.1" />
 	<author text="Billy Bob Joe" />
-	<name text="ULTIMATE\nMOD\nOF\nULTIMATENESS" />
+	<name text="ULTIMATE MOD OF ULTIMATENESS" />
 	<description text="Example string here"/>
 	<info totalconversion="0" />
 	<require expansion="2" />
