@@ -147,7 +147,7 @@ info-R:
 	author: STR
 	(title|name): STR
 	desc(|ription): STR
-	(require|need): STR-strict-ci
+	(require|need(|s)): STR-strict-ci
 		(|)
 		(ROTDG|realm of the diggle gods)
 		(YHTNTEP|you have to name the expansion pack)
@@ -166,7 +166,7 @@ info-W:
 And this is example input for it
 info:
 	ver: Version 0.0.1
-	auth: Billy Bob Joe
+	author: Billy Bob Joe
 	name: ULTIMATE\nMOD\nOF\nULTIMATENESS
 	desc:"Example string here"
 	needs: ReAlM Of THE diggle GoDs
