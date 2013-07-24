@@ -311,7 +311,7 @@ class RWBlock:
 			for block in useContent[i]:
 				for attr in block[1]:
 					if type(attr) == str:
-						attr = attr.split(':') # TODO: (VL) Allow for colons in strings.
+						attr = map(str.strip,attr.split(':')) # TODO: (VL) Allow for colons in strings.
 						for j in self.read:
 							#print j
 							#print attr
