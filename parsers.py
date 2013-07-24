@@ -171,6 +171,7 @@ class RWBlock:
 		self.flags = {}
 		self.read = {}
 		self.write = {}
+		self.neededContent = [self.name]
 
 	def getFlags(self, s):
 		''' Gets the flags from a valid name. '''
@@ -266,7 +267,9 @@ class RWBlock:
 						print '!NAME flag is currently unhandled.\nSkipping...'
 					else:
 						raise Exception('Unknown special attribute.')
-				if i.find(':') != -1:
+				elif i[0] == '@':
+					self.neededContent.append(i[1:])
+				elif i.find(':') != -1:
 					name, attrs = i.split(':')
 					name, flags = name.split('-')[0], name.split('-')[1:]
 					if attrs:
