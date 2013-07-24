@@ -248,6 +248,7 @@ class RWBlock:
 					parsedBlock[name] = [varType, flags, i[1]]
 		if self.name == (block[0].split(':')[0].split('-')[0]):
 			self.read = parsedBlock
+			self.complete[0] = True
 		else:
 			return parsedBlock
 
@@ -288,6 +289,7 @@ class RWBlock:
 					parsedBlock[name] = [[],{},self.parseWrite(i)]
 		if self.name == (block[0].split(':')[0].split('-')[0]):
 			self.write = parsedBlock
+			self.complete[1] = True
 		else:
 			return parsedBlock
 		
