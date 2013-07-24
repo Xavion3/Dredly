@@ -10,10 +10,6 @@ import xml.etree.ElementTree as ET
 
 class Parser:
 	''' The generic parser. '''
-	TYPES = {'INT':r'^[-+]?[0-9]+$', # Integer, postive or negative
-	         'FLOAT':r'^[-+]?[0-9]*\.?[0-9]+$', # Floating point number, postive or negative
-	         'STR':r'^.*$', # String, no restrictions
-	         'BOOL':r'^(0|1|TRUE|FALSE)$'} # Boolean, 0, 1, true, or false
 	SYS = {'NAME':r'^[a-zA-Z][a-zA-Z0-9_]*$'} # Name, alphanumeric and _ starts with alpha
 
 	def __init__(self):
@@ -162,6 +158,10 @@ class Parser:
 		
 class RWBlock:
 	''' A parsed read/write block for use with content parsing. '''
+	TYPES = {'INT':r'^[-+]?[0-9]+$', # Integer, postive or negative
+	         'FLOAT':r'^[-+]?[0-9]*\.?[0-9]+$', # Floating point number, postive or negative
+	         'STR':r'^[^:]*$', # String, no restrictions
+	         'BOOL':r'^(0|1|TRUE|FALSE)$'} # Boolean, 0, 1, true, or false
 
 	def __init__(self, name, parsers):
 		''' Creates the block. '''
