@@ -295,6 +295,48 @@ class RWBlock:
 			self.complete[1] = True
 		else:
 			return parsedBlock
+
+	def parseContent(self, content, loc = None):
+		''' Parses content using the read and write blocks. Generates a file if required. '''
+		# First get the relevant blocks.
+		useContent = {}
+		for i in self.neededContent:
+			if i in content:
+				useContent[i] = content[i][:]
+		# Now parse for reading
+		pContent = dict.fromkeys(self.read)
+		for k in pContent:
+			pContent[k] = []
+		for i in useContent:
+			for block in useContent[i]:
+				for attr in block[1]:
+					if type(attr) == str:
+						attr = attr.split(':') # TODO: (VL) Allow for colons in strings.
+						for j in self.read:
+							#print j
+							#print attr
+							if re.search(self.parseName(j), attr[0]):
+								if self.read[j][0] == 'BOOL' and re.search(self.TYPES['BOOL'], attr[1], re.I):
+									pContent[j].append(attr[1])
+								elif self.read[j][0] == 'NUM':
+									pass # TODO: (VH)
+								elif self.read[j][0] == 'STR':
+									if not 'MULTI' in self.read[j][1]:
+										attr[1] = attr[1].replace('\n', ' ')
+									if 'STRICT' in self.read[j][1]:
+										reFlags = 0
+										if 'CI' in self.read[j][1] and not 'CS' in self.read[j][1]:
+											reFlags |= re.I
+										for s in self.read[j][2]:
+											if re.search(self.parseName(s), attr[1], reFlags):
+												pContent[j].append(s)
+												break
+									else:
+										if re.search(self.TYPES['STR'], attr[1]):
+											pContent[j].append(attr[1])
+								break
+							#print pContent
+		print pContent
 		
 # Currently retained only as xml lib reference
 # 	lines = [str.strip(line) for line in f.readlines()]
