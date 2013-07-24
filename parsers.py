@@ -185,26 +185,34 @@ class RWBlock:
 		# Current errors
 		# - Fails if encountering unmatched end bracket
 		# - Fails if starting with an unescaped |
-		pattern = ''
+		pattern = '^'
 		blank = []
 		for i in range(len(s)):
-			if (not s[i] in ['(', '|', ')']) or (i >= 1 and s[i-1] == '\\'): # Non special or escaped
+			if i >= 1 and s[i-1] == '\\':
+				if s[i] == 'n':
+					pattern = pattern[:-1] + '\n'
+				else:
+					pattern = pattern[:-1] + s[i]
+			else:
 				pattern += s[i]
-				continue # Skip to next char to avoid accidently going thorugh with following if's
-			if s[i] == '|': # Or separator
-				if s[i-1] in ['(', '|'] or s[i+1] in ['|', ')']: # Matches (|, ||, and |) to check for blanks
-					blank[-1] = True
-					if re.search(r'\(\|*$', pattern) or re.search(r'^\|*\)', s[i:]) and s[i-1] != '|': # If it's not at the start or the end add if the first of a group
-						pattern += '|'
-				else: # If isn't a blank then whatevs
-					pattern += '|'
-			if s[i] == ')':
-				pattern += ')'
-				if blank.pop(-1): # Check if the current bracket pair had a blank while removing it from the list
-					pattern += '?'
-			if s[i] == '(':
-				pattern += '('
-				blank.append(False) # Assume no blanks and start another set of brackets
+			# if (not s[i] in ['(', '|', ')']) or (i >= 1 and s[i-1] == '\\'): # Non special or escaped
+			# 	pattern += s[i]
+			# 	continue # Skip to next char to avoid accidently going thorugh with following if's
+			# if s[i] == '|': # Or separator
+			# 	if s[i-1] in ['(', '|'] or s[i+1] in ['|', ')']: # Matches (|, ||, and |) to check for blanks
+			# 		blank[-1] = True
+			# 		if re.search(r'\(\|*$', pattern) or re.search(r'^\|*\)', s[i:]) and s[i-1] != '|': # If it's not at the start or the end add if the first of a group
+			# 			pattern += '|'
+			# 	else: # If isn't a blank then whatevs
+			# 		pattern += '|'
+			# if s[i] == ')':
+			# 	pattern += ')'
+			# 	if blank.pop(-1): # Check if the current bracket pair had a blank while removing it from the list
+			# 		pattern += '?'
+			# if s[i] == '(':
+			# 	pattern += '('
+			# 	blank.append(False) # Assume no blanks and start another set of brackets
+		pattern += '$'
 		return pattern
 
 	def parseBlock(self, block, blocktype):
