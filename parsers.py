@@ -316,10 +316,26 @@ class RWBlock:
 							attr[1] = attr[1][1:-1]
 						for j in self.read:
 							if re.search(self.parseName(j), attr[0]):
-								if self.read[j][0] == 'BOOL' and re.search(self.TYPES['BOOL'], attr[1], re.I):
+								if self.read[j][0] == 'BOOL':
+									if not re.search(self.TYPES['BOOL'], attr[1], re.I):
+										raise TypeError('Value:'+attr[1]+' not a valid boolean.')
+									if attr[1].upper() == 'TRUE':
+										attr[1] = '1'
+									else:
+										attr[1] = '0'
 									pContent[j].append(attr[1])
 								elif self.read[j][0] == 'NUM':
-									pass # TODO: (VH) Numbers!
+									if 'INT' in self.read[j] and not re.search(self.TYPES['INT'],attr[1]):
+										raise TypeError('Value:'+attr[1]+' not a valid integer.')
+									elif not re.search(self.TYPES['FLOAT'], attr[1]):
+										raise TypeError('Value:'+attr[1]+' not a valid float.')
+									val = float(attr[1])
+									for f in flags:
+										if 'CAP' in f:
+											low, high = f.split('=')[1].split('/')
+											if (low and float(low) > val) or (high and float(high) < val) or (not low and not high):
+												raise ValueError('Value:' + attr[1] + ' not in range ('+str(low)+','+str(high)+')')
+									pContent[j].append(attr[1])
 								elif self.read[j][0] == 'STR':
 									if not 'MULTI' in self.read[j][1]:
 										attr[1] = attr[1].replace('\n', ' ')
