@@ -113,6 +113,14 @@ class Parser:
 			elif blocktype == 'C':
 				self.conntent[name].append(block)
 
+	def createXML(self):
+		''' Fills self.xml with the xml. '''
+		# Create the xml!
+		for p in self.parsers:
+			if p.flags.has_key('FILENAME'):
+				element = p.parseContent(self.content)
+				self.xml.append([element, p.flags['FILENAME']])
+
 		
 class RWBlock:
 	''' A parsed read/write block for use with content parsing. '''
