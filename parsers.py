@@ -50,33 +50,6 @@ class Parser:
 		# TODO: (VL) Add error checking to check if it's a name.
 		return s.split(':')[1].strip().split('-')
 
-	def getInName(self, s, check):
-		''' Gets an option from a multi-option name. 
-		    check is index for option to get from name s'''
-		# Commented code shows how to swap to getting all options instead of just one. 
-		# parts = []
-		# check = 0
-		part = ''
-		stack = []
-	# while check >= 0:
-		parts.append('')
-		for i in range(len(s)):
-			if (len(stack) == stack.count(check) and # If it's at the right part in the all sets of brackets
-			((not s[i] in ['(', '|', ')']) or (i >= 1 and s[i-1] == '\\'))): # Non special or escaped
-				# parts[-1] += s[i]
-				part += s[i]
-			elif s[i] == '(': # Start new level in stack
-				stack.append(0)
-			elif s[i] == '|': # Next part in stack
-				stack[-1] += 1
-			elif s[i] == ')':
-				if len(stack[:-1]) == stack[:1].count(check) and stack.pop(-1) < check: # If a level stopped before it should've error
-					# check = -2
-					# parts.pop(-1)
-					raise IndexError('Part not in range for name')
-		# check += 1
-		return part
-
 	##########
 	# Parser #
 	##########
@@ -215,6 +188,33 @@ class RWBlock:
 			# 	blank.append(False) # Assume no blanks and start another set of brackets
 		pattern += '$'
 		return pattern
+
+	def getInName(self, s, check):
+		''' Gets an option from a multi-option name. 
+		    check is index for option to get from name s'''
+		# Commented code shows how to swap to getting all options instead of just one. 
+		# parts = []
+		# check = 0
+		part = ''
+		stack = []
+	# while check >= 0:
+		#parts.append('')
+		for i in range(len(s)):
+			if (len(stack) == stack.count(check) and # If it's at the right part in the all sets of brackets
+			((not s[i] in ['(', '|', ')']) or (i >= 1 and s[i-1] == '\\'))): # Non special or escaped
+				# parts[-1] += s[i]
+				part += s[i]
+			elif s[i] == '(': # Start new level in stack
+				stack.append(0)
+			elif s[i] == '|': # Next part in stack
+				stack[-1] += 1
+			elif s[i] == ')':
+				if stack.pop(-1) < check and len(stack) == stack.count(check): # If a level stopped before it should've error
+					# check = -2
+					# parts.pop(-1)
+					raise IndexError('Part not in range for name')
+		# check += 1
+		return part
 
 	def parseBlock(self, block, blocktype):
 		''' Interface function, redirects to correct parsing function. '''
