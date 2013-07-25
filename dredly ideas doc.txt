@@ -93,6 +93,10 @@ Allows the use of the -int and -float flags to force compliance.
 The -cap flag allows for limiting a number.
 - The flag must have a range input after in the form MIN/MAX
 -- If either is omitted it defaults to uncapped
+-- The range is inclusive.
+For example
+NUM-INT-CAP=/23
+- Means an integer less than or equal to 23.
 ----- Reference
 Effectively just swaps type and children for referenced macro.
 ----- Boolean
@@ -148,7 +152,7 @@ info-R:
 	author: STR
 	(title|name): STR
 	desc(|ription): STR
-	(require|need(|s)): STR-strict-ci
+	(require|need)(|s): STR-strict-ci
 		(|)
 		(ROTDG|realm of the diggle gods)
 		(YHTNTEP|you have to name the expansion pack)
