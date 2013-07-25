@@ -110,24 +110,6 @@ class Parser:
 			elif blocktype == 'C':
 				self.conntent[name].append(block)
 
-	# def parseMacro(self, block):
-	# 	''' Turns a macro block into a macro by recursively calling itself. '''
-	# 	# Progress
-	# 	# - Nums
-	# 	# - Simple strings
-	# 	# - String lists
-	# 	# - macros
-	# 	for attr in block:
-	# 		if type(attr) == list:
-	# 	if f[0] == 'NUM':
-	# 		pass
-	# 	if not (f[0] in ['STR'] and 'strict' in f):
-	# 		pass
-	# 	e = []
-	# 	for l in [x.lstrip('\t') for x in block[1:]]:
-	# 		e.append(parseName(l))
-	# 	return [f, e]
-	# Obselete maybe?
 		
 class RWBlock:
 	''' A parsed read/write block for use with content parsing. '''
