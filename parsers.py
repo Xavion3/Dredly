@@ -300,7 +300,9 @@ class RWBlock:
 				useContent[i] = content[i][:]
 		# Now parse for reading
 		pContent = self.__parseContentRead__(useContent)
-		# print content, useContent, pContent
+		# print content
+		# print useContent
+		# print pContent
 		# Now for writing.
 		element = self.__parseContentWrite__(pContent)
 		# TODO: (VH) Macros! (@blah)
@@ -363,49 +365,47 @@ class RWBlock:
 			writeRules = self.write
 		elif writeRules == {}:
 			return {}
-		if parElement == None:
-			parElement = ET.Element(writeRules.keys()[0])
-			self.__parseContentWrite__(pContent, writeRules[parElement.tag][2], parElement)
-			return parElement
-		else:
-			for tag in writeRules:
-				eleT = ET.Element(tag) # Create the blank template
-				eles = []
-				# Now for attributes.
-				tagAttribs = writeRules[tag][1]
-				tagNum = 1
-				for i in tagAttribs:
-					if tagAttribs[i].find('$') != -1 or tagAttribs[i].find('!') != -1:
-						attrName = tagAttribs[i][1:].split('?')[0].split('>')[0]
-						for j in pContent:
-							if re.search(j, attrName):
-								tagNum = max(tagNum, len(pContent[j]))
-						if tagNum == 0:
-							raise Exception('Attr "'+attrName+'" not found in read list.')
+		for tag in writeRules:
+			eleT = ET.Element(tag) # Create the blank template
+			eles = []
+			# Now for attributes.
+			tagAttribs = writeRules[tag][1]
+			tagNum = 1
+			for i in tagAttribs:
+				if tagAttribs[i].find('$') != -1 or tagAttribs[i].find('!') != -1:
+					attrName = tagAttribs[i][1:].split('?')[0].split('>')[0]
+					for j in pContent:
+						if re.search(j, attrName):
+							tagNum = max(tagNum, len(pContent[j]))
+					if tagNum == 0:
+						raise Exception('Attr "'+attrName+'" not found in read list.')
+			for j in xrange(tagNum):
+				eles.append(eleT.copy())
 				for i in tagAttribs:
 					attrName = tagAttribs[i][1:].split('?')[0].split('>')[0]
-					for j in xrange(tagNum):
-						eles.append(eleT.copy())
-						if tagAttribs[i][0] == '$':
-							for k in pContent:
-								if re.search(k, attrName):
-									attrName = k
-									break
-							if tagAttribs[i].find('?i') != -1: # If it's a special one.
-								ind = str(self.read[attrName][2].index(pContent[attrName][j]))
-								eles[-1].attrib[i] = ind
-							elif tagAttribs[i].find('>') != -1:
-								ind = int(tagAttribs[i])
-								eles[-1].attrib[i] = self.getInName(pContent[attrName][j],ind)
-							else:
-								# print tag, eles, i, attrName, j, pContent
-								eles[-1].attrib[i] = pContent[attrName][j]
+					if tagAttribs[i][0] == '$':
+						for k in pContent:
+							if re.search(k, attrName):
+								attrName = k
+								break
+						if tagAttribs[i].find('?i') != -1: # If it's a special one.
+							ind = str(self.read[attrName][2].index(pContent[attrName][j]))
+							eles[-1].attrib[i] = ind
+						elif tagAttribs[i].find('>') != -1:
+							ind = int(tagAttribs[i].split('>')[1])
+							eles[-1].attrib[i] = self.getInName(pContent[attrName][j],ind)
 						else:
-							eles[-1].attrib[i] = tagAttribs[i]
+							# print tag, eles, i, attrName, j, pContent
+							eles[-1].attrib[i] = pContent[attrName][j]
+					else:
+						eles[-1].attrib[i] = tagAttribs[i]
 
-				# Finally add sub tags before adding them to the parent element
-				for e in eles:
-					self.__parseContentWrite__(pContent, writeRules[tag][2], e)
+			# Finally add sub tags before adding them to the parent element
+			for e in eles:
+				self.__parseContentWrite__(pContent, writeRules[tag][2], e)
+				if parElement == None:
+					return e
+				else:
 					parElement.append(e)
 
 # Currently retained only as xml lib reference
