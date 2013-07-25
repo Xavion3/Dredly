@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import os, shutil
+from os import sep as pathsep
 import re
 import xml.etree.ElementTree as ET
 
@@ -12,9 +12,12 @@ class Parser:
 	''' The generic parser. '''
 	SYS = {'NAME':r'^[a-zA-Z][a-zA-Z0-9_]*$'} # Name, alphanumeric and _ starts with alpha
 
-	def __init__(self):
+	def __init__(self, f = None):
 		self.parsers = {}
 		self.content = {}
+		self.xml = []
+		if f != None:
+			self.parseFile(f)
 
 	##############################
 	# Util functions for parsing #
@@ -243,7 +246,7 @@ class RWBlock:
 				# Special first
 				if i[0] == '!':
 					if i.startswith('!FILENAME'):
-						self.flags['FILENAME'] = i.split('=')[1]
+						self.flags['FILENAME'] = i.split('=')[1].replace('/',pathsep)
 					elif i.startswith('!NAME'):
 						# TODO: (H) Add functionality for !NAME
 						print '!NAME flag is currently unhandled.\nSkipping...'
