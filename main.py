@@ -55,6 +55,7 @@ def main():
 	#gui.main()
 	# Parse the syntax.
 	f = open('./dredly/curSyntax.dredly', 'r')
+	global Parser
 	Parser = parsers.Parser(f)
 	# Now run it on the test mod!
 	parseFolder('dredly/test_mod',Parser)
