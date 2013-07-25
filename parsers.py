@@ -287,6 +287,11 @@ class RWBlock:
 				useContent[i] = content[i][:]
 		# Now parse for reading
 		pContent = self.__parseContentRead__(useContent)
+		# Now for writing.
+		element = self.__parseContentWrite__(pContent)
+		# TODO: (VH) Macros! (@blah)
+		return element
+
 	def __parseContentRead__(self, useContent):
 		''' Parses the content using the read info. '''
 		pContent = dict.fromkeys(self.read)
@@ -304,6 +309,7 @@ class RWBlock:
 								if self.read[j][0] == 'BOOL' and re.search(self.TYPES['BOOL'], attr[1], re.I):
 									pContent[j].append(attr[1])
 								elif self.read[j][0] == 'NUM':
+									pass # TODO: (VH) Numbers!
 								elif self.read[j][0] == 'STR':
 									if not 'MULTI' in self.read[j][1]:
 										attr[1] = attr[1].replace('\n', ' ')
@@ -320,6 +326,61 @@ class RWBlock:
 											pContent[j].append(attr[1])
 								break
 		return pContent
+
+	def __parseContentWrite__(self, pContent, writeRules = None, parElement = None):
+		''' Parses the read content into xml. '''
+		if writeRules == None:
+			writeRules = self.write
+		elif writeRules == {}:
+			return {}
+		if parElement == None:
+			parElement = ET.Element(writeRules.keys()[0])
+			self.__parseContentWrite__(pContent, writeRules[parElement.tag][2], parElement)
+			return parElement
+		else:
+			for tag in writeRules:
+				eleT = ET.Element(tag) # Create the blank template
+				eles = []
+				# Now for attributes.
+				tagAttribs = writeRules[tag][1]
+				tagNum = 1
+				for i in tagAttribs:
+					if tagAttribs[i].find('$') != -1 or tagAttribs[i].find('!') != -1:
+						attrName = tagAttribs[i][1:].split('?')[0].split('>')[0]
+						for j in pContent:
+							if re.search(j, attrName):
+								tagNum = max(tagNum, len(pContent[j]))
+						if tagNum == 0:
+							raise Exception('Attr "'+attrName+'" not found in read list.')
+				# if not tagNum:
+				# 	eles.append(eleT.copy())
+				# 	eles[-1].attrib = tagAttribs
+				# else:
+				for i in tagAttribs:
+					attrName = tagAttribs[i][1:].split('?')[0].split('>')[0]
+					for j in xrange(tagNum):
+						eles.append(eleT.copy())
+						if tagAttribs[i][0] == '$':
+							for k in pContent:
+								if re.search(k, attrName):
+									attrName = k
+									break
+							if tagAttribs[i].find('?i') != -1: # If it's a special one.
+								ind = str(self.read[attrName][2].index(pContent[attrName][j]))
+								eles[-1].attrib[i] = ind
+							elif tagAttribs[i].find('>') != -1:
+								ind = int(tagAttribs[i])
+								eles[-1].attrib[i] = self.getInName(pContent[attrName][j],ind)
+							else:
+								eles[-1].attrib[i] = pContent[attrName][j]
+						else:
+							eles[-1].attrib[i] = tagAttribs[i]
+
+				# Finally add sub tags before adding them to the parent element
+				for e in eles:
+					self.__parseContentWrite__(pContent, writeRules[tag][2], e)
+					parElement.append(e)
+
 # Currently retained only as xml lib reference
 # 	lines = [str.strip(line) for line in f.readlines()]
 # 	loc = os.path.join('mod','mod.xml')
