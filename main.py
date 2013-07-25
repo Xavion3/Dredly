@@ -4,11 +4,12 @@ import sys
 import os
 import shutil
 import zipfile
+import xml.etree.ElementTree as ET
 
 import parsers
 import gui
 
-DREDLY_EXTENSIONS = ['.inf', '.dredly']
+DREDLY_EXTENSIONS = ['inf', 'dredly']
 
 def makeZip(path):
 	''' Makes a zip out of a given folder with the same name as the folder.
@@ -19,11 +20,15 @@ def makeZip(path):
 	for root, dirs, files in os.walk(path):
 		for filename in files:
 			zf.write(os.path.join(root, filename))
-			print root, filename
+			# print root, filename
 	zf.close()
 
 def parseFolder(path, parser, tmp_path = os.path.join(os.path.curdir,'tmp')):
-	os.mkdir(tmp_path)
+	try:
+		os.mkdir(tmp_path)
+	except OSError:
+		shutil.rmtree(tmp_path)
+		os.mkdir(tmp_path)
 	# TODO: (M) Make it generate foldres based on content instead.
 	os.mkdir(os.path.join(tmp_path,'mod'))
 	os.mkdir(os.path.join(tmp_path,'sprites'))
@@ -31,11 +36,12 @@ def parseFolder(path, parser, tmp_path = os.path.join(os.path.curdir,'tmp')):
 	for root, dirs, files in os.walk(path):
 		for filename in files:
 			if filename.split('.')[-1] in DREDLY_EXTENSIONS: # If it's a dredly file then parse
+				# print "Parsing", filename
 				f = open(os.path.join(root, filename), 'r')
 				parser.parseFile(f)
 			else: # Else just copy
-				print filename
-				print root
+				# print filename
+				# print root
 				shutil.copy(os.path.join(root,filename), # The file to be copied
 					os.path.join(tmp_path,root.split(path)[1].partition(os.sep)[2],filename)) # Gets the equivalent location
 	# Now that you've parsed everything make the xml

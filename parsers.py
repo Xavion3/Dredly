@@ -74,16 +74,14 @@ class Parser:
 			blocktype = 'C' if len(tmp) == 1 else tmp[1] # Gets the R/W/T/C flag, Default to C
 
 			# Check name
-			if not Parser.TYPES['NAME'].match(tmp[0]):
+			if not re.match(Parser.SYS['NAME'],tmp[0]):
 				raise Exception('Invalid name '+tmp[0])
 
 			# Check blocktype and create spot if none
 			if blocktype in ['R', 'W']:
 				if self.parsers.has_key(name):
-					if len(self.parsers[name]) != 2:
-						raise Exception('Read/Write block '+name+' already taken by type')
-					elif self.parsers[0] != None:
-						raise Exception('Read/Write block '+name+' already taken by unknown object')
+					if not isinstance(self.parsers[name], RWBlock):
+						raise Exception('Read/Write block '+name+' already taken by object')
 				else:
 					self.parsers[name] = RWBlock(name, self.parsers)
 			elif blocktype == 'T':
@@ -111,12 +109,12 @@ class Parser:
 			if blocktype in ['R', 'W']:
 				self.parsers[name].parseBlock(block, blocktype)
 			elif blocktype == 'C':
-				self.conntent[name].append(block)
+				self.content[name].append(block)
 
 	def createXML(self):
 		''' Fills self.xml with the xml. '''
 		# Create the xml!
-		for p in self.parsers:
+		for p in self.parsers.itervalues():
 			if p.flags.has_key('FILENAME'):
 				element = p.parseContent(self.content)
 				self.xml.append([element, p.flags['FILENAME']])
@@ -298,6 +296,7 @@ class RWBlock:
 				useContent[i] = content[i][:]
 		# Now parse for reading
 		pContent = self.__parseContentRead__(useContent)
+		# print content, useContent, pContent
 		# Now for writing.
 		element = self.__parseContentWrite__(pContent)
 		# TODO: (VH) Macros! (@blah)
@@ -363,10 +362,6 @@ class RWBlock:
 								tagNum = max(tagNum, len(pContent[j]))
 						if tagNum == 0:
 							raise Exception('Attr "'+attrName+'" not found in read list.')
-				# if not tagNum:
-				# 	eles.append(eleT.copy())
-				# 	eles[-1].attrib = tagAttribs
-				# else:
 				for i in tagAttribs:
 					attrName = tagAttribs[i][1:].split('?')[0].split('>')[0]
 					for j in xrange(tagNum):
@@ -383,6 +378,7 @@ class RWBlock:
 								ind = int(tagAttribs[i])
 								eles[-1].attrib[i] = self.getInName(pContent[attrName][j],ind)
 							else:
+								# print tag, eles, i, attrName, j, pContent
 								eles[-1].attrib[i] = pContent[attrName][j]
 						else:
 							eles[-1].attrib[i] = tagAttribs[i]
