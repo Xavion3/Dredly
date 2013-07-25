@@ -69,7 +69,7 @@ info-R:
 	author: STR
 	(title|name): STR
 	desc(|ription): STR
-	(require|need): STR-strict-ci
+	(require|need)(|s): STR-strict-ci
 		(|)
 		(ROTDG|realm of the diggle gods)
 		(YHTNTEP|you have to name the expansion pack)
@@ -142,3 +142,27 @@ weapon:
 	(|override)class(|name)-opt: STR
 	price-opt: NUM-cap=0/
 
+# Recipes
+recipe-R:
+	hid(den|e): BOOL
+	(tool|type): STR-STRICT-CI
+		alchemy
+		smithing
+		tinkerer
+		ingot
+		grinder
+		still
+		lathe
+	(input|(require|need)(|s)): STR
+	(output|item|(produce|make)(|s)): STR
+	skill: NUM-int-cap=0/
+	(amount|quan(|tity)): NUM-int-cap=1/
+
+recipe-W:
+	craft:
+		hidden=$hidden
+		output:
+			skill=$skill
+			name=$output
+			amount=$amount
+		input:name=$input
