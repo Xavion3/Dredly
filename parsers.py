@@ -247,6 +247,7 @@ class RWBlock:
 	def parseWrite(self, block):
 		''' Parses a block for use. '''
 		parsedBlock = {}
+		parsedAttrs = {}
 		for i in block[1]:
 			if type(i) == str:
 				# Special first
@@ -261,14 +262,16 @@ class RWBlock:
 				elif i[0] == '@':
 					self.neededContent.append(i[1:])
 				elif i.find(':') != -1:
+					attribs = {}
 					name, attrs = i.split(':')
 					name, flags = name.split('-')[0], name.split('-')[1:]
-					if attrs:
-						attrs = attrs.split('=')
-						attrs = {attrs[0]:attrs[1]}
-					parsedBlock[name] = [flags, attrs, {}]
+					for attr in [x for x in attrs.split(',') if x]:
+						attr = attr.split('=')
+						attribs[attr[0]] = attr[1]
+					parsedBlock[name] = [flags, attribs, {}]
 				elif i.find('=') != -1:
-					pass #TODO: (VH) Attributes of parent class
+					name, attr = i.split('=')
+					parsedAttrs[name] = attr
 				else:
 					raise Exception('Line "'+i+'" not attribute or tag. Unable to parse.')
 			elif type(i) == list:
@@ -280,12 +283,13 @@ class RWBlock:
 						raise Exception('Unknown special attribute: '+i[0])
 				else:
 					name = i[0].split(':')[0]
-					parsedBlock[name] = [[],{},self.parseWrite(i)]
+					pw = self.parseWrite(i)
+					parsedBlock[name] = [[],pw[0],pw[1]]
 		if self.name == (block[0].split(':')[0].split('-')[0]):
 			self.write = parsedBlock
 			self.complete[1] = True
 		else:
-			return parsedBlock
+			return parsedAttrs, parsedBlock
 
 	def parseContent(self, content):
 		''' Parses content using the read and write blocks. Generates a file if required. '''
