@@ -3,7 +3,7 @@ info-R:
 	author: STR
 	(title|name): STR
 	desc(|ription): STR
-	: STR-strict-ci
+	(require|need)(|s): STR-strict-ci
 		(|)
 		(ROTDG|realm of the diggle gods)
 		(YHTNTEP|you have to name the expansion pack)
@@ -22,11 +22,11 @@ info-W:
 recipe-R:
 	hid(den|e): BOOL
 	(tool|type): STR-STRICT-CI
-		alchemy
-		smithing
-		tinkerer
+		alc(h(emy|)|)
+		smith(ing|)
+		tink(er(er|ing)|)
 		ingot
-		grinder
+		grind(er|)
 		still
 		lathe
 	(input|(require|need)(|s)): STR
@@ -35,6 +35,7 @@ recipe-R:
 	(amount|quan(|tity)): NUM-int-cap=1/
 
 recipe-W:
+	!FILENAME=mod/craftDB.xml
 	craft:
 		hidden=$hidden
 		output:
@@ -42,3 +43,4 @@ recipe-W:
 			name=$output
 			amount=$amount
 		input:name=$input
+		tool:tag=$tool>0
