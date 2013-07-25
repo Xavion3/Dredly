@@ -330,7 +330,7 @@ class RWBlock:
 									elif not re.search(self.TYPES['FLOAT'], attr[1]):
 										raise TypeError('Value:'+attr[1]+' not a valid float.')
 									val = float(attr[1])
-									for f in flags:
+									for f in self.read[j]:
 										if 'CAP' in f:
 											low, high = f.split('=')[1].split('/')
 											if (low and float(low) > val) or (high and float(high) < val) or (not low and not high):
@@ -338,7 +338,7 @@ class RWBlock:
 									pContent[j].append(attr[1])
 								elif self.read[j][0] == 'STR':
 									if not 'MULTI' in self.read[j][1]:
-										attr[1] = attr[1].replace('\n', ' ')
+										attr[1] = attr[1].replace('\\n', ' ')
 									if 'STRICT' in self.read[j][1]:
 										reFlags = 0
 										if 'CI' in self.read[j][1] and not 'CS' in self.read[j][1]:
