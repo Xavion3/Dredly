@@ -104,17 +104,18 @@ Must be valid true or false value.
 Write Rules
 ---====---
 A special attribute denotes whether or not a file should be created to hold the xml.
-- The attribute is !FILENAME=<file name here>
--- For example !FILENAME=mod.xml
+- The attribute is !FILENAME=<file path here>
+-- A forward slash in the fileath will get replaced by the os specific operator.
+-- For example !FILENAME=mod/mod.xml
 -- It's case sensitive
 - If it is included then it will generate the contents of the file from itself.
 - If included then it does not need a corresponding read block as it will be called anyway.
 -- Important usage for the lack of a read block is for the use of top level groups. For example
 itemFile-W:
-	!FILENAME=items.xml
+	!FILENAME=mod/items.xml
 	itemDB:
 		@item
--- That will generate a file called items.xml with a top level tag itemDB and all item blocks as children of it.
+-- That will generate a file called items.xml in the folder mod with a top level tag itemDB and all item blocks as children of it.
 All attributes must either
 - An object which directly corresponds to a tag in the xml with attributes and children set correctly.
 -- If no children are provided it defaults to self closing. This can be blocked with the -open tag.
