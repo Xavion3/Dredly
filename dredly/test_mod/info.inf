@@ -1,6 +1,7 @@
 info:
-	version:0.0.1
-	author:Xavion
-	name:Omnicidal Maniacs
-	desc:For all you're murderous needs!
-	require:1,3
+	ver: Version 0.0.1
+	author: Billy Bob Joe
+	name: ULTIMATE\nMOD\nOF\nULTIMATENESS
+	desc:"Example string here"
+	needs: ReAlM Of THE diggle GoDs
+	require:cotw
