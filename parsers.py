@@ -278,7 +278,7 @@ class RWBlock:
 		else:
 			return parsedBlock
 
-	def parseContent(self, content, loc = None):
+	def parseContent(self, content):
 		''' Parses content using the read and write blocks. Generates a file if required. '''
 		# First get the relevant blocks.
 		useContent = {}
