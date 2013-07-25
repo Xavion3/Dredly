@@ -1,0 +1,10 @@
+recipe:
+	hidden: true
+	type: SMITH
+	input: Robe
+	input: Steel Ingot
+	input: Iron Ingot
+	input: Potion of Steeling
+	makes: Metal Cloth
+	amount: 1
+	skill: 0
