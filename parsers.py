@@ -108,7 +108,7 @@ class Parser:
 			if blocktype in ['R', 'W']:
 				self.parsers[name].parseBlock(block, blocktype)
 			elif blocktype == 'C':
-				pass
+				self.conntent[name].append(block)
 
 	# def parseMacro(self, block):
 	# 	''' Turns a macro block into a macro by recursively calling itself. '''
@@ -304,6 +304,9 @@ class RWBlock:
 			if i in content:
 				useContent[i] = content[i][:]
 		# Now parse for reading
+		pContent = self.__parseContentRead__(useContent)
+	def __parseContentRead__(self, useContent):
+		''' Parses the content using the read info. '''
 		pContent = dict.fromkeys(self.read)
 		for k in pContent:
 			pContent[k] = []
@@ -312,14 +315,13 @@ class RWBlock:
 				for attr in block[1]:
 					if type(attr) == str:
 						attr = map(str.strip,attr.split(':')) # TODO: (VL) Allow for colons in strings.
+						if attr[1][0] == attr[1][-1] and attr[1][0] in ['"',"'"]:
+							attr[1] = attr[1][1:-1]
 						for j in self.read:
-							#print j
-							#print attr
 							if re.search(self.parseName(j), attr[0]):
 								if self.read[j][0] == 'BOOL' and re.search(self.TYPES['BOOL'], attr[1], re.I):
 									pContent[j].append(attr[1])
 								elif self.read[j][0] == 'NUM':
-									pass # TODO: (VH)
 								elif self.read[j][0] == 'STR':
 									if not 'MULTI' in self.read[j][1]:
 										attr[1] = attr[1].replace('\n', ' ')
@@ -335,9 +337,7 @@ class RWBlock:
 										if re.search(self.TYPES['STR'], attr[1]):
 											pContent[j].append(attr[1])
 								break
-							#print pContent
-		print pContent
-		
+		return pContent
 # Currently retained only as xml lib reference
 # 	lines = [str.strip(line) for line in f.readlines()]
 # 	loc = os.path.join('mod','mod.xml')
