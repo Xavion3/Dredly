@@ -247,7 +247,7 @@ class RWBlock:
 		else:
 			return parsedBlock
 
-	def parseWrite(self, block):
+	def parseWrite(self, block, outermost = True):
 		''' Parses a block for use. '''
 		parsedBlock = {}
 		parsedAttrs = {}
@@ -285,11 +285,13 @@ class RWBlock:
 					else:
 						raise Exception('Unknown special attribute: '+i[0])
 				else:
-					name = i[0].split(':')[0]
-					print i
-					pw = self.parseWrite(i)
-					parsedBlock[name] = [[],pw[0],pw[1]]
-		if self.name == (block[0].split(':')[0].split('-')[0]):
+					name, flags = i[0].split(':')
+					flags = map(str.strip, flags.split('-'))
+					if flags and not flags[0]:
+						flags.pop(0)
+					pw = self.parseWrite(i, False)
+					parsedBlock[name] = [flags, pw[0], pw[1]]
+		if outermost:
 			self.write = parsedBlock
 			self.complete[1] = True
 		else:
