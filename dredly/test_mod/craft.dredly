@@ -1,10 +1,23 @@
 recipe:
 	hidden: true
-	type: SMITH
-	input: Robe
+	output:
+		makes: Naked Metal Gear
+		amount: 1
+		skill: 0
+	output:
+		makes: Solid Metal Gear
+		amount: 1
+		skill: 2
+	output:
+		makes: Liquid Metal Gear
+		amount: 1
+		skill: 4
+	output:
+		makes: Gassy Metal Gear
+		amount: 1
+		skill: 6
+	type: smith
+	input: Cog
 	input: Steel Ingot
 	input: Iron Ingot
 	input: Potion of Steeling
-	makes: Metal Cloth
-	amount: 1
-	skill: 0

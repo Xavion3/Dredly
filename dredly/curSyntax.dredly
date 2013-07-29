@@ -30,17 +30,66 @@ recipe-R:
 		still
 		lathe
 	(input|(require|need)(|s)): STR
-	(output|item|(produce|make)(|s)): STR
-	skill: NUM-int-cap=0/
-	(amount|quan(|tity)): NUM-int-cap=1/
+	(output|item):
+		(name|makes): STR
+		skill: NUM-INT-CAP=0/
+		(amount|quantity): NUM-INT-CAP=1/
 
 recipe-W:
 	!FILENAME=mod/craftDB.xml
 	craft:
 		hidden=$hidden
 		output:
-			skill=$skill
-			name=$output
-			amount=$amount
+			skill=$output>skill
+			name=$output>name
+			amount=$output>amount
 		input:name=$input
 		tool:tag=$tool>0
+
+encrust-R:
+	hid(den|e): BOOL
+	name: STR
+	desc(ription|): STR
+	(tool|type): STR-STRICT-CI
+		alc(h(emy|)|)
+		smith(ing|)
+		tink(er(er|ing)|)
+		ingot
+		grind(er|)
+		still
+		lathe
+	slot: STR-STRICT-CI
+		we(apon|p)
+		shield
+		range(d|)
+		chest
+		leg(s|)
+		(hand|glove)(s|)
+		(waist|belt)
+		ring
+		neck(|lace)
+		(feet|shoe)(|s)
+		(head|helm(|et))
+	(input|(require|need)(|s)): STR
+	(skill|level): NUM-INT-CAP=0/
+	power:
+		name: STR
+		chance: NUM-FLOAT-CAP=0/1
+	(instability|chaos): NUM-INT
+	encrust(with|): STR
+
+encrust-W:
+	!FILENAME=mod/encrustDB.xml
+	encrust:
+		hidden=$hidden
+		name=$name
+		description:text=$desc
+		input:name=$input
+		tool:tag=$tool>0
+		slot:type=$slot>0
+		skill:level=$skill
+		power:
+			name=$power>name
+			chance=$power>chance
+		instability:amount=$intability
+		encrustwith:name=$encrustwith
