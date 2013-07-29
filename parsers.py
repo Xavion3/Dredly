@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 from os import sep as pathsep
+from copy import deepcopy
 import re
 import xml.etree.ElementTree as ET
 
@@ -236,8 +237,10 @@ class RWBlock:
 				flags = map(str.upper, self.getFlags(i[0]))
 				varType, flags = flags[0], flags[1:]
 				name = i[0].split(':')[0]
-				if varType == 'STR':
+				if varType == 'STR': # Strict string.
 					parsedBlock[name] = [varType, flags, i[1]]
+				else: # Object
+					parsedBlock[name] = ['OBJ', flags, self.parseRead(i)]
 		if self.name == (block[0].split(':')[0].split('-')[0]):
 			self.read = parsedBlock
 			self.complete[0] = True
@@ -283,6 +286,7 @@ class RWBlock:
 						raise Exception('Unknown special attribute: '+i[0])
 				else:
 					name = i[0].split(':')[0]
+					print i
 					pw = self.parseWrite(i)
 					parsedBlock[name] = [[],pw[0],pw[1]]
 		if self.name == (block[0].split(':')[0].split('-')[0]):
@@ -299,65 +303,82 @@ class RWBlock:
 			if i in content:
 				useContent[i] = content[i][:]
 		# Now parse for reading
+		print useContent
 		pContent = self.__parseContentRead__(useContent)
-		# print content
-		# print useContent
-		# print pContent
+		print pContent
+		print '\n\n'
 		# Now for writing.
 		element = self.__parseContentWrite__(pContent)
 		# TODO: (VH) Macros! (@blah)
 		return element
 
-	def __parseContentRead__(self, useContent):
+	def __parseContentRead__(self, useContent, readRules = None):
 		''' Parses the content using the read info. '''
-		pContent = dict.fromkeys(self.read)
+		if readRules == None:
+			readRules = self.read
+		pContent = dict.fromkeys(readRules)
 		for k in pContent:
 			pContent[k] = []
 		for i in useContent:
 			for block in useContent[i]:
-				for attr in block[1]:
-					if type(attr) == str:
-						attr = map(str.strip,attr.split(':')) # TODO: (VL) Allow for colons in strings.
-						if attr[1][0] == attr[1][-1] and attr[1][0] in ['"',"'"]:
-							attr[1] = attr[1][1:-1]
-						for j in self.read:
-							if re.search(self.parseName(j), attr[0]):
-								if self.read[j][0] == 'BOOL':
-									if not re.search(self.TYPES['BOOL'], attr[1], re.I):
-										raise TypeError('Value:'+attr[1]+' not a valid boolean.')
-									if attr[1].upper() == 'TRUE':
-										attr[1] = '1'
-									else:
-										attr[1] = '0'
-									pContent[j].append(attr[1])
-								elif self.read[j][0] == 'NUM':
-									if 'INT' in self.read[j] and not re.search(self.TYPES['INT'],attr[1]):
-										raise TypeError('Value:'+attr[1]+' not a valid integer.')
-									elif not re.search(self.TYPES['FLOAT'], attr[1]):
-										raise TypeError('Value:'+attr[1]+' not a valid float.')
-									val = float(attr[1])
-									for f in self.read[j]:
-										if 'CAP' in f:
-											low, high = f.split('=')[1].split('/')
-											if (low and float(low) > val) or (high and float(high) < val) or (not low and not high):
-												raise ValueError('Value:' + attr[1] + ' not in range ('+str(low)+','+str(high)+')')
-									pContent[j].append(attr[1])
-								elif self.read[j][0] == 'STR':
-									if not 'MULTI' in self.read[j][1]:
-										attr[1] = attr[1].replace('\\n', ' ')
-									if 'STRICT' in self.read[j][1]:
-										reFlags = 0
-										if 'CI' in self.read[j][1] and not 'CS' in self.read[j][1]:
-											reFlags |= re.I
-										for s in self.read[j][2]:
-											if re.search(self.parseName(s), attr[1], reFlags):
-												pContent[j].append(s)
-												break
-									else:
-										if re.search(self.TYPES['STR'], attr[1]):
-											pContent[j].append(attr[1])
-								break
+				self.__parseContentReadBlock__(block, readRules, pContent)
 		return pContent
+
+	def __parseContentReadBlock__(self, block, readRules, pContent):
+		for attr in block[1]:
+			if type(attr) == str:
+				attr = map(str.strip,attr.split(':')) # TODO: (VL) Allow for colons in strings.
+				if attr[1][0] == attr[1][-1] and attr[1][0] in ['"',"'"]:
+					attr[1] = attr[1][1:-1]
+				print attr[0]
+				for j in readRules:
+					if re.search(self.parseName(j), attr[0]):
+						if readRules[j][0] == 'BOOL':
+							if not re.search(self.TYPES['BOOL'], attr[1], re.I):
+								raise TypeError('Value:'+attr[1]+' not a valid boolean.')
+							if attr[1].upper() == 'TRUE':
+								attr[1] = '1'
+							else:
+								attr[1] = '0'
+							pContent[j].append(attr[1])
+						elif readRules[j][0] == 'NUM':
+							if 'INT' in readRules[j] and not re.search(self.TYPES['INT'],attr[1]):
+								raise TypeError('Value:'+attr[1]+' not a valid integer.')
+							elif not re.search(self.TYPES['FLOAT'], attr[1]):
+								raise TypeError('Value:'+attr[1]+' not a valid float.')
+							val = float(attr[1])
+							for f in readRules[j]:
+								if 'CAP' in f:
+									low, high = f.split('=')[1].split('/')
+									if (low and float(low) > val) or (high and float(high) < val) or (not low and not high):
+										raise ValueError('Value:' + attr[1] + ' not in range ('+str(low)+','+str(high)+')')
+							pContent[j].append(attr[1])
+						elif readRules[j][0] == 'STR':
+							if not 'MULTI' in readRules[j][1]:
+								attr[1] = attr[1].replace('\\n', ' ')
+							if 'STRICT' in readRules[j][1]:
+								reFlags = 0
+								if 'CI' in readRules[j][1] and not 'CS' in readRules[j][1]:
+									reFlags |= re.I
+								for s in readRules[j][2]:
+									if re.search(self.parseName(s), attr[1], reFlags):
+										pContent[j].append(s)
+										break
+							else:
+								if re.search(self.TYPES['STR'], attr[1]):
+									pContent[j].append(attr[1])
+						else:
+							print "Unknown type: " + readRules[j][0]
+						break
+			elif type(attr) == list:
+				attrName = attr[0].split(':')[0].strip()
+				for j in readRules:
+					if re.search(self.parseName(j), attrName):
+						obj = dict.fromkeys(readRules[j][2])
+						for k in obj:
+							obj[k] = []
+						self.__parseContentReadBlock__(attr, readRules[j][2], obj)
+						pContent[j].append(obj)
 
 	def __parseContentWrite__(self, pContent, writeRules = None, parElement = None):
 		''' Parses the read content into xml. '''
@@ -379,6 +400,7 @@ class RWBlock:
 							tagNum = max(tagNum, len(pContent[j]))
 					if tagNum == 0:
 						raise Exception('Attr "'+attrName+'" not found in read list.')
+			# print tagNum, tagAttribs
 			for j in xrange(tagNum):
 				eles.append(eleT.copy())
 				for i in tagAttribs:
@@ -392,10 +414,18 @@ class RWBlock:
 							ind = str(self.read[attrName][2].index(pContent[attrName][j]))
 							eles[-1].attrib[i] = ind
 						elif tagAttribs[i].find('>') != -1:
-							ind = int(tagAttribs[i].split('>')[1])
-							eles[-1].attrib[i] = self.getInName(pContent[attrName][j],ind)
+							ind = tagAttribs[i].split('>')[1]
+							if ind.isdigit():
+								ind = int(ind)
+								eles[-1].attrib[i] = self.getInName(pContent[attrName][j],ind)
+							else:
+								writeCopy = deepcopy(writeRules[tag])
+								for tAttr in writeCopy[1]:
+									writeCopy[1][tAttr] = '$' + writeCopy[1][tAttr][writeCopy[1][tAttr].find('>')+1:]
+								self.__parseContentWrite__(pContent[attrName][j], {tag:writeCopy}, eles[-1])
+								eles = eles[:-1] + [eles[-1].getchildren()[0]] # TODO: (L) Causes duplicates, bypass is here.
 						else:
-							# print tag, eles, i, attrName, j, pContent
+							# print tag, eles, i, attrName, j, pContent, writeRules
 							eles[-1].attrib[i] = pContent[attrName][j]
 					else:
 						eles[-1].attrib[i] = tagAttribs[i]
