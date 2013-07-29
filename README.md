@@ -1,4 +1,4 @@
 Dredly
 ======
 
-A scripting language for Dungeons of Dredmor modding.
+A scripting language for all xml creation. Currently supports Dungeons of Dredmor.
