@@ -55,8 +55,8 @@ def parseFolder(path, parser, tmp_path = os.path.join(os.path.curdir,'tmp')):
 def main():
 	#gui.main()
 	# Parse the syntax.
-	f = open('./dredly/curSyntax.dredly', 'r')
+	f = open(raw_input('Please enter syntax filepath:'), 'r')
 	global Parser
 	Parser = parsers.Parser(f)
 	# Now run it on the test mod!
-	parseFolder('dredly/test_mod',Parser)
+	parseFolder(raw_input('Please enter mod filepath:'),Parser)
