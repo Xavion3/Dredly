@@ -139,6 +139,18 @@ Example for the list A,B,C,D,E $X?i would give 2 for C or 5 for E
 --- !NAME allows for customization of the tag name.
 ---- A placeholder tag name must be given to be changed.
 --- If no special character is found then it uses the content directly.
+A flag can be used to reference an object.
+- It takes the same form as an attr call ($attrname).
+- It shifts the scope to inside the read object.
+-- For example
+stuff: $objname
+	val1=$attr1
+	val2=$attr2
+would match with
+objname:
+	attr1: STR
+	attr2: STR
+to generate tags from each instance of objname.
 
 Full example
 This is a set of rules for mod.xml
