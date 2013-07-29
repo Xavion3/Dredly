@@ -173,7 +173,7 @@ info:
 	needs: ReAlM Of THE diggle GoDs
 	require:cotw
 
-and the output would be (Note: The actual output may not be nicely formatted)
+and the output would be (Note: The actual output is not nicely formatted)
 <dredmormod>
 	<revision text="Version 0.0.1" />
 	<author text="Billy Bob Joe" />
