@@ -70,23 +70,19 @@ Attribute names may have multiple forms and that should be denoted by all variab
 Allows for revision, ver, and version to be used.
 - The -opt flag means that the given attribute is optional.
 ----------
-The format for the data of an object must be stated with one of the following: STR to represent a string, LST to represent a list, OBJ to represent an object, NUM to represent a number, @NAME to reference a macro, BOOL for a boolean.
+The format for the data of an object must be stated with one of the following: STR to represent a string, OBJ to represent an object, NUM to represent a number, @NAME to reference a macro, BOOL for a boolean.
 ----- Strings
 The -multi and -single flags allow for strings to have multi-line strings allowed or blocked.
 - Defaults to single only.
 - In single only newlines are automatically swapped for spaces when used.
 If the format is a list than it can have the -strict flag which will only allow input that matches the forms given in vertical list format.
 - If -strict is used and it is a list than the -ci and -cs tags can be used denoting case insensitive and case sensitive respectively, in the case both or neither is used it defaults to case sensitive.
------ Lists ??? Do I really need this?
-If the format is a list than it can have the -strict flag which will only allow input that matches the forms given in vertical list format.
-- If -strict is used and it is a list than the -ci and -cs tags can be used denoting case insensitive and case sensitive respectively, in the case both or neither is used it defaults to case sensitive.
 ----- Objects
-An object may also have the -strict flag, in this case it should be in vertical list format. Valid input for the list is
-- @macroname to allow a macro
-- @all to allow all macros
-- @!macroname to block a macro
--- By default all macros are blocked
-- An attribute.
+An object is a container for attributes. Used whenever you need to have repeatable groups. 
+- It is made as vertical list. 
+-- Valid input for the list is
+--- An attribute.
+- The OBJ type is asssumed whenever vertical list format is used without another reason.
 ----- Numbers
 Allows the use of the -int and -float flags to force compliance.
 - Defaults to float.
