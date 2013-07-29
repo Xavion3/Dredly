@@ -20,3 +20,33 @@ info-W:
 		description:text=$desc
 		info:totalconversion=0
 		require:expansion=$require?i
+
+# Crafting.
+recipes-R:
+	recipe:
+		hid(den|e): BOOL
+		(tool|type): STR-STRICT-CI
+			alc(h(emy|)|)
+			smith(ing|)
+			tink(er(er|ing)|)
+			ingot
+			grind(er|)
+			still
+			lathe
+		(input|(require|need)(|s)): STR
+		(output|item):
+			(name|makes): STR
+			skill: NUM-INT-CAP=0/
+			(amount|quantity): NUM-INT-CAP=1/
+
+recipes-W:
+	!FILENAME=mod/craftDB.xml
+	craftDB:
+		craft: $recipe
+			hidden=$hidden
+			output: $output
+				skill=$skill
+				name=$name
+				amount=$amount
+			input:name=$input
+			tool:tag=$tool>0
