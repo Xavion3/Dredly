@@ -9,7 +9,7 @@ import xml.etree.ElementTree as ET
 import parsers
 import gui
 
-DREDLY_EXTENSIONS = ['inf', 'dredly']
+DREDLY_EXTENSIONS = ['inf', 'dredly', 'drd']
 
 def makeZip(path):
 	''' Makes a zip out of a given folder with the same name as the folder.
