@@ -47,7 +47,8 @@ def parseFolder(path, parser, tmp_path = os.path.join(os.path.curdir,'tmp')):
 	# Now that you've parsed everything make the xml
 	parser.createXML()
 	for f in parser.xml:
-		ET.ElementTree(f[0]).write(os.path.join(tmp_path, f[1]))
+		if f[0] != None: # If there is xml, skips if it was empty.
+			ET.ElementTree(f[0]).write(os.path.join(tmp_path, f[1]))
 	makeZip(tmp_path)
 	shutil.rmtree(tmp_path)
 
