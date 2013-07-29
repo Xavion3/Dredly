@@ -1,0 +1,22 @@
+# DoD Syntax file.
+# mod.xml
+info-R:
+	(revision|ver(|sion)): STR
+	author: STR
+	(title|name): STR
+	desc(|ription): STR
+	(require|need)(|s): STR-strict-ci
+		(|)
+		(ROTDG|realm of the diggle gods)
+		(YHTNTEP|you have to name the expansion pack)
+		(COTW|conquest of the wizardlands)
+
+info-W:
+	!FILENAME=mod/mod.xml
+	dredmormod:
+		revision:text=$revision
+		author:text=$author
+		name:text=$name
+		description:text=$desc
+		info:totalconversion=0
+		require:expansion=$require?i
