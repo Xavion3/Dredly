@@ -39,10 +39,10 @@ recipe-W:
 	!FILENAME=mod/craftDB.xml
 	craft:
 		hidden=$hidden
-		output:
-			skill=$output>skill
-			name=$output>name
-			amount=$output>amount
+		output: $output
+			skill=$skill
+			name=$name
+			amount=$amount
 		input:name=$input
 		tool:tag=$tool>0
 
@@ -75,7 +75,7 @@ encrust-R:
 	power:
 		name: STR
 		chance: NUM-FLOAT-CAP=0/1
-	(instability|chaos): NUM-INT
+	(in|)stability: NUM-INT
 	encrust(with|): STR
 
 encrust-W:
@@ -88,8 +88,8 @@ encrust-W:
 		tool:tag=$tool>0
 		slot:type=$slot>0
 		skill:level=$skill
-		power:
-			name=$power>name
-			chance=$power>chance
-		instability:amount=$intability
+		power: $power
+			name=$name
+			chance=$chance
+		instability:amount=$instability
 		encrustwith:name=$encrustwith
