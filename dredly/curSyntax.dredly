@@ -77,6 +77,12 @@ encrust-R:
 		chance: NUM-FLOAT-CAP=0/1
 	(in|)stability: NUM-INT
 	encrust(with|): STR
+	damage:
+		acid: NUM-INT
+		decay: NUM-INT
+		shock: NUM-INT
+		fire: NUM-INT
+		necro: NUM-INT
 
 encrust-W:
 	!FILENAME=mod/encrustDB.xml
@@ -93,3 +99,9 @@ encrust-W:
 			chance=$chance
 		instability:amount=$instability
 		encrustwith:name=$encrustwith
+		damagebuff: $damage
+			acidic=$acid
+			putrefying=$decay
+			shock=$shock
+			conflagulatory=$fire
+			necromantic=$necro
