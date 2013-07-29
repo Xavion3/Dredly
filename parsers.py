@@ -307,6 +307,8 @@ class RWBlock:
 		for i in self.neededContent:
 			if i in content:
 				useContent[i] = content[i][:]
+		if not useContent: # If there is none of the tag.
+			return
 		# Now parse for reading
 		print useContent
 		pContent = self.__parseContentRead__(useContent)
@@ -384,6 +386,26 @@ class RWBlock:
 						self.__parseContentReadBlock__(attr, readRules[j][2], obj)
 						pContent[j].append(obj)
 
+	def __getTagNum__(self, tag, writeRules, pContent):
+		tagAttribs = writeRules[tag][1]
+		tagNum = 0
+		for i in tagAttribs:
+			if tagAttribs[i].find('!') != -1 or tagAttribs[i].find('$') != -1:
+				attrName = tagAttribs[i][1:].split('?')[0].split('>')[0]
+				for j in pContent:
+					if re.search(j, attrName):
+						tagNum = max(tagNum, len(pContent[j]))
+						break
+				else:
+					raise IndexError('Attr "'+attrName+'" not found in read list.')
+			elif i: # If it's a constant value set to at least 1.
+				tagNum = max(tagNum, 1)
+		for t in writeRules[tag][2]: # If any of the children would appear make this appear.
+			if tagNum >= 1:
+				break
+			tagNum = max(tagNum, 1 & self.__getTagNum__(t, writeRules[tag][2], pContent))
+		return tagNum
+
 	def __parseContentWrite__(self, pContent, writeRules = None, parElement = None):
 		''' Parses the read content into xml. '''
 		if writeRules == None:
@@ -394,14 +416,6 @@ class RWBlock:
 			eleT = ET.Element(tag) # Create the blank template
 			eles = []
 			# First check if it calls a block.
-			print '\n!!!\n',tag, writeRules[tag]
-			print pContent
-			# OLD CODE
-			# writeCopy = deepcopy(writeRules[tag])
-			# for tAttr in writeCopy[1]:
-			# 	writeCopy[1][tAttr] = '$' + writeCopy[1][tAttr][writeCopy[1][tAttr].find('>')+1:]
-			# self.__parseContentWrite__(pContent[attrName][j], {tag:writeCopy}, eles[-1])
-			# eles = eles[:-1] + [eles[-1].getchildren()[0]] # TODO: (L) Causes duplicates, bypass is here.
 			if writeRules[tag][0]: # If there is flags, only flag that should appear is an object call.
 				objName = writeRules[tag][0][0][1:]
 				for k in pContent:
@@ -410,33 +424,19 @@ class RWBlock:
 						objName = k
 						break
 				writeCopy = {tag:[[]] + deepcopy(writeRules[tag][1:])}
-				print writeCopy
 				for j in xrange(tagNum):
-					print pContent[objName][j]
 					eles.append(eleT.copy())
-					self.__parseContentWrite__(pContent[objName][j], writeCopy, parElement)#eles[-1])
-					# eles = eles[:-1] + [eles[-1].getchildren()[0]]
-					print len(eles)#eles[-1], eles[-1].getchildren()
-					print parElement.getchildren()
+					self.__parseContentWrite__(pContent[objName][j], writeCopy, eles[-1])
+					if eles[-1].getchildren():
+						eles = eles[:-1] + [eles[-1].getchildren()[0]]
+					else:
+						eles = eles[:-1]
 				for e in eles:
 					parElement.append(e)
 				continue # Skip the rest of the loop
 			# Now for attributes.
 			tagAttribs = writeRules[tag][1]
-			tagNum = 0
-			for i in tagAttribs:
-				if tagAttribs[i].find('!') != -1 or tagAttribs[i].find('$') != -1:
-					attrName = tagAttribs[i][1:].split('?')[0].split('>')[0]
-					print pContent.keys(), attrName
-					for j in pContent:
-						if re.search(j, attrName):
-							tagNum = max(tagNum, len(pContent[j]))
-							break
-					else:
-						raise IndexError('Attr "'+attrName+'" not found in read list.')
-				else: # If it's a constant value set to at least 1.
-					tagNum = max(tagNum, 1)
-			# print tagNum, tagAttribs
+			tagNum = self.__getTagNum__(tag, writeRules, pContent)
 			for j in xrange(tagNum):
 				eles.append(eleT.copy())
 				for i in tagAttribs:
@@ -446,6 +446,8 @@ class RWBlock:
 							if re.search(k, attrName):
 								attrName = k
 								break
+						if len(pContent[attrName]) == 0:
+							continue # If the attr wasn't used skip it.
 						if tagAttribs[i].find('?i') != -1: # If it's a special one.
 							ind = str(self.read[attrName][2].index(pContent[attrName][j]))
 							eles[-1].attrib[i] = ind
