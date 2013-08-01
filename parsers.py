@@ -389,6 +389,14 @@ class RWBlock:
 	def __getTagNum__(self, tag, writeRules, pContent):
 		tagAttribs = writeRules[tag][1]
 		tagNum = 0
+		pContent = deepcopy(pContent)
+		if writeRules[tag][0]:
+			objname = writeRules[tag][0][0][1:]
+			writeCopy = {tag:[[]] + deepcopy(writeRules[tag][1:])}
+			tagNum = 0
+			for t in xrange(len(pContent[objname])):
+				tagNum = max(tagNum, self.__getTagNum__(tag, writeCopy, pContent[objname][t]))
+			return tagNum
 		for i in tagAttribs:
 			if tagAttribs[i].find('!') != -1 or tagAttribs[i].find('$') != -1:
 				attrName = tagAttribs[i][1:].split('?')[0].split('>')[0]
@@ -406,7 +414,7 @@ class RWBlock:
 			tagNum = max(tagNum, 1 & self.__getTagNum__(t, writeRules[tag][2], pContent))
 		return tagNum
 
-	def __parseContentWrite__(self, pContent, writeRules = None, parElement = None):
+	def __parseContentWrite__(self, pContent, writeRules = None, parElement = None, pars = []):
 		''' Parses the read content into xml. '''
 		if writeRules == None:
 			writeRules = self.write
@@ -426,7 +434,7 @@ class RWBlock:
 				writeCopy = {tag:[[]] + deepcopy(writeRules[tag][1:])}
 				for j in xrange(tagNum):
 					eles.append(eleT.copy())
-					self.__parseContentWrite__(pContent[objName][j], writeCopy, eles[-1])
+					self.__parseContentWrite__(pContent[objName][j], writeCopy, eles[-1], pars + [objName])
 					if eles[-1].getchildren():
 						eles = eles[:-1] + [eles[-1].getchildren()[0]]
 					else:
@@ -449,7 +457,10 @@ class RWBlock:
 						if len(pContent[attrName]) == 0:
 							continue # If the attr wasn't used skip it.
 						if tagAttribs[i].find('?i') != -1: # If it's a special one.
-							ind = str(self.read[attrName][2].index(pContent[attrName][j]))
+							useRead = self.read
+							for par in pars:
+								useRead = useRead[par][2]
+							ind = str(useRead[attrName][2].index(pContent[attrName][j]))
 							eles[-1].attrib[i] = ind
 						elif tagAttribs[i].find('>') != -1:
 							ind = tagAttribs[i].split('>')[1]
@@ -466,7 +477,7 @@ class RWBlock:
 
 			# Finally add sub tags before adding them to the parent element
 			for e in eles:
-				self.__parseContentWrite__(pContent, writeRules[tag][2], e)
+				self.__parseContentWrite__(pContent, writeRules[tag][2], e, pars)
 				if parElement == None:
 					return e
 				else:
