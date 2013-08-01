@@ -338,7 +338,7 @@ class RWBlock:
 				if attr[1][0] == attr[1][-1] and attr[1][0] in ['"',"'"]:
 					attr[1] = attr[1][1:-1]
 				for j in readRules:
-					if re.search(self.parseName(j), attr[0]):
+					if re.search(self.parseName(j), attr[0], re.I):
 						if readRules[j][0] == 'BOOL':
 							if not re.search(self.TYPES['BOOL'], attr[1], re.I):
 								raise TypeError('Value:'+attr[1]+' not a valid boolean.')
@@ -379,7 +379,7 @@ class RWBlock:
 			elif type(attr) == list:
 				attrName = attr[0].split(':')[0].strip()
 				for j in readRules:
-					if re.search(self.parseName(j), attrName):
+					if re.search(self.parseName(j), attrName, re.I):
 						obj = dict.fromkeys(readRules[j][2])
 						for k in obj:
 							obj[k] = []
@@ -393,7 +393,7 @@ class RWBlock:
 			if tagAttribs[i].find('!') != -1 or tagAttribs[i].find('$') != -1:
 				attrName = tagAttribs[i][1:].split('?')[0].split('>')[0]
 				for j in pContent:
-					if re.search(j, attrName):
+					if re.search(j, attrName, re.I):
 						tagNum = max(tagNum, len(pContent[j]))
 						break
 				else:
@@ -419,7 +419,7 @@ class RWBlock:
 			if writeRules[tag][0]: # If there is flags, only flag that should appear is an object call.
 				objName = writeRules[tag][0][0][1:]
 				for k in pContent:
-					if re.search(k, objName):
+					if re.search(k, objName, re.I):
 						tagNum = len(pContent[k])
 						objName = k
 						break
@@ -443,7 +443,7 @@ class RWBlock:
 					attrName = tagAttribs[i][1:].split('?')[0].split('>')[0]
 					if tagAttribs[i][0] == '$':
 						for k in pContent:
-							if re.search(k, attrName):
+							if re.search(k, attrName, re.I):
 								attrName = k
 								break
 						if len(pContent[attrName]) == 0:
