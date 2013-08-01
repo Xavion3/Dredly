@@ -46,20 +46,43 @@ recipes:
 		input: Coal
 		input: Potion of Steeling
 
-encrust:
-	hidden: false
-	name: Krusty Burgers
-	desc: A layer of crusty old burgers coats your weapon causing illness to all who eat it. Also probably if they get stabbed with it.
-	tool: alch
-	slot: wep
-	input: Burger
-	input: Burger
-	input: Grated Cheese
-	input: Old Steak
-	skill: 3
-	instability: 5
-	encrustwith: krusty burgers
-	damage:
-		acid: 1
-		decay: 4
-		necro: 3
+encrusts:
+	encrust:
+		hidden: false
+		name: Krusty Burgers
+		desc: A layer of crusty old burgers coats your weapon causing illness to all who eat it. Stabbing works too.
+		power:
+			name: Krusted Burgers
+			chance: 0.10
+		tool: alch
+		slot: wep
+		input: Burger
+		input: Burger
+		input: Grated Cheese
+		input: Aged Steak
+		skill: 3
+		instability: 5
+		encrustwith: krusty burgers
+		damage:
+			poison: 3
+			decay: 4
+			necro: 1
+			mind: 1
+		resist:
+			poison: -1
+			decay: -2
+		pbuff:
+			id: sag
+			val: -1
+		pbuff:
+			id: cad
+			val: -1
+		sbuff:
+			id: dodge
+			val: 2
+		sbuff:
+			id: block
+			val: 2
+		sbuff:
+			id: haywire
+			val: 3
