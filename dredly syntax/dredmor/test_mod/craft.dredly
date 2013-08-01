@@ -1,26 +1,50 @@
-recipe:
-	hidden: true
-	output:
-		makes: Naked Metal Gear
-		amount: 1
-		skill: 0
-	output:
-		makes: Solid Metal Gear
-		amount: 1
-		skill: 2
-	output:
-		makes: Liquid Metal Gear
-		amount: 1
-		skill: 4
-	output:
-		makes: Gassy Metal Gear
-		amount: 1
-		skill: 6
-	type: smith
-	input: Cog
-	input: Steel Ingot
-	input: Iron Ingot
-	input: Potion of Steeling
+recipes:
+	recipe:
+		hidden: true
+		output:
+			makes: Naked Metal Gear
+			amount: 1
+			skill: 0
+		output:
+			makes: Solid Metal Gear
+			amount: 1
+			skill: 2
+		output:
+			makes: Liquid Metal Gear
+			amount: 1
+			skill: 4
+		output:
+			makes: Gassy Metal Gear
+			amount: 1
+			skill: 6
+		type: smith
+		input: Cog
+		input: Steel Ingot
+		input: Iron Ingot
+		input: Potion of Steeling
+	recipe:
+		hidden: false
+		output:
+			makes: Diamondium
+			amount: 1
+			skill: 2
+		output:
+			makes: Diamondium
+			amount: 2
+			skill: 4
+		output:
+			makes: Diamondium
+			amount: 3
+			skill: 6
+		output:
+			makes: Diamondium
+			amount: 4
+			skill: 8
+		type: alchemy
+		input: Diamond
+		input: Diamond
+		input: Coal
+		input: Potion of Steeling
 
 encrust:
 	hidden: false
