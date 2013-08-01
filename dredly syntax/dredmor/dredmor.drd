@@ -130,7 +130,7 @@ encrusts-R:
 			(Volt(aic|)|Elec(|tric)|Lightning): NUM-INT
 			(Toxic|Poison): NUM-INT
 			(Right(eous|)|Holy): NUM-INT
-			(Necro(mantic|)|Death): NUM-INT
+			(Necro(mantic|)|death): NUM-INT
 			Acid(ic|): NUM-INT
 			(Putrefy(ing|)|Rot|Decay): NUM-INT
 			(Transmut(ative|e)|Change): NUM-INT
