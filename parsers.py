@@ -300,9 +300,9 @@ class RWBlock:
 	def parseContent(self, content):
 		''' Parses content using the read and write blocks. Generates a file if required. '''
 		# First get the relevant blocks.
-		print '\n\n\n\n\nINCOMING'
-		print self.read
-		print self.write
+		# print '\n\n\n\n\nINCOMING'
+		# print self.read
+		# print self.write
 		useContent = {}
 		for i in self.neededContent:
 			if i in content:
@@ -310,10 +310,10 @@ class RWBlock:
 		if not useContent: # If there is none of the tag.
 			return
 		# Now parse for reading
-		print useContent
+		# print useContent
 		pContent = self.__parseContentRead__(useContent)
-		print pContent
-		print '\n'
+		# print pContent
+		# print '\n'
 		# Now for writing.
 		element = self.__parseContentWrite__(pContent)
 		# TODO: (VH) Macros! (@blah)
@@ -323,7 +323,9 @@ class RWBlock:
 		''' Parses the content using the read info. '''
 		if readRules == None:
 			readRules = self.read
+		# print readRules
 		pContent = dict.fromkeys(readRules)
+		# print pContent
 		for k in pContent:
 			pContent[k] = []
 		for i in useContent:
@@ -332,6 +334,9 @@ class RWBlock:
 		return pContent
 
 	def __parseContentReadBlock__(self, block, readRules, pContent):
+		# print '---B---'
+		# print block
+		# print readRules
 		for attr in block[1]:
 			if type(attr) == str:
 				attr = map(str.strip,attr.split(':')) # TODO: (VL) Allow for colons in strings.
@@ -385,6 +390,7 @@ class RWBlock:
 							obj[k] = []
 						self.__parseContentReadBlock__(attr, readRules[j][2], obj)
 						pContent[j].append(obj)
+		# print '---E---'
 
 	def __getTagNum__(self, tag, writeRules, pContent):
 		tagAttribs = writeRules[tag][1]
@@ -405,7 +411,7 @@ class RWBlock:
 						tagNum = max(tagNum, len(pContent[j]))
 						break
 				else:
-					raise IndexError('Attr "'+attrName+'" not found in read list.')
+					raise KeyError('Attr "'+attrName+'" not found in read list.')
 			elif i: # If it's a constant value set to at least 1.
 				tagNum = max(tagNum, 1)
 		for t in writeRules[tag][2]: # If any of the children would appear make this appear.
@@ -416,8 +422,11 @@ class RWBlock:
 
 	def __parseContentWrite__(self, pContent, writeRules = None, parElement = None, pars = []):
 		''' Parses the read content into xml. '''
+		# print '--B--'
+		# print pars
 		if writeRules == None:
 			writeRules = self.write
+			# print self.read
 		elif writeRules == {}:
 			return {}
 		for tag in writeRules:
@@ -445,6 +454,7 @@ class RWBlock:
 			# Now for attributes.
 			tagAttribs = writeRules[tag][1]
 			tagNum = self.__getTagNum__(tag, writeRules, pContent)
+			# print tag, tagNum
 			for j in xrange(tagNum):
 				eles.append(eleT.copy())
 				for i in tagAttribs:
@@ -457,6 +467,8 @@ class RWBlock:
 						if len(pContent[attrName]) == 0:
 							continue # If the attr wasn't used skip it.
 						if tagAttribs[i].find('?i') != -1: # If it's a special one.
+							# print i, j, attrName, tagAttribs
+							# print pContent
 							useRead = self.read
 							for par in pars:
 								useRead = useRead[par][2]
@@ -479,9 +491,11 @@ class RWBlock:
 			for e in eles:
 				self.__parseContentWrite__(pContent, writeRules[tag][2], e, pars)
 				if parElement == None:
+					# print '--E--'
 					return e
 				else:
 					parElement.append(e)
+		# print '--E--'
 
 # Currently retained only as xml lib reference
 # 	lines = [str.strip(line) for line in f.readlines()]
