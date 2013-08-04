@@ -125,7 +125,6 @@ Example if you had bonus: @pbuff as an attribute the calling @bonus would place 
 -- A tag attribute uses an equals sign instead of a colon with the name on the left and the content on the right.
 -- The tag attributes may optionally be placed in horizontal list format instead of vertical only if there is no subtags.
 -- The content obeys the following rules
---- !MAP maps the results of the read list straight to the given list to determine used values.
 ---- It is followed by a round bracket enclosed list if used inline with brackets removable if there is only one MAP used in which case vertical format may be used in the following line/s.
 --- $attrname will match the corresponding name in the read rules to get data.
 ---- In case of multiple options for the data $name>i may be used to use a specific option from the options.
