@@ -5,7 +5,7 @@ info-R:
 	author: STR
 	(title|name): STR
 	desc(|ription): STR
-	(require|need)(|s): STR-strict-ci
+	(require|need)(|s): STR-STRICT-CI
 		(|)
 		(ROTDG|realm of the diggle gods)
 		(YHTNTEP|you have to name the expansion pack)
@@ -85,7 +85,7 @@ encrusts-R:
 		(in|)stability: NUM-INT
 		encrust(with|): STR
 		p(rimary(buff|)|buff): 
-			(id|stat|type): STR-strict-ci
+			(id|stat|type): STR-STRICT-CI
 				Bur(liness|)
 				Sag(acity|)
 				Nim(bleness|)
@@ -94,7 +94,7 @@ encrusts-R:
 				Sav(vy|)
 			(amount|val(|ue)): NUM-INT
 		s(econdary(buff|)|buff):
-			(id|stat|type): STR-strict-ci
+			(id|stat|type): STR-STRICT-CI
 				(Health|HP)
 				(Mana|MP)
 				Melee Power
@@ -222,12 +222,260 @@ skills-R:
 			rog(ue|)
 			wiz(ard|)
 		desc(ription|): STR
+		icon: STR
+		(loadout|start(|ing)(| )(gear|item(|s))):
+			type: STR-STRICT-CI
+				reagent
+				we(p|apon)
+				armo(u|)r
+				wand
+				gem
+				(mu|)shroom
+				potion
+				food
+				(booze|alcohol)
+				artifact
+				tool(kit|)
+			(subtype|item): STR
+			always: BOOL
+			(amount|quantity): NUM-INT-CAP=0/
+		ability:
+			name: STR
+			icon: STR
+			start(skill|): BOOL
+			level: NUM-INT-CAP=0/8
+			(learn|)recipe: STR
+			(give|)item: STR
+			desc(ription|): STR
+			p(rimary(buff|)|buff): 
+				(id|stat|type): STR-STRICT-CI
+					Bur(liness|)
+					Sag(acity|)
+					Nim(bleness|)
+					Cad(dishness|)
+					Stu(bbornness|)
+					Sav(vy|)
+				(amount|val(|ue)): NUM-INT
+			s(econdary(buff|)|buff):
+				(id|stat|type): STR-STRICT-CI
+					(Health|HP)
+					(Mana|MP)
+					Melee Power
+					Magic Power
+					Crit(ical|)
+					Hay(wire|)
+					Dodge
+					Block
+					Counter
+					(Enemy Dodge Reduction|EDR)
+					(Armor( Absorbtion|)|AA)
+					(Magic |M(| )|)Resist
+					Sneak(iness|)
+					(Health|HP) Regen
+					(Mana|MP) Regen
+					Wand Burnout
+					Trap Aff(inity|)
+					Trap Sense( Radius|)
+					Sight( Radius|)
+					Smithing
+					Tinkering
+					Alc(h(emy|)|)
+					(Magic |M(| )|)Reflect
+					Wand Crafting
+				(amount|val(|ue)): NUM-INT
+			damage:
+				Crush(ing|): NUM-INT
+				Slash(ing|): NUM-INT
+				Pierc(ing|e): NUM-INT
+				Blast(ing|): NUM-INT
+				(Hyperborean|Ice|Cold): NUM-INT
+				(Conflagratory|Fire): NUM-INT
+				(Volt(aic|)|Elec(|tric)|Lightning): NUM-INT
+				(Toxic|Poison): NUM-INT
+				(Right(eous|)|Holy): NUM-INT
+				(Necro(mantic|)|death): NUM-INT
+				Acid(ic|): NUM-INT
+				(Putrefy(ing|)|Rot|Decay): NUM-INT
+				(Transmut(ative|e)|Change): NUM-INT
+				(Aether(eal|)|Magic): NUM-INT
+				(Asphyx(iative|)|Choke|Suffocat(e|ion)|Air): NUM-INT
+				(Exist(ential|)|Mind): NUM-INT
+			resist:
+				Crush(ing|): NUM-INT
+				Slash(ing|): NUM-INT
+				Pierc(ing|e): NUM-INT
+				Blast(ing|): NUM-INT
+				(Hyperborean|Ice|Cold): NUM-INT
+				(Conflagratory|Fire): NUM-INT
+				(Volt(aic|)|Elec(|tric)|Lightning): NUM-INT
+				(Toxic|Poison): NUM-INT
+				(Right(eous|)|Holy): NUM-INT
+				(Necro(mantic|)|Death): NUM-INT
+				Acid(ic|): NUM-INT
+				(Putrefy(ing|)|Rot|Decay): NUM-INT
+				(Transmut(ative|e)|Change): NUM-INT
+				(Aether(eal|)|Magic): NUM-INT
+				(Asphyx(iative|)|Choke|Suffocat(e|ion)|Air): NUM-INT
+				(Exist(ential|)|Mind): NUM-INT
+			spell: STR
+			(target|on)kill(buff|):
+				(percent(age|)|chance): NUM-INT-CAP=0/100
+				(name|spell): STR
+				(after|delay): NUM-INT-CAP=1/
+				(taxa|type): STR
+			(target|on)hit(buff|):
+				(percent(age|)|chance): NUM-INT-CAP=0/100
+				(name|spell): STR
+				(after|delay): NUM-INT-CAP=1/
+				(taxa|type): STR
+			p(layer|)hit(buff|):
+				(percent(age|)|chance): NUM-INT-CAP=0/100
+				(name|spell): STR
+				(after|delay): NUM-INT-CAP=1/
+				(taxa|type): STR
+			(|on)block(buff|):
+				(percent(age|)|chance): NUM-INT-CAP=0/100
+				(name|spell): STR
+			(|on)booze(buff|):
+				(percent(age|)|chance): NUM-INT-CAP=0/100
+				(name|spell): STR
+			(|on)consume(buff|):
+				(percent(age|)|chance): NUM-INT-CAP=0/100
+				(name|spell): STR
+			(|on)counter(buff|):
+				(percent(age|)|chance): NUM-INT-CAP=0/100
+				(name|spell): STR
+			(|on)crit(ical|)(buff|):
+				(percent(age|)|chance): NUM-INT-CAP=0/100
+				(name|spell): STR
+			(|on)(cross|)bow(shot|)(buff|):
+				(percent(age|)|chance): NUM-INT-CAP=0/100
+				(name|spell): STR
+			(|on)dodge(buff|):
+				(percent(age|)|chance): NUM-INT-CAP=0/100
+				(name|spell): STR
+			(|on)food(buff|):
+				(percent(age|)|chance): NUM-INT-CAP=0/100
+				(name|spell): STR
+			(|on)throw(n|)(buff|):
+				(percent(age|)|chance): NUM-INT-CAP=0/100
+				(name|spell): STR
+			(trigger|)(on|)cast:
+				(percent(age|)|chance): NUM-INT-CAP=0/100
+				(name|spell): STR
+			trigger(on|)dodge:
+				(percent(age|)|chance): NUM-INT-CAP=0/100
+				(name|spell): STR
 
 skills-W:
 	!FILENAME=mod/skillDB.xml
 	skillDB:
-		skill: $skill
-			name=$name
-			id=$id
-			type=$type
-			description=$desc
+		!OBJECT: $skill
+			skill:
+				name=$name
+				id=$id
+				type=$type
+				description=$desc
+				art:icon=$icon
+				loadout: $loadout
+					type=$type>0
+					subtype=$subtype
+					always=$always
+					amount=$amount
+			ability: $ability
+				skill=$id
+				startSkill=$start
+				name=$name
+				icon=$icon
+				learnrecipe=$recipe
+				giveitem=$item
+				description:text=$desc
+				primarybuff: $pbuff
+					id=$id?i
+					amount=$amount
+				secondarybuff: $sbuff
+					id=$id?i
+					amount=$amount
+				damagebuff: $damage
+					crushing=$crush
+					slashing=$slash
+					piercing=$pierce
+					blasting=$blast
+					hyperborean=$ice
+					conflagratory=$fire
+					voltaic=$electric
+					toxic=$toxic
+					righteous=$holy
+					necromantic=$necro
+					acidic=$acid
+					putrefying=$decay
+					transmutative=$change
+					aethereal=$aether
+					asphyxiative=$choke
+					existential=$mind
+				resistbuff: $resist
+					crushing=$crush
+					slashing=$slash
+					piercing=$pierce
+					blasting=$blast
+					hyperborean=$ice
+					conflagratory=$fire
+					voltaic=$electric
+					toxic=$toxic
+					righteous=$holy
+					necromantic=$necro
+					acidic=$acid
+					putrefying=$decay
+					transmutative=$change
+					aethereal=$aether
+					asphyxiative=$choke
+					existential=$mind
+				spell:name=$spell
+				targetHitEffectBuff: $onhit
+					percentage=$chance
+					name=$spell
+					after=$after
+					taxa=$taxa
+				targetKillBuff: $onkill
+					percentage=$chance
+					name=$spell
+					after=$after
+					taxa=$taxa
+				playerHitEffectBuff: $playerhit
+					percentage=$chance
+					name=$spell
+					after=$after
+					taxa=$taxa
+				blockBuff: $onblock
+					percentage=$chance
+					name=$spell
+				boozeBuff: $onbooze
+					percentage=$chance
+					name=$spell
+				consumeBuff: $onconsume
+					percentage=$chance
+					name=$spell
+				counterBuff: $oncounter
+					percentage=$chance
+					name=$spell
+				criticalBuff: $oncrit
+					percentage=$chance
+					name=$spell
+				crossbowShotBuff: $onbow
+					percentage=$chance
+					name=$spell
+				dodgeBuff: $ondodge
+					percentage=$chance
+					name=$spell
+				foodBuff: $onfood
+					percentage=$chance
+					name=$spell
+				thrownBuff: $onthrow
+					percentage=$chance
+					name=$spell
+				triggerOnCast: $oncast
+					percentage=$chance
+					name=$spell
+				triggerOnDoge: $triggerdodge
+					percentage=$chance
+					name=$spell
