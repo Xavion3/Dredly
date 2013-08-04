@@ -143,11 +143,13 @@ A flag can be used to reference an object.
 stuff: $objname
 	val1=$attr1
 	val2=$attr2
+	gvar=$gvar
 would match with
+gvar: STR
 objname:
 	attr1: STR
 	attr2: STR
-to generate tags from each instance of objname.
+to generate tags from each instance of objname, however gvar would call from the higher scope.
 
 Full example
 This is a set of rules for mod.xml
