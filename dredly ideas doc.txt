@@ -135,8 +135,6 @@ Example for (Volt(aic|)|Elec(|tric)|Lightning)
 $whatever>0 would be Voltaic, $whatever>1 would be Electric, and $whatever>2 would be Lightning,  
 ---- In the case of a strict list $attrname?i may be used to get it's index in the list
 Example for the list A,B,C,D,E $X?i would give 2 for C or 5 for E
---- !NAME allows for customization of the tag name.
----- A placeholder tag name must be given to be changed.
 --- If no special character is found then it uses the content directly.
 A flag can be used to reference an object.
 - It takes the same form as an attr call ($attrname).
