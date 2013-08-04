@@ -278,7 +278,7 @@ class RWBlock:
 				else:
 					raise Exception('Line "'+i+'" not attribute or tag. Unable to parse.')
 			elif type(i) == list:
-				if i[0][0] == '!':
+				if i[0][0] == '!' and i[0][1:7] != 'OBJECT':
 					if i[0].startswith('!NAME'):
 						# TODO: (H) Add functionality for !NAME
 						print '!NAME flag is currently unhandled.\nSkipping...'
@@ -400,7 +400,7 @@ class RWBlock:
 			objName = writeRules[tag][0][0][1:]
 			writeCopy = {tag:[[]] + deepcopy(writeRules[tag][1:])}
 			for t in xrange(len(self.sg(scope, objName))):
-				print 'YOYOYO', objName, t, scope
+				# print 'YOYOYO', objName, t, scope
 				tagNum = max(tagNum, self.__getTagNum__(tag, writeCopy, [self.sg(scope, objName)[t]] + scope))
 			return tagNum
 		for i in tagAttribs:
@@ -420,7 +420,7 @@ class RWBlock:
 		for s in scope:
 			for i in s:
 				if re.search(i, name, re.I):
-					print '!!', name, i
+					# print '!!', name, i
 					return i, len(s[i])
 		raise KeyError('Attr "'+name+'" not found in list.')
 
@@ -434,7 +434,7 @@ class RWBlock:
 
 	def __parseContentWrite__(self, scope, writeRules = None, parElement = None, pars = []):
 		''' Parses the read content into xml. '''
-		print '--B--'
+		# print '--B--'
 		# print pars
 		if writeRules == None:
 			writeRules = self.write
@@ -452,18 +452,19 @@ class RWBlock:
 				for j in xrange(tagNum):
 					eles.append(eleT.copy())
 					self.__parseContentWrite__([self.sg(scope, objName)[j]] + scope, writeCopy, eles[-1], pars + [objName])
-					if eles[-1].getchildren():
+					if tag == eles[-1].getchildren()[0].tag:
 						eles = eles[:-1] + [eles[-1].getchildren()[0]]
-					else:
-						eles = eles[:-1]
-				for e in eles:
-					parElement.append(e)
+				if tag == '!OBJECT':
+					for e in eles:
+						parElement.extend(e.getchildren())
+				else:
+					parElement.extend(eles)
 				continue # Skip the rest of the loop
 			# Now for attributes.
 			tagAttribs = writeRules[tag][1]
-			print pars, scope
+			# print pars, scope
 			tagNum = self.__getTagNum__(tag, writeRules, scope)
-			print tag, tagNum
+			# print tag, tagNum
 			for j in xrange(tagNum):
 				eles.append(eleT.copy())
 				for i in tagAttribs:
@@ -496,12 +497,16 @@ class RWBlock:
 			# Finally add sub tags before adding them to the parent element
 			for e in eles:
 				self.__parseContentWrite__(scope, writeRules[tag][2], e, pars)
-				if parElement == None:
-					# print '--E--'
-					return e
+			if parElement == None:
+				# print '--E--'
+				return e
+			else:
+				if tag == '!OBJECT':
+					for e in eles:
+						parElement.extend(e.getchildren())
 				else:
-					parElement.append(e)
-		print '--E--'
+					parElement.extend(eles)
+		# print '--E--'
 
 # Currently retained only as xml lib reference
 # 	lines = [str.strip(line) for line in f.readlines()]
