@@ -211,3 +211,23 @@ encrusts-W:
 				aethereal=$aether
 				asphyxiative=$choke
 				existential=$mind
+
+# Skills
+skills-R:
+	skill:
+		name: STR
+		id: NUM-INT-CAP=0/
+		(type|class): STR-STRICT-CI
+			war(rior|)
+			rog(ue|)
+			wiz(ard|)
+		desc(ription|): STR
+
+skills-W:
+	!FILENAME=mod/skillDB.xml
+	skillDB:
+		skill: $skill
+			name=$name
+			id=$id
+			type=$type
+			description=$desc
