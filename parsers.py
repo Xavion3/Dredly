@@ -315,7 +315,7 @@ class RWBlock:
 		# print pContent
 		# print '\n'
 		# Now for writing.
-		element = self.__parseContentWrite__(pContent)
+		element = self.__parseContentWrite__([pContent])
 		# TODO: (VH) Macros! (@blah)
 		return element
 
@@ -392,37 +392,49 @@ class RWBlock:
 						pContent[j].append(obj)
 		# print '---E---'
 
-	def __getTagNum__(self, tag, writeRules, pContent):
+	def __getTagNum__(self, tag, writeRules, scope):
 		tagAttribs = writeRules[tag][1]
 		tagNum = 0
-		pContent = deepcopy(pContent)
+		scope = deepcopy(scope)
 		if writeRules[tag][0]:
-			objname = writeRules[tag][0][0][1:]
+			objName = writeRules[tag][0][0][1:]
 			writeCopy = {tag:[[]] + deepcopy(writeRules[tag][1:])}
-			tagNum = 0
-			for t in xrange(len(pContent[objname])):
-				tagNum = max(tagNum, self.__getTagNum__(tag, writeCopy, pContent[objname][t]))
+			for t in xrange(len(self.sg(scope, objName))):
+				print 'YOYOYO', objName, t, scope
+				tagNum = max(tagNum, self.__getTagNum__(tag, writeCopy, [self.sg(scope, objName)[t]] + scope))
 			return tagNum
 		for i in tagAttribs:
 			if tagAttribs[i].find('!') != -1 or tagAttribs[i].find('$') != -1:
 				attrName = tagAttribs[i][1:].split('?')[0].split('>')[0]
-				for j in pContent:
-					if re.search(j, attrName, re.I):
-						tagNum = max(tagNum, len(pContent[j]))
-						break
-				else:
-					raise KeyError('Attr "'+attrName+'" not found in read list.')
+				k, N = self.getAttrName(scope, attrName)
+				tagNum = max(tagNum, N)
 			elif i: # If it's a constant value set to at least 1.
 				tagNum = max(tagNum, 1)
 		for t in writeRules[tag][2]: # If any of the children would appear make this appear.
 			if tagNum >= 1:
 				break
-			tagNum = max(tagNum, 1 & self.__getTagNum__(t, writeRules[tag][2], pContent))
+			tagNum = max(tagNum, 1 & self.__getTagNum__(t, writeRules[tag][2], scope))
 		return tagNum
 
-	def __parseContentWrite__(self, pContent, writeRules = None, parElement = None, pars = []):
+	def getAttrName(self, scope, name):
+		for s in scope:
+			for i in s:
+				if re.search(i, name, re.I):
+					print '!!', name, i
+					return i, len(s[i])
+		raise KeyError('Attr "'+name+'" not found in list.')
+
+	def sg(self, scope, key):
+		''' Gets the value from the scope. '''
+		for s in scope:
+			if key in s:
+				return s[key]
+		print scope, key
+		raise KeyError(str(key))
+
+	def __parseContentWrite__(self, scope, writeRules = None, parElement = None, pars = []):
 		''' Parses the read content into xml. '''
-		# print '--B--'
+		print '--B--'
 		# print pars
 		if writeRules == None:
 			writeRules = self.write
@@ -435,15 +447,11 @@ class RWBlock:
 			# First check if it calls a block.
 			if writeRules[tag][0]: # If there is flags, only flag that should appear is an object call.
 				objName = writeRules[tag][0][0][1:]
-				for k in pContent:
-					if re.search(k, objName, re.I):
-						tagNum = len(pContent[k])
-						objName = k
-						break
+				objName, tagNum = self.getAttrName(scope, objName)
 				writeCopy = {tag:[[]] + deepcopy(writeRules[tag][1:])}
 				for j in xrange(tagNum):
 					eles.append(eleT.copy())
-					self.__parseContentWrite__(pContent[objName][j], writeCopy, eles[-1], pars + [objName])
+					self.__parseContentWrite__([self.sg(scope, objName)[j]] + scope, writeCopy, eles[-1], pars + [objName])
 					if eles[-1].getchildren():
 						eles = eles[:-1] + [eles[-1].getchildren()[0]]
 					else:
@@ -453,49 +461,47 @@ class RWBlock:
 				continue # Skip the rest of the loop
 			# Now for attributes.
 			tagAttribs = writeRules[tag][1]
-			tagNum = self.__getTagNum__(tag, writeRules, pContent)
-			# print tag, tagNum
+			print pars, scope
+			tagNum = self.__getTagNum__(tag, writeRules, scope)
+			print tag, tagNum
 			for j in xrange(tagNum):
 				eles.append(eleT.copy())
 				for i in tagAttribs:
 					attrName = tagAttribs[i][1:].split('?')[0].split('>')[0]
 					if tagAttribs[i][0] == '$':
-						for k in pContent:
-							if re.search(k, attrName, re.I):
-								attrName = k
-								break
-						if len(pContent[attrName]) == 0:
+						attrName, N = self.getAttrName(scope, attrName)
+						if N == 0:
 							continue # If the attr wasn't used skip it.
 						if tagAttribs[i].find('?i') != -1: # If it's a special one.
 							# print i, j, attrName, tagAttribs
-							# print pContent
+							# print scope
 							useRead = self.read
 							for par in pars:
 								useRead = useRead[par][2]
-							ind = str(useRead[attrName][2].index(pContent[attrName][j]))
+							ind = str(useRead[attrName][2].index(self.sg(scope, attrName)[j]))
 							eles[-1].attrib[i] = ind
 						elif tagAttribs[i].find('>') != -1:
 							ind = tagAttribs[i].split('>')[1]
 							if ind.isdigit():
 								ind = int(ind)
-								eles[-1].attrib[i] = self.getInName(pContent[attrName][j],ind)
+								eles[-1].attrib[i] = self.getInName(self.sg(scope, attrName)[j],ind)
 							else:
 								raise TypeError('Index: '+str(ind)+' not integer.')
 						else:
 							# print tag, eles, i, attrName, j, pContent, writeRules
-							eles[-1].attrib[i] = pContent[attrName][j]
+							eles[-1].attrib[i] = self.sg(scope, attrName)[j]
 					else:
 						eles[-1].attrib[i] = tagAttribs[i]
 
 			# Finally add sub tags before adding them to the parent element
 			for e in eles:
-				self.__parseContentWrite__(pContent, writeRules[tag][2], e, pars)
+				self.__parseContentWrite__(scope, writeRules[tag][2], e, pars)
 				if parElement == None:
 					# print '--E--'
 					return e
 				else:
 					parElement.append(e)
-		# print '--E--'
+		print '--E--'
 
 # Currently retained only as xml lib reference
 # 	lines = [str.strip(line) for line in f.readlines()]
