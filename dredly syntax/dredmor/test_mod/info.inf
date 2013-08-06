@@ -1,7 +1,8 @@
 info:
 	ver: Version 0.0.1
-	author: Billy Bob Joe
-	name: ULTIMATE\nMOD\nOF\nULTIMATENESS
-	desc:"Example string here"
-	needs: ReAlM Of THE diggle GoDs
-	require:cotw
+	author: Xavion
+	name: Elemagery
+	desc: Elemental magic at it finest.
+	requires: rotdg
+	requires: yhtntep
+	requires: cotw
