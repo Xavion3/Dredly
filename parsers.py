@@ -302,8 +302,7 @@ class RWBlock:
 		# Now for writing.
 		elements = []
 		for c in pContent:
-			elements.append(self.__parseContentWrite__([c]))
-		# TODO: (VH) Macros! (@blah)
+			elements.extend(self.__parseContentWrite__([c]))
 		if not elements:
 			return None
 		elif 'FILENAME' in self.flags:
@@ -391,7 +390,6 @@ class RWBlock:
 				objName = writeRules[tag][0][0][1:]
 				writeCopy = {tag:[[]] + deepcopy(writeRules[tag][1:])}
 				for t in xrange(len(self.sg(scope, objName))):
-					# print 'YOYOYO', objName, t, scope
 					tagNum = max(tagNum, self.__getTagNum__(tag, writeCopy, [self.sg(scope, objName)[t]] + scope))
 				return tagNum
 			elif writeRules[tag][0][0][0] == '@':
@@ -413,7 +411,6 @@ class RWBlock:
 		for s in scope:
 			for i in s:
 				if re.search(i, name, re.I):
-					# print '!!', name, i
 					return i, len(s[i])
 		raise KeyError('Attr "'+name+'" not found in list.')
 
@@ -428,17 +425,18 @@ class RWBlock:
 	def __parseContentWrite__(self, scope, writeRules = None, parElement = None, pars = []):
 		''' Parses the read content into xml. '''
 		# print '--B--'
-		# print pars
 		if writeRules == None:
 			writeRules = self.write
-			# print self.read
 		elif writeRules == {}:
 			return {}
+		elements = []
 		for tag in writeRules:
+			# if self.name=='skill':print tag
 			eleT = ET.Element(tag) # Create the blank template
 			eles = []
 			# First check if it calls a block.
 			if writeRules[tag][0]:
+				# print writeRules[tag][0]
 				if writeRules[tag][0][0][0] == '$': # If there is a object reference
 					objName = writeRules[tag][0][0][1:]
 					objName, tagNum = self.getAttrName(scope, objName)
@@ -451,6 +449,8 @@ class RWBlock:
 					if tag == '!OBJECT':
 						for e in eles:
 							parElement.extend(e.getchildren())
+					elif parElement == None:
+						elements.extend(eles)
 					else:
 						parElement.extend(eles)
 				elif writeRules[tag][0][0][0] == '@':
@@ -506,11 +506,12 @@ class RWBlock:
 				self.__parseContentWrite__(scope, writeRules[tag][2], e, pars)
 			if parElement == None:
 				# print '--E--2'
-				return e
+				elements.extend(eles)
 			else:
 				if tag == '!OBJECT':
 					for e in eles:
 						parElement.extend(e.getchildren())
 				else:
 					parElement.extend(eles)
+		return elements
 		# print '--E--3'
