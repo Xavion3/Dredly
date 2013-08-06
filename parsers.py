@@ -84,7 +84,7 @@ class Parser:
 					if not isinstance(self.parsers[name], RWBlock):
 						raise Exception('Read/Write block '+name+' already taken by object')
 				else:
-					self.parsers[name] = RWBlock(name, self.parsers)
+					self.parsers[name] = RWBlock(name, self.parsers, self.content)
 			elif blocktype == 'T':
 				if self.parsers.has_key(name):
 					if isinstance(self.parsers[name], RWBlock):
@@ -117,7 +117,7 @@ class Parser:
 		# Create the xml!
 		for p in self.parsers.itervalues():
 			if p.flags.has_key('FILENAME'):
-				element = p.parseContent(self.content)
+				element = p.parseContent()
 				self.xml.append([element, p.flags['FILENAME']])
 
 		
@@ -128,15 +128,16 @@ class RWBlock:
 	         'STR':r'^[^:]*$', # String, no restrictions
 	         'BOOL':r'^(0|1|TRUE|FALSE)$'} # Boolean, 0, 1, true, or false
 
-	def __init__(self, name, parsers):
+	def __init__(self, name, parsers, content):
 		''' Creates the block. '''
 		self.name = name
 		self.parsers = parsers
+		self.content = content
 		self.complete = [False, False]
 		self.flags = {}
 		self.read = {}
 		self.write = {}
-		self.neededContent = [self.name]
+		self.macrosNeeded = []
 
 	def getFlags(self, s):
 		''' Gets the flags from a valid name. '''
@@ -148,9 +149,6 @@ class RWBlock:
 		''' Turns a dredly name into a valid regex string. 
 		    Returns false if invalid. '''
 		# TODO: (M) Error checking, particularly in relevance to balancing brackets
-		# Current errors
-		# - Fails if encountering unmatched end bracket
-		# - Fails if starting with an unescaped |
 		pattern = '^'
 		blank = []
 		for i in range(len(s)):
@@ -161,23 +159,6 @@ class RWBlock:
 					pattern = pattern[:-1] + s[i]
 			else:
 				pattern += s[i]
-			# if (not s[i] in ['(', '|', ')']) or (i >= 1 and s[i-1] == '\\'): # Non special or escaped
-			# 	pattern += s[i]
-			# 	continue # Skip to next char to avoid accidently going thorugh with following if's
-			# if s[i] == '|': # Or separator
-			# 	if s[i-1] in ['(', '|'] or s[i+1] in ['|', ')']: # Matches (|, ||, and |) to check for blanks
-			# 		blank[-1] = True
-			# 		if re.search(r'\(\|*$', pattern) or re.search(r'^\|*\)', s[i:]) and s[i-1] != '|': # If it's not at the start or the end add if the first of a group
-			# 			pattern += '|'
-			# 	else: # If isn't a blank then whatevs
-			# 		pattern += '|'
-			# if s[i] == ')':
-			# 	pattern += ')'
-			# 	if blank.pop(-1): # Check if the current bracket pair had a blank while removing it from the list
-			# 		pattern += '?'
-			# if s[i] == '(':
-			# 	pattern += '('
-			# 	blank.append(False) # Assume no blanks and start another set of brackets
 		pattern += '$'
 		return pattern
 
@@ -232,6 +213,7 @@ class RWBlock:
 				if varType in ['NUM', 'BOOL', 'STR']:
 					parsedBlock[name] = [varType, flags]
 				elif varType[0] == '@':
+					print 'Macro found in read block. Be careful.'
 					parsedBlock[name] = self.parsers[varType[1:]]
 			elif type(i) == list:
 				flags = map(str.upper, self.getFlags(i[0]))
@@ -263,7 +245,8 @@ class RWBlock:
 					else:
 						raise Exception('Unknown special attribute.')
 				elif i[0] == '@':
-					self.neededContent.append(i[1:])
+					self.macrosNeeded.append(i[1:])
+					parsedBlock[i[1:]] = [[i],{},{}]
 				elif i.find(':') != -1:
 					attribs = {}
 					name, attrs = i.split(':')
@@ -297,40 +280,47 @@ class RWBlock:
 		else:
 			return parsedAttrs, parsedBlock
 
-	def parseContent(self, content):
+	def parseContent(self):
 		''' Parses content using the read and write blocks. Generates a file if required. '''
 		# First get the relevant blocks.
-		# print '\n\n\n\n\nINCOMING'
-		# print self.read
-		# print self.write
-		useContent = {}
-		for i in self.neededContent:
-			if i in content:
-				useContent[i] = content[i][:]
-		if not useContent: # If there is none of the tag.
+		try:
+			useContent = deepcopy(self.content[self.name])
+		except KeyError:
+			useContent = False # If there is none of the tag
+		macros = False
+		for m in self.macrosNeeded:
+			if m in self.content:
+				macros = True
+				break
+		if not (useContent or macros): # If there is none of the tag and no macros.
 			return
 		# Now parse for reading
-		# print useContent
-		pContent = self.__parseContentRead__(useContent)
-		# print pContent
-		# print '\n'
+		if useContent:
+			pContent = self.__parseContentRead__(useContent)
+		else:
+			pContent = [{}]
 		# Now for writing.
-		element = self.__parseContentWrite__([pContent])
+		elements = []
+		for c in pContent:
+			elements.append(self.__parseContentWrite__([c]))
 		# TODO: (VH) Macros! (@blah)
-		return element
+		if not elements:
+			return None
+		elif 'FILENAME' in self.flags:
+			return elements[0]
+		else:
+			return elements
 
 	def __parseContentRead__(self, useContent, readRules = None):
 		''' Parses the content using the read info. '''
 		if readRules == None:
 			readRules = self.read
-		# print readRules
-		pContent = dict.fromkeys(readRules)
-		# print pContent
-		for k in pContent:
-			pContent[k] = []
-		for i in useContent:
-			for block in useContent[i]:
-				self.__parseContentReadBlock__(block, readRules, pContent)
+		pContent = []
+		for i in xrange(len(useContent)):
+			pContent.append(dict.fromkeys(readRules))
+			for k in pContent[-1]:
+				pContent[-1][k] = []
+			self.__parseContentReadBlock__(useContent[i], readRules, pContent[-1])
 		return pContent
 
 	def __parseContentReadBlock__(self, block, readRules, pContent):
@@ -397,12 +387,15 @@ class RWBlock:
 		tagNum = 0
 		scope = deepcopy(scope)
 		if writeRules[tag][0]:
-			objName = writeRules[tag][0][0][1:]
-			writeCopy = {tag:[[]] + deepcopy(writeRules[tag][1:])}
-			for t in xrange(len(self.sg(scope, objName))):
-				# print 'YOYOYO', objName, t, scope
-				tagNum = max(tagNum, self.__getTagNum__(tag, writeCopy, [self.sg(scope, objName)[t]] + scope))
-			return tagNum
+			if writeRules[tag][0][0][0] == '$':
+				objName = writeRules[tag][0][0][1:]
+				writeCopy = {tag:[[]] + deepcopy(writeRules[tag][1:])}
+				for t in xrange(len(self.sg(scope, objName))):
+					# print 'YOYOYO', objName, t, scope
+					tagNum = max(tagNum, self.__getTagNum__(tag, writeCopy, [self.sg(scope, objName)[t]] + scope))
+				return tagNum
+			elif writeRules[tag][0][0][0] == '@':
+				tagNum = 1
 		for i in tagAttribs:
 			if tagAttribs[i].find('!') != -1 or tagAttribs[i].find('$') != -1:
 				attrName = tagAttribs[i][1:].split('?')[0].split('>')[0]
@@ -445,20 +438,34 @@ class RWBlock:
 			eleT = ET.Element(tag) # Create the blank template
 			eles = []
 			# First check if it calls a block.
-			if writeRules[tag][0]: # If there is flags, only flag that should appear is an object call.
-				objName = writeRules[tag][0][0][1:]
-				objName, tagNum = self.getAttrName(scope, objName)
-				writeCopy = {tag:[[]] + deepcopy(writeRules[tag][1:])}
-				for j in xrange(tagNum):
-					eles.append(eleT.copy())
-					self.__parseContentWrite__([self.sg(scope, objName)[j]] + scope, writeCopy, eles[-1], pars + [objName])
-					if tag == eles[-1].getchildren()[0].tag:
-						eles = eles[:-1] + [eles[-1].getchildren()[0]]
-				if tag == '!OBJECT':
-					for e in eles:
-						parElement.extend(e.getchildren())
+			if writeRules[tag][0]:
+				if writeRules[tag][0][0][0] == '$': # If there is a object reference
+					objName = writeRules[tag][0][0][1:]
+					objName, tagNum = self.getAttrName(scope, objName)
+					writeCopy = {tag:[[]] + deepcopy(writeRules[tag][1:])}
+					for j in xrange(tagNum):
+						eles.append(eleT.copy())
+						self.__parseContentWrite__([self.sg(scope, objName)[j]] + scope, writeCopy, eles[-1], pars + [objName])
+						if tag == eles[-1].getchildren()[0].tag:
+							eles = eles[:-1] + [eles[-1].getchildren()[0]]
+					if tag == '!OBJECT':
+						for e in eles:
+							parElement.extend(e.getchildren())
+					else:
+						parElement.extend(eles)
+				elif writeRules[tag][0][0][0] == '@':
+					result = self.parsers[writeRules[tag][0][0][1:]].parseContent()
+					eles.extend(result)
+					if parElement == None: # I wonder if this will work?
+						# print '--E--1'
+						if len(eles) != 1:
+							raise Exception("Serious Problem")
+						return eles[0]
+					else:
+						parElement.extend(eles)
 				else:
-					parElement.extend(eles)
+					print 'Skipping...'
+				
 				continue # Skip the rest of the loop
 			# Now for attributes.
 			tagAttribs = writeRules[tag][1]
@@ -498,7 +505,7 @@ class RWBlock:
 			for e in eles:
 				self.__parseContentWrite__(scope, writeRules[tag][2], e, pars)
 			if parElement == None:
-				# print '--E--'
+				# print '--E--2'
 				return e
 			else:
 				if tag == '!OBJECT':
@@ -506,18 +513,4 @@ class RWBlock:
 						parElement.extend(e.getchildren())
 				else:
 					parElement.extend(eles)
-		# print '--E--'
-
-# Currently retained only as xml lib reference
-# 	lines = [str.strip(line) for line in f.readlines()]
-# 	loc = os.path.join('mod','mod.xml')
-# 	data = ET.Element('dredmormod')
-# 	ET.SubElement(data, 'revision', {'text':lines[0]})
-# 	ET.SubElement(data, 'author', {'text':lines[1]})
-# 	ET.SubElement(data, 'name', {'text':lines[2]})
-# 	ET.SubElement(data, 'description', {'text':lines[3]})
-# 	ET.SubElement(data, 'info', {'totalconversion':'0'})
-# 	for p in lines[4].split(','):
-# 		ET.SubElement(data, 'require', {'expansion':p})
-# 	ET.ElementTree(data).write(os.path.join(path/to/write/to,loc))
-
+		# print '--E--3'
