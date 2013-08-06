@@ -1,0 +1,49 @@
+skill:
+	name: Elemagery
+	id: 1526931943
+	class: Wizard
+	desc: Refined elements.
+	icon: "FILEPATH GOES HERE"
+	ability:
+		name: Elemagery
+		start: true
+		desc: The path to merging yourself with the elements.
+	ability:
+		name: Acolytion
+		level: 0
+		desc: The journey of a thousand spells beings with a single word.
+		sbuff:
+			id: Magic Power
+			val: 1
+	ability:
+		name: Pyromagery
+		level: 1
+		desc: The art of controlling fire. A roaring, primal force, it consumes all in it's path so avoid anything flammable lest it ceases to be.
+		damage:
+			fire: 1
+		resist:
+			fire: 1
+	ability:
+		name: Hydromagery
+		level: 2
+		desc: The art of controlling water. Unfortunately they don't have water here so you have to make do with it's rare solid form ice.
+		damage:
+			ice: 1
+		resist:
+			ice: 1
+	ability:
+		name: Aeromagery
+		level: 3
+		desc: The art of controlling air. Allowing you to literally take thier breath away this is a rare and uncoveted ability.
+		damage:
+			air: 1
+		resist:
+			air: 1
+	ability:
+		name: Geomagery
+		level: 4
+		desc: The art of controlling earth. Causing earthquakes and landslides you gain the ability to crush anything in your path.
+		damage:
+			crushing: 1
+		resist:
+			crushing: 1
