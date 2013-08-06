@@ -374,7 +374,7 @@ skill-W:
 	skill:
 		name=$name
 		id=$id
-		type=$type
+		type=$type>0
 		description=$desc
 		art:icon=$icon
 		loadout: $loadout
