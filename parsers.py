@@ -394,13 +394,18 @@ class RWBlock:
 				return tagNum
 			elif writeRules[tag][0][0][0] == '@':
 				tagNum = 1
+		attrs = False
+		const = False
 		for i in tagAttribs:
 			if tagAttribs[i].find('!') != -1 or tagAttribs[i].find('$') != -1:
 				attrName = tagAttribs[i][1:].split('?')[0].split('>')[0]
 				k, N = self.getAttrName(scope, attrName)
 				tagNum = max(tagNum, N)
-			elif i: # If it's a constant value set to at least 1.
-				tagNum = max(tagNum, 1)
+				attrs = True
+			elif i: 
+				const = True
+		if const and not attrs: # If there was a constant value and no variable values
+			tagNum = max(tagNum, 1)
 		for t in writeRules[tag][2]: # If any of the children would appear make this appear.
 			if tagNum >= 1:
 				break
