@@ -6,3 +6,11 @@ info:
 	requires: rotdg
 	requires: yhtntep
 	requires: cotw
+
+test:
+	gvar: GVAR
+	gobj1:
+		ovar1: O11
+		ovar2: O12
+		on: onn
+	n: nn

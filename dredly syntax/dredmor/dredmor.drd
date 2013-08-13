@@ -1,4 +1,28 @@
 # DoD Syntax file.
+# TESTING
+test-R:
+	gvar: STR
+	gobj1:
+		ovar1: STR
+		ovar2: STR
+		on: STR
+	n: STR
+	
+test-W:
+	!FILENAME=test.xml
+	test:
+		gvar=$gvar
+		obj1: $gobj1
+			v1=$ovar1
+			v2:v=$ovar2
+			g=$gvar
+		ntest1:
+			!NAME=$n
+		ntest2: $gobj1
+			!NAME=$on
+		ntest3: $gobj1
+			!NAME=$n
+
 # mod.xml
 info-R:
 	(revision|ver(|sion)): STR
@@ -320,55 +344,28 @@ skill-R:
 			(Aether(eal|)|Magic): NUM-INT
 			(Asphyx(iative|)|Choke|Suffocat(e|ion)|Air): NUM-INT
 			(Exist(ential|)|Mind): NUM-INT
-		spell: STR
-		(target|on)kill(buff|):
+		spell: STR	
+		(on|)buff(|on):
+			(type|on): STR-STRICT-CI
+				block(Buff|)
+				booze(Buff|)
+				consume(Buff|)
+				counter(Buff|)
+				crit(ical|)(Buff|)
+				(cross|)bow(Shot|)(Buff|)
+				dodge(Buff|)
+				food(Buff|)
+				throw(n|)(Buff|)
+				(trigger|)(On|)Cast
+				trigger(On|)Dodge
+				p(layer|)Hit(Effect|)(Buff|)
+				(target|on)Hit(Effect|)(Buff|)
+				(target|on)Kill(Buff|)
 			(percent(age|)|chance): NUM-INT-CAP=0/100
 			(name|spell): STR
 			(after|delay): NUM-INT-CAP=1/
 			(taxa|type): STR
-		(target|on)hit(buff|):
-			(percent(age|)|chance): NUM-INT-CAP=0/100
-			(name|spell): STR
-			(after|delay): NUM-INT-CAP=1/
-			(taxa|type): STR
-		p(layer|)hit(buff|):
-			(percent(age|)|chance): NUM-INT-CAP=0/100
-			(name|spell): STR
-			(after|delay): NUM-INT-CAP=1/
-			(taxa|type): STR
-		(|on)block(buff|):
-			(percent(age|)|chance): NUM-INT-CAP=0/100
-			(name|spell): STR
-		(|on)booze(buff|):
-			(percent(age|)|chance): NUM-INT-CAP=0/100
-			(name|spell): STR
-		(|on)consume(buff|):
-			(percent(age|)|chance): NUM-INT-CAP=0/100
-			(name|spell): STR
-		(|on)counter(buff|):
-			(percent(age|)|chance): NUM-INT-CAP=0/100
-			(name|spell): STR
-		(|on)crit(ical|)(buff|):
-			(percent(age|)|chance): NUM-INT-CAP=0/100
-			(name|spell): STR
-		(|on)(cross|)bow(shot|)(buff|):
-			(percent(age|)|chance): NUM-INT-CAP=0/100
-			(name|spell): STR
-		(|on)dodge(buff|):
-			(percent(age|)|chance): NUM-INT-CAP=0/100
-			(name|spell): STR
-		(|on)food(buff|):
-			(percent(age|)|chance): NUM-INT-CAP=0/100
-			(name|spell): STR
-		(|on)throw(n|)(buff|):
-			(percent(age|)|chance): NUM-INT-CAP=0/100
-			(name|spell): STR
-		(trigger|)(on|)cast:
-			(percent(age|)|chance): NUM-INT-CAP=0/100
-			(name|spell): STR
-		trigger(on|)dodge:
-			(percent(age|)|chance): NUM-INT-CAP=0/100
-			(name|spell): STR
+			
 
 skill-W:
 	skill:
@@ -390,6 +387,7 @@ skill-W:
 		learnrecipe=$recipe
 		giveitem=$item
 		description:text=$desc
+		spell:name=$spell
 		primarybuff: $pbuff
 			id=$id?i
 			amount=$amount
@@ -429,56 +427,13 @@ skill-W:
 			transmutative=$change
 			aethereal=$aether
 			asphyxiative=$choke
-			existential=$mind
-		spell:name=$spell
-		targetHitEffectBuff: $onhit
+			existential=$mind	
+		blockBuff: $buffon
+			!NAME=$type>0
 			percentage=$chance
 			name=$spell
 			after=$after
 			taxa=$taxa
-		targetKillBuff: $onkill
-			percentage=$chance
-			name=$spell
-			after=$after
-			taxa=$taxa
-		playerHitEffectBuff: $playerhit
-			percentage=$chance
-			name=$spell
-			after=$after
-			taxa=$taxa
-		blockBuff: $onblock
-			percentage=$chance
-			name=$spell
-		boozeBuff: $onbooze
-			percentage=$chance
-			name=$spell
-		consumeBuff: $onconsume
-			percentage=$chance
-			name=$spell
-		counterBuff: $oncounter
-			percentage=$chance
-			name=$spell
-		criticalBuff: $oncrit
-			percentage=$chance
-			name=$spell
-		crossbowShotBuff: $onbow
-			percentage=$chance
-			name=$spell
-		dodgeBuff: $ondodge
-			percentage=$chance
-			name=$spell
-		foodBuff: $onfood
-			percentage=$chance
-			name=$spell
-		thrownBuff: $onthrow
-			percentage=$chance
-			name=$spell
-		triggerOnCast: $oncast
-			percentage=$chance
-			name=$spell
-		triggerOnDoge: $triggerdodge
-			percentage=$chance
-			name=$spell
 
 skills-W:
 	!FILENAME=mod/skillDB.xml

@@ -4,6 +4,11 @@ skill:
 	class: Wizard
 	desc: Refined elements.
 	icon: "FILEPATH GOES HERE"
+	loadout:
+		type: armour
+		item: Wizzard Hat
+		always: True
+		amount: 1
 	ability:
 		name: Elemagery
 		start: true
@@ -15,6 +20,10 @@ skill:
 		sbuff:
 			id: Magic Power
 			val: 1
+		buffon:
+			on: cast
+			chance: 100
+			spell: elemental amplification
 	ability:
 		name: Pyromagery
 		level: 1
