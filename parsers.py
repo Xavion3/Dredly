@@ -233,6 +233,7 @@ class RWBlock:
 		''' Parses a block for use. '''
 		parsedBlock = {}
 		parsedAttrs = {}
+		parsedFlags = []
 		for i in block[1]:
 			if type(i) == str:
 				# Special first
@@ -240,10 +241,11 @@ class RWBlock:
 					if i.startswith('!FILENAME'):
 						self.flags['FILENAME'] = i.split('=')[1].replace('/',pathsep)
 					elif i.startswith('!NAME'):
-						# TODO: (H) Add functionality for !NAME
-						print '!NAME flag is currently unhandled.\nSkipping...'
+						parsedAttrs['!NAME'] = i.split('=')[1]
 					else:
-						raise Exception('Unknown special attribute.')
+						parsedFlags.append(i)
+						print 'Unknown special attribute:', i
+					# 	raise Exception('Unknown special attribute.')
 				elif i[0] == '@':
 					self.macrosNeeded.append(i[1:])
 					parsedBlock[i[1:]] = [[i],{},{}]
@@ -273,16 +275,17 @@ class RWBlock:
 					if flags and not flags[0]:
 						flags.pop(0)
 					pw = self.parseWrite(i, False)
-					parsedBlock[name] = [flags, pw[0], pw[1]]
+					parsedBlock[name] = [flags+pw[0], pw[1], pw[2]]
 		if outermost:
 			self.write = parsedBlock
 			self.complete[1] = True
 		else:
-			return parsedAttrs, parsedBlock
+			return parsedFlags, parsedAttrs, parsedBlock
 
 	def parseContent(self):
 		''' Parses content using the read and write blocks. Generates a file if required. '''
 		# First get the relevant blocks.
+		print '\nSTARTING: '+self.name
 		try:
 			useContent = deepcopy(self.content[self.name])
 		except KeyError:
@@ -398,6 +401,7 @@ class RWBlock:
 		const = False
 		for i in tagAttribs:
 			if tagAttribs[i].find('!') != -1 or tagAttribs[i].find('$') != -1:
+				# print tagAttribs[i]
 				attrName = tagAttribs[i][1:].split('?')[0].split('>')[0]
 				k, N = self.getAttrName(scope, attrName)
 				tagNum = max(tagNum, N)
@@ -415,8 +419,9 @@ class RWBlock:
 	def getAttrName(self, scope, name):
 		for s in scope:
 			for i in s:
-				if re.search(i, name, re.I):
+				if re.search(self.parseName(i), name, re.I):
 					return i, len(s[i])
+		print name, scope[0]
 		raise KeyError('Attr "'+name+'" not found in list.')
 
 	def sg(self, scope, key):
@@ -441,82 +446,94 @@ class RWBlock:
 			eles = []
 			# First check if it calls a block.
 			if writeRules[tag][0]:
-				# print writeRules[tag][0]
-				if writeRules[tag][0][0][0] == '$': # If there is a object reference
-					objName = writeRules[tag][0][0][1:]
+				# if self.name=='test':
+				# 	print 'S',writeRules[tag][0]
+				ref = filter(lambda x:x[0]=='$',writeRules[tag][0])
+				if ref: # If there is a object reference
+					objName = ref[0][1:]
 					objName, tagNum = self.getAttrName(scope, objName)
-					writeCopy = {tag:[[]] + deepcopy(writeRules[tag][1:])}
+					flags = deepcopy(writeRules[tag][0])
+					flags.remove(ref[0])
+					# if self.name=='test':print 'F',flags
+					writeCopy = {tag:[flags] + deepcopy(writeRules[tag][1:])}
 					for j in xrange(tagNum):
 						eles.append(eleT.copy())
 						self.__parseContentWrite__([self.sg(scope, objName)[j]] + scope, writeCopy, eles[-1], pars + [objName])
-						if tag == eles[-1].getchildren()[0].tag:
-							eles = eles[:-1] + [eles[-1].getchildren()[0]]
+						if len(eles[-1]):# and tag == list(eles[-1])[0].tag:
+							eles = eles[:-1] + [list(eles[-1])[0]]
 					if tag == '!OBJECT':
 						for e in eles:
-							parElement.extend(e.getchildren())
+							parElement.extend(list(e))
 					elif parElement == None:
 						elements.extend(eles)
 					else:
 						parElement.extend(eles)
-				elif writeRules[tag][0][0][0] == '@':
+					continue # Skip the rest of the loop
+				elif writeRules[tag][0][0][0] == '@': # If there is a macro.
 					result = self.parsers[writeRules[tag][0][0][1:]].parseContent()
 					eles.extend(result)
 					if parElement == None: # I wonder if this will work?
-						# print '--E--1'
 						if len(eles) != 1:
 							raise Exception("Serious Problem")
 						return eles[0]
 					else:
 						parElement.extend(eles)
+					continue # Skip the rest of the loop
+				elif writeRules[tag][0][0][0] == '!':
+					print 'Y',writeRules[tag][0]
 				else:
 					print 'Skipping...'
-				
-				continue # Skip the rest of the loop
 			# Now for attributes.
-			tagAttribs = writeRules[tag][1]
-			# print pars, scope
 			tagNum = self.__getTagNum__(tag, writeRules, scope)
-			# print tag, tagNum
+			tagAttribs = writeRules[tag][1]
+			# if self.name=='test': print 'tn',tagNum,tagAttribs
+
 			for j in xrange(tagNum):
 				eles.append(eleT.copy())
 				for i in tagAttribs:
-					attrName = tagAttribs[i][1:].split('?')[0].split('>')[0]
-					if tagAttribs[i][0] == '$':
-						attrName, N = self.getAttrName(scope, attrName)
-						if N == 0:
-							continue # If the attr wasn't used skip it.
-						if tagAttribs[i].find('?i') != -1: # If it's a special one.
-							# print i, j, attrName, tagAttribs
-							# print scope
-							useRead = self.read
-							for par in pars:
-								useRead = useRead[par][2]
-							ind = str(useRead[attrName][2].index(self.sg(scope, attrName)[j]))
-							eles[-1].attrib[i] = ind
-						elif tagAttribs[i].find('>') != -1:
-							ind = tagAttribs[i].split('>')[1]
-							if ind.isdigit():
-								ind = int(ind)
-								eles[-1].attrib[i] = self.getInName(self.sg(scope, attrName)[j],ind)
-							else:
-								raise TypeError('Index: '+str(ind)+' not integer.')
+					attr = self.__parseContentWriteAttr__(tagAttribs[i], scope, pars, j)
+					if attr:
+						if i[0] == '!':
+							eles[-1].tag = attr
 						else:
-							# print tag, eles, i, attrName, j, pContent, writeRules
-							eles[-1].attrib[i] = self.sg(scope, attrName)[j]
+							eles[-1].attrib[i] = attr
 					else:
-						eles[-1].attrib[i] = tagAttribs[i]
-
+						continue
 			# Finally add sub tags before adding them to the parent element
 			for e in eles:
 				self.__parseContentWrite__(scope, writeRules[tag][2], e, pars)
 			if parElement == None:
-				# print '--E--2'
 				elements.extend(eles)
 			else:
 				if tag == '!OBJECT':
 					for e in eles:
-						parElement.extend(e.getchildren())
+						parElement.extend(list(e))
 				else:
 					parElement.extend(eles)
 		return elements
-		# print '--E--3'
+
+	def __parseContentWriteAttr__(self, attrValue, scope, pars, j = 0):
+		''' Creates an attribute. '''
+		attrName = attrValue[1:].split('?')[0].split('>')[0]
+		if attrValue[0] == '$':
+			attrName, N = self.getAttrName(scope, attrName)			
+			if N == 0:
+				return # If the attr wasn't used skip it.
+			if attrValue.find('?i') != -1: # If it's a special one.
+				useRead = self.read
+				for par in pars:
+					useRead = useRead[par][2]
+				ind = str(useRead[attrName][2].index(self.sg(scope, attrName)[j]))
+				return ind
+			elif attrValue.find('>') != -1:
+				ind = attrValue.split('>')[1]
+				if ind.isdigit():
+					ind = int(ind)
+					return self.getInName(self.sg(scope, attrName)[j],ind)
+				else:
+					raise TypeError('Index: '+str(ind)+' not integer.')
+			else:
+				# print tag, eles, i, attrName, j, pContent, writeRules
+				return self.sg(scope, attrName)[j]
+		else:
+			return attrValue
