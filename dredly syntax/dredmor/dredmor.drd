@@ -364,7 +364,7 @@ skill-R:
 			(percent(age|)|chance): NUM-INT-CAP=0/100
 			(name|spell): STR
 			(after|delay): NUM-INT-CAP=1/
-			(taxa|type): STR
+			taxa: STR
 			
 
 skill-W:
