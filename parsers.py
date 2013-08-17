@@ -2,6 +2,7 @@
 
 from os import sep as pathsep
 from copy import deepcopy
+from collections import defaultdict
 import re
 import xml.etree.ElementTree as ET
 
@@ -231,7 +232,7 @@ class RWBlock:
 
 	def parseWrite(self, block, outermost = True):
 		''' Parses a block for use. '''
-		parsedBlock = {}
+		parsedBlock = defaultdict(list)
 		parsedAttrs = {}
 		parsedFlags = []
 		for i in block[1]:
@@ -248,7 +249,7 @@ class RWBlock:
 					# 	raise Exception('Unknown special attribute.')
 				elif i[0] == '@':
 					self.macrosNeeded.append(i[1:])
-					parsedBlock[i[1:]] = [[i],{},{}]
+					parsedBlock[i[1:]].append([[i],{},{}])
 				elif i.find(':') != -1:
 					attribs = {}
 					name, attrs = i.split(':')
@@ -256,7 +257,7 @@ class RWBlock:
 					for attr in [x for x in attrs.split(',') if x]:
 						attr = attr.split('=')
 						attribs[attr[0]] = attr[1]
-					parsedBlock[name] = [flags, attribs, {}]
+					parsedBlock[name].append([flags, attribs, {}])
 				elif i.find('=') != -1:
 					name, attr = i.split('=')
 					parsedAttrs[name] = attr
@@ -275,7 +276,7 @@ class RWBlock:
 					if flags and not flags[0]:
 						flags.pop(0)
 					pw = self.parseWrite(i, False)
-					parsedBlock[name] = [flags+pw[0], pw[1], pw[2]]
+					parsedBlock[name].append([flags+pw[0], pw[1], pw[2]])
 		if outermost:
 			self.write = parsedBlock
 			self.complete[1] = True
@@ -385,35 +386,38 @@ class RWBlock:
 		# print '---E---'
 
 	def __getTagNum__(self, tag, writeRules, scope):
-		tagAttribs = writeRules[tag][1]
 		tagNum = 0
 		scope = deepcopy(scope)
-		if writeRules[tag][0]:
-			if writeRules[tag][0][0][0] == '$':
-				objName = writeRules[tag][0][0][1:]
-				writeCopy = {tag:[[]] + deepcopy(writeRules[tag][1:])}
-				for t in xrange(len(self.sg(scope, objName))):
-					tagNum = max(tagNum, self.__getTagNum__(tag, writeCopy, [self.sg(scope, objName)[t]] + scope))
-				return tagNum
-			elif writeRules[tag][0][0][0] == '@':
-				tagNum = 1
-		attrs = False
-		const = False
-		for i in tagAttribs:
-			if tagAttribs[i].find('!') != -1 or tagAttribs[i].find('$') != -1:
-				# print tagAttribs[i]
-				attrName = tagAttribs[i][1:].split('?')[0].split('>')[0]
-				k, N = self.getAttrName(scope, attrName)
-				tagNum = max(tagNum, N)
-				attrs = True
-			elif i: 
-				const = True
-		if const and not attrs: # If there was a constant value and no variable values
-			tagNum = max(tagNum, 1)
-		for t in writeRules[tag][2]: # If any of the children would appear make this appear.
-			if tagNum >= 1:
-				break
-			tagNum = max(tagNum, 1 & self.__getTagNum__(t, writeRules[tag][2], scope))
+		for p in writeRules[tag]:
+			tagAttribs = p[1]
+			if p[0]:
+				if p[0][0][0] == '$':
+					objName = p[0][0][1:]
+					writeCopy = deepcopy(writeRules[tag])
+					writeCopy[writeCopy.index(p)][0] = []
+					writeCopy = {tag:writeCopy}
+					for t in xrange(len(self.sg(scope, objName))):
+						tagNum = max(tagNum, self.__getTagNum__(tag, writeCopy, [self.sg(scope, objName)[t]] + scope))
+					return tagNum
+				elif p[0][0][0] == '@':
+					tagNum = 1
+			attrs = False
+			const = False
+			for i in tagAttribs:
+				if tagAttribs[i].find('!') != -1 or tagAttribs[i].find('$') != -1:
+					# print tagAttribs[i]
+					attrName = tagAttribs[i][1:].split('?')[0].split('>')[0]
+					k, N = self.getAttrName(scope, attrName)
+					tagNum = max(tagNum, N)
+					attrs = True
+				elif i: 
+					const = True
+			if const and not attrs: # If there was a constant value and no variable values
+				tagNum = max(tagNum, 1)
+			for t in p[2]: # If any of the children would appear make this appear.
+				if tagNum >= 1:
+					break
+				tagNum = max(tagNum, 1 & self.__getTagNum__(t, p[2], scope))
 		return tagNum
 
 	def getAttrName(self, scope, name):
@@ -441,75 +445,75 @@ class RWBlock:
 			return {}
 		elements = []
 		for tag in writeRules:
-			# if self.name=='skill':print tag
-			eleT = ET.Element(tag) # Create the blank template
-			eles = []
-			# First check if it calls a block.
-			if writeRules[tag][0]:
-				# if self.name=='test':
-				# 	print 'S',writeRules[tag][0]
-				ref = filter(lambda x:x[0]=='$',writeRules[tag][0])
-				if ref: # If there is a object reference
-					objName = ref[0][1:]
-					objName, tagNum = self.getAttrName(scope, objName)
-					flags = deepcopy(writeRules[tag][0])
-					flags.remove(ref[0])
-					# if self.name=='test':print 'F',flags
-					writeCopy = {tag:[flags] + deepcopy(writeRules[tag][1:])}
-					for j in xrange(tagNum):
-						eles.append(eleT.copy())
-						self.__parseContentWrite__([self.sg(scope, objName)[j]] + scope, writeCopy, eles[-1], pars + [objName])
-						if len(eles[-1]):# and tag == list(eles[-1])[0].tag:
-							eles = eles[:-1] + [list(eles[-1])[0]]
+			for p in writeRules[tag]:
+				eleT = ET.Element(tag) # Create the blank template
+				eles = []
+				# First check if it calls a block.
+				if p[0]:
+					# if self.name=='test':
+					# 	print 'S',p[0]
+					ref = filter(lambda x:x[0]=='$',p[0])
+					if ref: # If there is a object reference
+						objName = ref[0][1:]
+						objName, tagNum = self.getAttrName(scope, objName)
+						flags = deepcopy(p[0])
+						flags.remove(ref[0])
+						# if self.name=='test':print 'F',flags
+						writeCopy = deepcopy(writeRules[tag])
+						writeCopy[writeCopy.index(p)][0] = flags
+						writeCopy = {tag:writeCopy}
+						for j in xrange(tagNum):
+							eles.append(eleT.copy())
+							self.__parseContentWrite__([self.sg(scope, objName)[j]] + scope, writeCopy, eles[-1], pars + [objName])
+							if len(eles[-1]):# and tag == list(eles[-1])[0].tag:
+								eles = eles[:-1] + list(eles[-1])
+						if tag == '!OBJECT':
+							parElement.extend(eles)
+						elif parElement == None:
+							elements.extend(eles)
+						else:
+							parElement.extend(eles)
+						continue # Skip the rest of the loop
+					elif p[0][0][0] == '@': # If there is a macro.
+						result = self.parsers[p[0][0][1:]].parseContent()
+						eles.extend(result)
+						if parElement == None: # I wonder if this will work?
+							if len(eles) != 1:
+								raise Exception("Serious Problem")
+							return eles[0]
+						else:
+							parElement.extend(eles)
+						continue # Skip the rest of the loop
+					elif p[0][0][0] == '!':
+						print 'Y',p[0]
+					else:
+						print 'Skipping...'
+				# Now for attributes.
+				tagNum = self.__getTagNum__(tag, writeRules, scope)
+				tagAttribs = p[1]
+				if self.name=='test': print 'tn',tagNum,tagAttribs
+				for j in xrange(tagNum):
+					eles.append(eleT.copy())
+					for i in tagAttribs:
+						attr = self.__parseContentWriteAttr__(tagAttribs[i], scope, pars, j)
+						if attr:
+							if i[0] == '!':
+								eles[-1].tag = attr
+							else:
+								eles[-1].attrib[i] = attr
+						else:
+							continue
+				# Finally add sub tags before adding them to the parent element
+				for e in eles:
+					self.__parseContentWrite__(scope, p[2], e, pars)
+				if parElement == None:
+					elements.extend(eles)
+				else:
 					if tag == '!OBJECT':
 						for e in eles:
 							parElement.extend(list(e))
-					elif parElement == None:
-						elements.extend(eles)
 					else:
 						parElement.extend(eles)
-					continue # Skip the rest of the loop
-				elif writeRules[tag][0][0][0] == '@': # If there is a macro.
-					result = self.parsers[writeRules[tag][0][0][1:]].parseContent()
-					eles.extend(result)
-					if parElement == None: # I wonder if this will work?
-						if len(eles) != 1:
-							raise Exception("Serious Problem")
-						return eles[0]
-					else:
-						parElement.extend(eles)
-					continue # Skip the rest of the loop
-				elif writeRules[tag][0][0][0] == '!':
-					print 'Y',writeRules[tag][0]
-				else:
-					print 'Skipping...'
-			# Now for attributes.
-			tagNum = self.__getTagNum__(tag, writeRules, scope)
-			tagAttribs = writeRules[tag][1]
-			# if self.name=='test': print 'tn',tagNum,tagAttribs
-
-			for j in xrange(tagNum):
-				eles.append(eleT.copy())
-				for i in tagAttribs:
-					attr = self.__parseContentWriteAttr__(tagAttribs[i], scope, pars, j)
-					if attr:
-						if i[0] == '!':
-							eles[-1].tag = attr
-						else:
-							eles[-1].attrib[i] = attr
-					else:
-						continue
-			# Finally add sub tags before adding them to the parent element
-			for e in eles:
-				self.__parseContentWrite__(scope, writeRules[tag][2], e, pars)
-			if parElement == None:
-				elements.extend(eles)
-			else:
-				if tag == '!OBJECT':
-					for e in eles:
-						parElement.extend(list(e))
-				else:
-					parElement.extend(eles)
 		return elements
 
 	def __parseContentWriteAttr__(self, attrValue, scope, pars, j = 0):
