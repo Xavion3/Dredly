@@ -491,13 +491,12 @@ class RWBlock:
 				# Now for attributes.
 				tagNum = self.__getTagNum__(tag, writeRules, scope)
 				tagAttribs = p[1]
-				if self.name=='test': print 'tn',tagNum,tagAttribs
 				for j in xrange(tagNum):
 					eles.append(eleT.copy())
 					for i in tagAttribs:
 						attr = self.__parseContentWriteAttr__(tagAttribs[i], scope, pars, j)
 						if attr:
-							if i[0] == '!':
+							if i == '!NAME':
 								eles[-1].tag = attr
 							else:
 								eles[-1].attrib[i] = attr
