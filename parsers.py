@@ -80,13 +80,13 @@ class Parser:
 
 			# Check blocktype and create spot if none
 			if blocktype in ['R', 'W']:
-				if self.parsers.has_key(name):
+				if name in self.parsers:
 					if not isinstance(self.parsers[name], RWBlock):
 						raise Exception('Read/Write block '+name+' already taken by object')
 				else:
 					self.parsers[name] = RWBlock(name, self.parsers, self.content)
 			elif blocktype == 'T':
-				if self.parsers.has_key(name):
+				if name in self.parsers:
 					if isinstance(self.parsers[name], RWBlock):
 						raise Exception('Type block '+name+' already taken by R/W')
 					elif self.parsers[0] != None:
@@ -94,12 +94,12 @@ class Parser:
 				else:
 					self.parsers[name] = [None]
 			elif blocktype == 'C':
-				if self.parsers.has_key(name):
+				if name in self.parsers:
 					if not isinstance(self.parsers[name], RWBlock):
 						raise Exception(name+' is used as R/W')
 					elif not sum(self.parsers[name].complete):
 						raise Exception('R/W block '+name+' used while incomplete')
-					elif not self.content.has_key(name):
+					elif not name in self.content:
 						self.content[name] = []
 				else:
 					raise Exception('No R/W block exists for '+name)
@@ -116,7 +116,7 @@ class Parser:
 		''' Fills self.xml with the xml. '''
 		# Create the xml!
 		for p in self.parsers.itervalues():
-			if p.flags.has_key('FILENAME'):
+			if 'FILENAME' in p.flags:
 				element = p.parseContent()
 				self.xml.append([element, p.flags['FILENAME']])
 
