@@ -385,10 +385,14 @@ class RWBlock:
 						pContent[j].append(obj)
 		# print '---E---'
 
-	def __getTagNum__(self, tag, writeRules, scope):
+	def __getTagNum__(self, tag, writeRules, scope, block = None):
 		tagNum = 0
 		scope = deepcopy(scope)
-		for p in writeRules[tag]:
+		if block is not None:
+			block = [block]
+		else:
+			block = writeRules[tag]
+		for p in block:
 			tagAttribs = p[1]
 			if p[0]:
 				if p[0][0][0] == '$':
@@ -405,7 +409,6 @@ class RWBlock:
 			const = False
 			for i in tagAttribs:
 				if tagAttribs[i].find('!') != -1 or tagAttribs[i].find('$') != -1:
-					# print tagAttribs[i]
 					attrName = tagAttribs[i][1:].split('?')[0].split('>')[0]
 					k, N = self.getAttrName(scope, attrName)
 					tagNum = max(tagNum, N)
@@ -489,7 +492,7 @@ class RWBlock:
 					else:
 						print 'Skipping...'
 				# Now for attributes.
-				tagNum = self.__getTagNum__(tag, writeRules, scope)
+				tagNum = self.__getTagNum__(tag, writeRules, scope, p)
 				tagAttribs = p[1]
 				for j in xrange(tagNum):
 					eles.append(eleT.copy())
