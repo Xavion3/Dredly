@@ -71,17 +71,9 @@ encrust:
 		poison: -1
 		decay: -2
 	pbuff:
-		id: sag
-		val: -1
-	pbuff:
-		id: cad
-		val: -1
+		sag: -1
+		cad: -1
 	sbuff:
-		id: dodge
-		val: 2
-	sbuff:
-		id: block
-		val: 2
-	sbuff:
-		id: haywire
-		val: 3
+		dodge: 2
+		block: 2
+		haywire: 3

@@ -14,3 +14,7 @@ test:
 		ovar2: O12
 		on: onn
 	n: nn
+	tobj:
+		t1: ya
+		t2: ye
+		t4: yo

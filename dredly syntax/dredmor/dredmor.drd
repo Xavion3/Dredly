@@ -128,41 +128,37 @@ encrust-R:
 	(in|)stability: NUM-INT
 	encrust(with|): STR
 	p(rimary(buff|)|buff): 
-		(id|stat|type): STR-STRICT-CI
-			Bur(liness|)
-			Sag(acity|)
-			Nim(bleness|)
-			Cad(dishness|)
-			Stu(bbornness|)
-			Sav(vy|)
-		(amount|val(|ue)): NUM-INT
+		Bur(liness|): NUM-INT
+		Sag(acity|): NUM-INT
+		Nim(bleness|): NUM-INT
+		Cad(dishness|): NUM-INT
+		Stu(bbornness|): NUM-INT
+		Sav(vy|): NUM-INT
 	s(econdary(buff|)|buff):
-		(id|stat|type): STR-STRICT-CI
-			(Health|HP)
-			(Mana|MP)
-			Melee Power
-			Magic Power
-			Crit(ical|)
-			Hay(wire|)
-			Dodge
-			Block
-			Counter
-			(Enemy Dodge Reduction|EDR)
-			(Armor( Absorbtion|)|AA)
-			(Magic |M(| )|)Resist
-			Sneak(iness|)
-			(Health|HP) Regen
-			(Mana|MP) Regen
-			Wand Burnout
-			Trap Aff(inity|)
-			Trap Sense( Radius|)
-			Sight( Radius|)
-			Smithing
-			Tinkering
-			Alc(h(emy|)|)
-			(Magic |M(| )|)Reflect
-			Wand Crafting
-		(amount|val(|ue)): NUM-INT
+		(Health|HP): NUM-INT
+		(Mana|MP): NUM-INT
+		Melee(_|)Power: NUM-INT
+		Magic(_|)Power: NUM-INT
+		Crit(ical|): NUM-INT
+		Hay(wire|): NUM-INT
+		Dodge: NUM-INT
+		Block: NUM-INT
+		Counter: NUM-INT
+		(Enemy_Dodge_Reduction|EDR): NUM-INT
+		(Armor(_Absorbtion|)|AA): NUM-INT
+		(Magic(_|)|M(|_)|)Resist: NUM-INT
+		Sneak(iness|): NUM-INT
+		(Health|HP)(_|)Regen: NUM-INT
+		(Mana|MP)(_|)Regen: NUM-INT
+		(Wand(_|)Burnout|Blank|Unused): NUM-INT
+		Trap(_|)Aff(inity|): NUM-INT
+		Trap(_|)Sense(_Radius|): NUM-INT
+		Sight((_|)Radius|): NUM-INT
+		Smith(ing|): NUM-INT
+		Tinker(ing|): NUM-INT
+		Alc(h(emy|)|): NUM-INT
+		(Magic(_|)|M(|_)|)Reflect: NUM-INT
+		Wand((_|)Crafting|): NUM-INT
 	damage:
 		Crush(ing|): NUM-INT
 		Slash(ing|): NUM-INT
@@ -212,12 +208,98 @@ encrust-W:
 			chance=$chance
 		instability:amount=$instability
 		encrustwith:name=$encrustwith
-		primarybuff: $pbuff
-			id=$id?i
-			amount=$amount
-		secondarybuff: $sbuff
-			id=$id?i
-			amount=$amount
+		!OBJECT: $pbuff
+			primarybuff:
+				id=0
+				amount=$bur
+			primarybuff:
+				id=1
+				amount=$sag
+			primarybuff:
+				id=2
+				amount=$nim
+			primarybuff:
+				id=3
+				amount=$cad
+			primarybuff:
+				id=4
+				amount=$stu
+			primarybuff:
+				id=5
+				amount=$sav
+		!OBJECT: $sbuff
+			secondarybuff:
+				id=0
+				amount=$HP
+			secondarybuff:
+				id=1
+				amount=$MP
+			secondarybuff:
+				id=2
+				amount=$Melee_Power
+			secondarybuff:
+				id=3
+				amount=$Magic_Power
+			secondarybuff:
+				id=4
+				amount=$crit
+			secondarybuff:
+				id=5
+				amount=$haywire
+			secondarybuff:
+				id=6
+				amount=$Dodge
+			secondarybuff:
+				id=7
+				amount=$Block
+			secondarybuff:
+				id=8
+				amount=$Counter
+			secondarybuff:
+				id=9
+				amount=$EDR
+			secondarybuff:
+				id=10
+				amount=$AA
+			secondarybuff:
+				id=11
+				amount=$MResist
+			secondarybuff:
+				id=12
+				amount=$Sneak
+			secondarybuff:
+				id=13
+				amount=$HPRegen
+			secondarybuff:
+				id=14
+				amount=$MPRegen
+			secondarybuff:
+				id=15
+				amount=$unused
+			secondarybuff:
+				id=16
+				amount=$TrapAff
+			secondarybuff:
+				id=17
+				amount=$TrapSense
+			secondarybuff:
+				id=18
+				amount=$Sight
+			secondarybuff:
+				id=19
+				amount=$Smith
+			secondarybuff:
+				id=20
+				amount=$Tinker
+			secondarybuff:
+				id=21
+				amount=$Alch
+			secondarybuff:
+				id=22
+				amount=$MReflect
+			secondarybuff:
+				id=23
+				amount=$Wand
 		damagebuff: $damage
 			crushing=$crush
 			slashing=$slash
@@ -527,7 +609,7 @@ skill-W:
 			transmutative=$change
 			aethereal=$aether
 			asphyxiative=$choke
-			existential=$mind	
+			existential=$mind
 		blockBuff: $buffon
 			!NAME=$type>0
 			percentage=$chance
