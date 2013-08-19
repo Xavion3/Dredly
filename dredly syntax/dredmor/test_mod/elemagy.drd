@@ -18,8 +18,7 @@ skill:
 		level: 0
 		desc: The journey of a thousand spells beings with a single word.
 		sbuff:
-			id: Magic Power
-			val: 1
+			Magic_Power: 1
 		buffon:
 			on: cast
 			chance: 100
