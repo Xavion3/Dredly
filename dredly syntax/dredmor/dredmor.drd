@@ -621,3 +621,338 @@ skills-W:
 	!FILENAME=mod/skillDB.xml
 	skillDB:
 		@skill
+
+# Spells
+spells-W:
+	!FILENAME=mod/spellDB.xml
+	spellDB:
+		@spell
+
+spell-R:
+	name: STR
+	icon: STR
+	desc(ription|): STR
+	monsterText: STR
+	(downtime|cooldown): NUM-INT-CAP=0/
+	ai: STR-STRICT-CI
+		self
+		target
+		mine
+	type: STR-STRICT-CI
+		adjacent
+		(adjacent|)wall
+		area
+		beam
+		beammissile
+		cone
+		dig(ging|)(beam|)
+		fireball
+		item
+		knight(ly|)(leap|)
+		missile
+		rook
+		self
+		target
+		(target|)adjacentcorpse
+		(target|)corpse
+		(target|)emptyfloor
+		(target|)floor
+		(target|)flooritem
+		(target|)monster
+		(target|)(_|)zombie
+		template
+	# Type related stuff
+	# TODO (Q): Check if these are correct (Requires forums/irc)
+	templateID: NUM-INT-CAP=0/
+	anchored: BOOL
+	radius: NUM-INT-CAP=0/
+	consumeItem: BOOL
+	consumeItemType: STR
+	require:
+		mp(|cost): NUM-INT-CAP=0/
+		(savvy(bonus|)|bonus): NUM-FLOAT-CAP=0/1
+		min(|imum)(cost|): NUM-INT-CAP=0/
+		weapon: STR-STRICT-CI
+			Sword(s|)
+			Axe(s|)
+			Mace(s|)
+			Sta(ves|ff)
+			Bow(s|)
+			Throw(ing|n)
+			(Bolt|Arrow)(s|)
+			Dagger(s|)
+			Polearm(s|)
+		shield: BOOL
+	effect:
+		type: STR-STRICT-CI
+			ascenddungeonlevel
+			bleed
+			blind
+			blink
+			charm
+			cleanseartifact
+			confuse
+			consumebooze
+			consumefood
+			consumeanything
+			corrupt
+			create
+			damage
+			dig
+			displace
+			drunkenness
+			dot
+			drain
+			drainMana
+			drainCasterMana
+			dropitem
+			fear
+			findrecipe
+			grabitem
+			grantxp
+			heal
+			knock
+			lockdown
+			magicmapping
+			manipulateobject
+			moverandomcurse
+			movecurses
+			oil
+			pacify
+			randomizeartifact
+			randomizewand
+			randomuncurse
+			rechargeanvil
+			removemonster
+			resetrandomcooldown
+			resetcooldowns
+			rechargewand
+			removebuffbyname
+			removeinvisibility
+			rift
+			root
+			sacrificeartifact
+			shout
+			sleep
+			spawn
+			spawnitematlocation
+			spawnitemfromlist
+			spellpoints
+			suction
+			summon
+			summonhostile
+			swapwithmonster
+			targetblink
+			teleport
+			transformmonster
+			trigger
+			triggerfromlist
+			uncurse
+		percent: NUM-INT-CAP=0/100
+		taxa: STR
+		affectsCorpses: BOOL
+		self: BOOL
+		bad: BOOL
+		bleed: BOOL
+		burn: BOOL
+		sfx: STR
+		secondaryscale: STR-STRICT-CI
+			(Health|HP)
+			(Mana|MP)
+			Melee( |)Power
+			Magic( |)Power
+			Crit(ical|)
+			Hay(wire|)
+			Dodge
+			Block
+			Counter
+			(Enemy Dodge Reduction|EDR)
+			(Armor( Absorbtion|)|AA)
+			(Magic( |)|M(| )|)Resist
+			Sneak(iness|)
+			(Health|HP)( |)Regen
+			(Mana|MP)( |)Regen
+			(Wand( |)Burnout|Blank|Unused)
+			Trap( |)Aff(inity|)
+			Trap( |)Sense( Radius|)
+			Sight(( |)Radius|)
+			Smith(ing|)
+			Tinker(ing|)
+			Alc(h(emy|)|)
+			(Magic( |)|M(| )|)Reflect
+			Wand(( |)Crafting|)
+			war(rior|)
+			rog(ue|)
+			wiz(ard|)
+		primaryscale: STR-STRICT-CI
+			Bur(liness|)
+			Sag(acity|)
+			Nim(bleness|)
+			Cad(dishness|)
+			Stu(bbornness|)
+			Sav(vy|)
+		skipanimation: BOOL
+		turns: NUM-INT-CAP=0/
+		amount: NUM-INT
+		objectSprite: STR
+		affectsCaster: BOOL
+		# TODO (Q): Ask about this
+		midas: NUM
+		regen: BOOL
+		spell: STR
+		amountF: NUM-FLOAT
+		buffTag: STR
+		name: STR
+		itemname: STR
+		itemName: STR
+		option: STR
+		monsterType: STR
+		requirebuffontrigger: BOOL
+		requirebuffonnottrigger: BOOL
+		requirebuffontriggername: STR
+		requirebuffonnottriggername: STR
+		Crush(ing|): NUM-INT
+		Slash(ing|): NUM-INT
+		Pierc(ing|e): NUM-INT
+		Blast(ing|): NUM-INT
+		(Hyperborean|Ice|Cold): NUM-INT
+		(Conflagratory|Fire): NUM-INT
+		(Volt(aic|)|Elec(|tric)|Lightning): NUM-INT
+		(Toxic|Poison): NUM-INT
+		(Right(eous|)|Holy): NUM-INT
+		(Necro(mantic|)|death): NUM-INT
+		Acid(ic|): NUM-INT
+		(Putrefy(ing|)|Rot|Decay): NUM-INT
+		(Transmut(ative|e)|Change): NUM-INT
+		(Aether(eal|)|Magic): NUM-INT
+		(Asphyx(iative|)|Choke|Suffocat(e|ion)|Air): NUM-INT
+		(Exist(ential|)|Mind): NUM-INT
+		Crush(ing|)F: NUM-FLOAT
+		Slash(ing|)F: NUM-FLOAT
+		Pierc(ing|e)F: NUM-FLOAT
+		Blast(ing|)F: NUM-FLOAT
+		(Hyperborean|Ice|Cold)F: NUM-FLOAT
+		(Conflagratory|Fire)F: NUM-FLOAT
+		(Volt(aic|)|Elec(|tric)|Lightning)F: NUM-FLOAT
+		(Toxic|Poison)F: NUM-FLOAT
+		(Right(eous|)|Holy)F: NUM-FLOAT
+		(Necro(mantic|)|death)F: NUM-FLOAT
+		Acid(ic|)F: NUM-FLOAT
+		(Putrefy(ing|)|Rot|Decay)F: NUM-FLOAT
+		(Transmut(ative|e)|Change)F: NUM-FLOAT
+		(Aether(eal|)|Magic)F: NUM-FLOAT
+		(Asphyx(iative|)|Choke|Suffocat(e|ion)|Air)F: NUM-FLOAT
+		(Exist(ential|)|Mind)F: NUM-FLOAT
+	anim:
+		sprite: STR
+		frames: NUM-INT-CAP=1/
+		first(Frame|): NUM-INT-CAP=0/
+		framerate: NUM-INT-CAP=1/
+		sfx: STR
+		center(Effect|): BOOL
+	impact:
+		sprite: STR
+		frames: NUM-INT-CAP=1/
+		first(Frame|): NUM-INT-CAP=0/
+		framerate: NUM-INT-CAP=1/
+		sfx: STR
+		center(Effect|): BOOL
+
+spell-W:
+	spell:
+		name=$name
+		type=$type>0
+		icon=$icon
+		downtime=$downtime
+		templateID=$templateID
+		anchored=$anchored
+		radius=$radius
+		consumeItem=$consumeItem
+		consumeItemType=$consumeItemType
+		description:
+			text=$desc
+			monsterText=$monsterText
+		ai:hint=$ai
+		requirements: $require
+			mp=$mpcost
+			savvyBonus=$savvybonus
+			mincost=$mincost
+			weapon=$weapon?i
+			shield=$shield
+		effect: $effect
+			type=$type>0
+			percent=$percent
+			taxa=$taxa
+			affectsCorpses=$affectsCorpses
+			self=$self
+			bad=$bad
+			bleed=$bleed
+			burn=$burn
+			sfx=$sfx
+			secondaryscale=$secondaryscale?i
+			primaryscale=$primaryscale?i
+			skipanimation=$skipanimation
+			turns=$turns
+			amount=$amount
+			objectSprite=$objectSprite
+			affectsCaster=$affectsCaster
+			midas=$midas
+			regen=$regen
+			spell=$spell
+			amountF=$amountF
+			buffTag=$buffTag
+			name=$name
+			itemname=$itemname
+			itemName=$itemName
+			option:name=$option
+			monsterType=$monsterType
+			requirebuffontrigger=$requirebuffontrigger
+			requirebuffonnottrigger=$requirebuffonnottrigger
+			requirebuffontriggername=$requirebuffontriggername
+			requirebuffonnottriggername=$requirebuffonnottriggername
+			crushing=$crush
+			slashing=$slash
+			piercing=$pierce
+			blasting=$blast
+			hyperborean=$ice
+			conflagratory=$fire
+			voltaic=$electric
+			toxic=$toxic
+			righteous=$holy
+			necromantic=$necro
+			acidic=$acid
+			putrefying=$decay
+			transmutative=$change
+			aethereal=$aether
+			asphyxiative=$choke
+			existential=$mind
+			crushingF=$crushF
+			slashingF=$slashF
+			piercingF=$pierceF
+			blastingF=$blastF
+			hyperboreanF=$iceF
+			conflagratoryF=$fireF
+			voltaicF=$electricF
+			toxicF=$toxicF
+			righteousF=$holyF
+			necromanticF=$necroF
+			acidicF=$acidF
+			putrefyingF=$decayF
+			transmutativeF=$changeF
+			aetherealF=$aetherF
+			asphyxiativeF=$chokeF
+			existentialF=$mindF
+		anim: $anim
+			sprite=$sprite
+			frames=$frames
+			firstFrame=$first
+			framerate=$framerate
+			sfx=$sfx
+			centerEffect=$center
+		impact: $impact
+			sprite=$sprite
+			frames=$frames
+			firstFrame=$first
+			framerate=$framerate
+			sfx=$sfx
+			centerEffect=$center
