@@ -18,3 +18,12 @@ test:
 		t1: ya
 		t2: ye
 		t4: yo
+
+t1:
+	a:alpha
+	b:beta
+t1:
+	a:ALPHA
+	b:BETA
+t2:
+	d:delta

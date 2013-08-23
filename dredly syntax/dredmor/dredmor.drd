@@ -40,6 +40,23 @@ test-W:
 			pb:
 				v=t4
 				t4=$t4
+		@t1
+		@t2
+
+t1-R:
+	A:STR
+	B:STR
+t1-W:
+	t1:
+		A:V=$A
+		B:V=$B
+t2-R:
+	C:STR
+	D:STR
+t2-W:
+	t2:
+		C:V=$C
+		D:V=$D
 
 # mod.xml
 info-R:
