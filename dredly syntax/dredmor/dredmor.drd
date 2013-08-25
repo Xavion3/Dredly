@@ -1,4 +1,24 @@
 # DoD Syntax file.
+# Line Numbers
+# Tests     - 22
+# Mod Info  - 81
+# Recipes   - 103
+# Encrusts  - 135
+# Skills    - 380
+# Spells    - 662
+# Templates - 1317
+# Items     - 1338
+#   Food      - 1351
+#   Weapons   - 1381
+#   Armour    - 1635
+#   Thrown    - 1890
+#   Potions   - 1964
+#   Traps     - 1988
+#   Materials - 2027
+# Powers    - 2066
+# Rooms     - 2077
+# Monsters  - 2438
+
 # TESTING
 test-R:
 	gvar: STR
@@ -391,6 +411,7 @@ skill-R:
 		(learn|)recipe: STR
 		(give|)item: STR
 		desc(ription|): STR
+		spell: STR
 		p(rimary(buff|)|buff): 
 			Bur(liness|): NUM-INT
 			Sag(acity|): NUM-INT
@@ -457,7 +478,6 @@ skill-R:
 			(Aether(eal|)|Magic): NUM-INT
 			(Asphyx(iative|)|Choke|Suffocat(e|ion)|Air): NUM-INT
 			(Exist(ential|)|Mind): NUM-INT
-		spell: STR	
 		(on|)buff(|on):
 			(type|on): STR-STRICT-CI
 				block(Buff|)
@@ -874,6 +894,160 @@ spell-R:
 		framerate: NUM-INT-CAP=1/
 		sfx: STR
 		center(Effect|): BOOL
+	buff:
+		useTimer: BOOL
+		time: NUM-INT-CAP=1/
+		stacksize: NUM-INT-CAP=1/
+		self: BOOL
+		icon: STR
+		smallicon: STR
+		allowstacking: BOOL
+		bad: BOOL
+		brittle: NUM-INT-CAP=1/
+		removable: BOOL
+		manaUpkeep: NUM-INT-CAP=0/
+		zorkmidUpkeep: NUM-INT
+		tag: STR
+		halo:
+			name: STR
+			first: NUM-INT-CAP=0/
+			num: NUM-INT-CAP=0/
+			frameRate: NUM-INT-CAP=1/
+		# TODO (Q): These 5 are marked as NOT NECESSARY
+		invisible: BOOL
+		senseWalls: BOOL
+		senseTrap: BOOL
+		senseMap: BOOL
+		mute: BOOL
+		polymorph: STR
+		payback:
+			paybackF: NUM-FLOAT-CAP=0/
+			secondaryscale: STR-STRICT-CI
+				(Health|HP)
+				(Mana|MP)
+				Melee( |)Power
+				Magic( |)Power
+				Crit(ical|)
+				Hay(wire|)
+				Dodge
+				Block
+				Counter
+				(Enemy Dodge Reduction|EDR)
+				(Armor( Absorbtion|)|AA)
+				(Magic( |)|M(| )|)Resist
+				Sneak(iness|)
+				(Health|HP)( |)Regen
+				(Mana|MP)( |)Regen
+				(Wand( |)Burnout|Blank|Unused)
+				Trap( |)Aff(inity|)
+				Trap( |)Sense( Radius|)
+				Sight(( |)Radius|)
+				Smith(ing|)
+				Tinker(ing|)
+				Alc(h(emy|)|)
+				(Magic( |)|M(| )|)Reflect
+				Wand(( |)Crafting|)
+				war(rior|)
+				rog(ue|)
+				wiz(ard|)
+			primaryscale: STR-STRICT-CI
+				Bur(liness|)
+				Sag(acity|)
+				Nim(bleness|)
+				Cad(dishness|)
+				Stu(bbornness|)
+				Sav(vy|)
+		zorkmid(|Absorbtion):
+			z(orkmids|)P(er|)D(amage|): NUM-INT
+			damageCap: NUM-INT-CAP=1/
+			maxRatio: NUM-FLOAT-CAP=0/1
+		description: STR
+		p(rimary(buff|)|buff): 
+			Bur(liness|): NUM-INT
+			Sag(acity|): NUM-INT
+			Nim(bleness|): NUM-INT
+			Cad(dishness|): NUM-INT
+			Stu(bbornness|): NUM-INT
+			Sav(vy|): NUM-INT
+		s(econdary(buff|)|buff):
+			(Health|HP): NUM-INT
+			(Mana|MP): NUM-INT
+			Melee(_|)Power: NUM-INT
+			Magic(_|)Power: NUM-INT
+			Crit(ical|): NUM-INT
+			Hay(wire|): NUM-INT
+			Dodge: NUM-INT
+			Block: NUM-INT
+			Counter: NUM-INT
+			(Enemy_Dodge_Reduction|EDR): NUM-INT
+			(Armor(_Absorbtion|)|AA): NUM-INT
+			(Magic(_|)|M(|_)|)Resist: NUM-INT
+			Sneak(iness|): NUM-INT
+			(Health|HP)(_|)Regen: NUM-INT
+			(Mana|MP)(_|)Regen: NUM-INT
+			(Wand(_|)Burnout|Blank|Unused): NUM-INT
+			Trap(_|)Aff(inity|): NUM-INT
+			Trap(_|)Sense(_Radius|): NUM-INT
+			Sight((_|)Radius|): NUM-INT
+			Smith(ing|): NUM-INT
+			Tinker(ing|): NUM-INT
+			Alc(h(emy|)|): NUM-INT
+			(Magic(_|)|M(|_)|)Reflect: NUM-INT
+			Wand((_|)Crafting|): NUM-INT
+		damage:
+			Crush(ing|): NUM-INT
+			Slash(ing|): NUM-INT
+			Pierc(ing|e): NUM-INT
+			Blast(ing|): NUM-INT
+			(Hyperborean|Ice|Cold): NUM-INT
+			(Conflagratory|Fire): NUM-INT
+			(Volt(aic|)|Elec(|tric)|Lightning): NUM-INT
+			(Toxic|Poison): NUM-INT
+			(Right(eous|)|Holy): NUM-INT
+			(Necro(mantic|)|death): NUM-INT
+			Acid(ic|): NUM-INT
+			(Putrefy(ing|)|Rot|Decay): NUM-INT
+			(Transmut(ative|e)|Change): NUM-INT
+			(Aether(eal|)|Magic): NUM-INT
+			(Asphyx(iative|)|Choke|Suffocat(e|ion)|Air): NUM-INT
+			(Exist(ential|)|Mind): NUM-INT
+		resist:
+			Crush(ing|): NUM-INT
+			Slash(ing|): NUM-INT
+			Pierc(ing|e): NUM-INT
+			Blast(ing|): NUM-INT
+			(Hyperborean|Ice|Cold): NUM-INT
+			(Conflagratory|Fire): NUM-INT
+			(Volt(aic|)|Elec(|tric)|Lightning): NUM-INT
+			(Toxic|Poison): NUM-INT
+			(Right(eous|)|Holy): NUM-INT
+			(Necro(mantic|)|Death): NUM-INT
+			Acid(ic|): NUM-INT
+			(Putrefy(ing|)|Rot|Decay): NUM-INT
+			(Transmut(ative|e)|Change): NUM-INT
+			(Aether(eal|)|Magic): NUM-INT
+			(Asphyx(iative|)|Choke|Suffocat(e|ion)|Air): NUM-INT
+			(Exist(ential|)|Mind): NUM-INT
+		(on|)buff(|on):
+			(type|on): STR-STRICT-CI
+				block(Buff|)
+				booze(Buff|)
+				consume(Buff|)
+				counter(Buff|)
+				crit(ical|)(Buff|)
+				(cross|)bow(Shot|)(Buff|)
+				dodge(Buff|)
+				food(Buff|)
+				throw(n|)(Buff|)
+				(trigger|)(On|)Cast
+				trigger(On|)Dodge
+				p(layer|)Hit(Effect|)(Buff|)
+				(target|on)Hit(Effect|)(Buff|)
+				(target|on)Kill(Buff|)
+			(percent(age|)|chance): NUM-INT-CAP=0/100
+			(name|spell): STR
+			(after|delay): NUM-INT-CAP=1/
+			taxa: STR
 
 spell-W:
 	spell:
@@ -973,3 +1147,1902 @@ spell-W:
 			framerate=$framerate
 			sfx=$sfx
 			centerEffect=$center
+		buff: $buff
+			useTimer=$useTimer
+			time=$time
+			stacksize=$stacksize
+			self=$self
+			icon=$icon
+			smallicon=$smallicon
+			allowstacking=$allowstacking
+			bad=$bad
+			brittle=$brittle
+			removable=$removable
+			manaUpkeep=$manaUpkeep
+			zorkmidUpkeep=$zormkidUpkeep
+			tag=$tag
+			description:text=$description
+			halo: $halo
+				name=$name
+				first=$first
+				num=$num
+				frameRate=$frameRate
+			invisible:amount=$invisible
+			senseWalls:amount=$senseWalls
+			senseTrap:amount=$senseTrap
+			senseMap:amount=$senseMap
+			mute:amount=$mute
+			polymorph:name=$polymorph
+			payback: $payback
+				paybackF=$paybackF
+				secondaryscale=$secondaryscale?i
+			primaryscale=$primaryscale?i
+			zorkmidAbsorbtion: $zorkmidAbsorbtion
+				zorkmidsPerDamage=$zorkmidsPerDamage
+				damageCap=$damageCap
+				maxRatio=$maxRatio
+			!OBJECT: $pbuff
+				primarybuff:
+					id=0
+					amount=$bur
+				primarybuff:
+					id=1
+					amount=$sag
+				primarybuff:
+					id=2
+					amount=$nim
+				primarybuff:
+					id=3
+					amount=$cad
+				primarybuff:
+					id=4
+					amount=$stu
+				primarybuff:
+					id=5
+					amount=$sav
+			!OBJECT: $sbuff
+				secondarybuff:
+					id=0
+					amount=$HP
+				secondarybuff:
+					id=1
+					amount=$MP
+				secondarybuff:
+					id=2
+					amount=$Melee_Power
+				secondarybuff:
+					id=3
+					amount=$Magic_Power
+				secondarybuff:
+					id=4
+					amount=$crit
+				secondarybuff:
+					id=5
+					amount=$haywire
+				secondarybuff:
+					id=6
+					amount=$Dodge
+				secondarybuff:
+					id=7
+					amount=$Block
+				secondarybuff:
+					id=8
+					amount=$Counter
+				secondarybuff:
+					id=9
+					amount=$EDR
+				secondarybuff:
+					id=10
+					amount=$AA
+				secondarybuff:
+					id=11
+					amount=$MResist
+				secondarybuff:
+					id=12
+					amount=$Sneak
+				secondarybuff:
+					id=13
+					amount=$HPRegen
+				secondarybuff:
+					id=14
+					amount=$MPRegen
+				secondarybuff:
+					id=15
+					amount=$unused
+				secondarybuff:
+					id=16
+					amount=$TrapAff
+				secondarybuff:
+					id=17
+					amount=$TrapSense
+				secondarybuff:
+					id=18
+					amount=$Sight
+				secondarybuff:
+					id=19
+					amount=$Smith
+				secondarybuff:
+					id=20
+					amount=$Tinker
+				secondarybuff:
+					id=21
+					amount=$Alch
+				secondarybuff:
+					id=22
+					amount=$MReflect
+				secondarybuff:
+					id=23
+					amount=$Wand
+			damagebuff: $damage
+				crushing=$crush
+				slashing=$slash
+				piercing=$pierce
+				blasting=$blast
+				hyperborean=$ice
+				conflagratory=$fire
+				voltaic=$electric
+				toxic=$toxic
+				righteous=$holy
+				necromantic=$necro
+				acidic=$acid
+				putrefying=$decay
+				transmutative=$change
+				aethereal=$aether
+				asphyxiative=$choke
+				existential=$mind
+			resistbuff: $resist
+				crushing=$crush
+				slashing=$slash
+				piercing=$pierce
+				blasting=$blast
+				hyperborean=$ice
+				conflagratory=$fire
+				voltaic=$electric
+				toxic=$toxic
+				righteous=$holy
+				necromantic=$necro
+				acidic=$acid
+				putrefying=$decay
+				transmutative=$change
+				aethereal=$aether
+				asphyxiative=$choke
+				existential=$mind
+			blockBuff: $buffon
+				!NAME=$type>0
+				percentage=$chance
+				name=$spell
+				after=$after
+				taxa=$taxa
+
+# Templates
+templates-W:
+	!FILENAME=mod/manTemplateDB.xml
+	templateDB:
+		@template
+
+template-R:
+	name: NUM-INT-CAP=0/
+	width: NUM-INT-CAP=1/
+	height: NUM-INT-CAP=1/
+	affectsPlayer: BOOL
+	row: STR
+
+template-W:
+	template:
+		width=$width
+		height=$height
+		name=$name
+		affectsPlayer=$affectsPlayer
+		row:text=$row
+
+# Items
+items-W:
+	!FILENAME=mod/itemDB.xml
+	itemDB: 
+		@food
+		@weapon
+		@armour
+		@thrown
+		@potion
+		@trap
+		@material
+		@power
+
+food-R:
+	name: STR
+	icon(File|): STR
+	special: BOOL
+	price: NUM-INT-CAP=1/
+	description: STR
+	craftouput: BOOL
+	override(Class|)(Name|): STR
+	level: NUM-INT-CAP=0/15
+	(hp|health): NUM-INT-CAP=0/
+	(mp|mana): NUM-INT-CAP=0/
+	meat: BOOL
+	effect: STR
+
+food-W:
+	item:
+		name=$name
+		iconFile=$icon
+		special=$special
+		craftoutput=$craftoutput
+		overrideClassName=$override
+		price:amount=$price
+		description:text=$description
+		level=$level
+		food:
+			hp=$hp
+			mp=$mp
+			meat=$meat
+			effect=$effect
+
+weapon-R:
+	name: STR
+	icon(File|): STR
+	special: BOOL
+	price: NUM-INT-CAP=1/
+	description: STR
+	craftouput: BOOL
+	override(Class|)(Name|): STR
+	level: NUM-INT-CAP=0/15
+	type: STR-STRICT-CI
+		Sword(s|)
+		Axe(s|)
+		Mace(s|)
+		Sta(ves|ff)
+		Bow(s|)
+		Throw(ing|n)
+		(Bolt|Arrow)(s|)
+		Dagger(s|)
+		Polearm(s|)
+	artifact: BOOL
+	quality: NUM-INT-CAP=1/
+	damage:
+		Crush(ing|): NUM-INT
+		Slash(ing|): NUM-INT
+		Pierc(ing|e): NUM-INT
+		Blast(ing|): NUM-INT
+		(Hyperborean|Ice|Cold): NUM-INT
+		(Conflagratory|Fire): NUM-INT
+		(Volt(aic|)|Elec(|tric)|Lightning): NUM-INT
+		(Toxic|Poison): NUM-INT
+		(Right(eous|)|Holy): NUM-INT
+		(Necro(mantic|)|death): NUM-INT
+		Acid(ic|): NUM-INT
+		(Putrefy(ing|)|Rot|Decay): NUM-INT
+		(Transmut(ative|e)|Change): NUM-INT
+		(Aether(eal|)|Magic): NUM-INT
+		(Asphyx(iative|)|Choke|Suffocat(e|ion)|Air): NUM-INT
+		(Exist(ential|)|Mind): NUM-INT
+	p(rimary(buff|)|buff): 
+		Bur(liness|): NUM-INT
+		Sag(acity|): NUM-INT
+		Nim(bleness|): NUM-INT
+		Cad(dishness|): NUM-INT
+		Stu(bbornness|): NUM-INT
+		Sav(vy|): NUM-INT
+	s(econdary(buff|)|buff):
+		(Health|HP): NUM-INT
+		(Mana|MP): NUM-INT
+		Melee(_|)Power: NUM-INT
+		Magic(_|)Power: NUM-INT
+		Crit(ical|): NUM-INT
+		Hay(wire|): NUM-INT
+		Dodge: NUM-INT
+		Block: NUM-INT
+		Counter: NUM-INT
+		(Enemy_Dodge_Reduction|EDR): NUM-INT
+		(Armor(_Absorbtion|)|AA): NUM-INT
+		(Magic(_|)|M(|_)|)Resist: NUM-INT
+		Sneak(iness|): NUM-INT
+		(Health|HP)(_|)Regen: NUM-INT
+		(Mana|MP)(_|)Regen: NUM-INT
+		(Wand(_|)Burnout|Blank|Unused): NUM-INT
+		Trap(_|)Aff(inity|): NUM-INT
+		Trap(_|)Sense(_Radius|): NUM-INT
+		Sight((_|)Radius|): NUM-INT
+		Smith(ing|): NUM-INT
+		Tinker(ing|): NUM-INT
+		Alc(h(emy|)|): NUM-INT
+		(Magic(_|)|M(|_)|)Reflect: NUM-INT
+		Wand((_|)Crafting|): NUM-INT
+	resist:
+		Crush(ing|): NUM-INT
+		Slash(ing|): NUM-INT
+		Pierc(ing|e): NUM-INT
+		Blast(ing|): NUM-INT
+		(Hyperborean|Ice|Cold): NUM-INT
+		(Conflagratory|Fire): NUM-INT
+		(Volt(aic|)|Elec(|tric)|Lightning): NUM-INT
+		(Toxic|Poison): NUM-INT
+		(Right(eous|)|Holy): NUM-INT
+		(Necro(mantic|)|Death): NUM-INT
+		Acid(ic|): NUM-INT
+		(Putrefy(ing|)|Rot|Decay): NUM-INT
+		(Transmut(ative|e)|Change): NUM-INT
+		(Aether(eal|)|Magic): NUM-INT
+		(Asphyx(iative|)|Choke|Suffocat(e|ion)|Air): NUM-INT
+		(Exist(ential|)|Mind): NUM-INT
+	(on|)buff(|on):
+		(type|on): STR-STRICT-CI
+			block(Buff|)
+			booze(Buff|)
+			consume(Buff|)
+			counter(Buff|)
+			crit(ical|)(Buff|)
+			(cross|)bow(Shot|)(Buff|)
+			dodge(Buff|)
+			food(Buff|)
+			throw(n|)(Buff|)
+			(trigger|)(On|)Cast
+			trigger(On|)Dodge
+			p(layer|)Hit(Effect|)(Buff|)
+			(target|on)Hit(Effect|)(Buff|)
+			(target|on)Kill(Buff|)
+		(percent(age|)|chance): NUM-INT-CAP=0/100
+		(name|spell): STR
+		(after|delay): NUM-INT-CAP=1/
+		taxa: STR
+
+weapon-W:
+	item:
+		name=$name
+		iconFile=$icon
+		special=$special
+		craftoutput=$craftoutput
+		overrideClassName=$override
+		price:amount=$price
+		description:text=$description
+		level=$level
+		type=$type?i
+		artifact=$artifact
+		artifact:quality=$quality
+		weapon: $damage
+			crushing=$crush
+			slashing=$slash
+			piercing=$pierce
+			blasting=$blast
+			hyperborean=$ice
+			conflagratory=$fire
+			voltaic=$electric
+			toxic=$toxic
+			righteous=$holy
+			necromantic=$necro
+			acidic=$acid
+			putrefying=$decay
+			transmutative=$change
+			aethereal=$aether
+			asphyxiative=$choke
+			existential=$mind
+		!OBJECT: $pbuff
+			primarybuff:
+				id=0
+				amount=$bur
+			primarybuff:
+				id=1
+				amount=$sag
+			primarybuff:
+				id=2
+				amount=$nim
+			primarybuff:
+				id=3
+				amount=$cad
+			primarybuff:
+				id=4
+				amount=$stu
+			primarybuff:
+				id=5
+				amount=$sav
+		!OBJECT: $sbuff
+			secondarybuff:
+				id=0
+				amount=$HP
+			secondarybuff:
+				id=1
+				amount=$MP
+			secondarybuff:
+				id=2
+				amount=$Melee_Power
+			secondarybuff:
+				id=3
+				amount=$Magic_Power
+			secondarybuff:
+				id=4
+				amount=$crit
+			secondarybuff:
+				id=5
+				amount=$haywire
+			secondarybuff:
+				id=6
+				amount=$Dodge
+			secondarybuff:
+				id=7
+				amount=$Block
+			secondarybuff:
+				id=8
+				amount=$Counter
+			secondarybuff:
+				id=9
+				amount=$EDR
+			secondarybuff:
+				id=10
+				amount=$AA
+			secondarybuff:
+				id=11
+				amount=$MResist
+			secondarybuff:
+				id=12
+				amount=$Sneak
+			secondarybuff:
+				id=13
+				amount=$HPRegen
+			secondarybuff:
+				id=14
+				amount=$MPRegen
+			secondarybuff:
+				id=15
+				amount=$unused
+			secondarybuff:
+				id=16
+				amount=$TrapAff
+			secondarybuff:
+				id=17
+				amount=$TrapSense
+			secondarybuff:
+				id=18
+				amount=$Sight
+			secondarybuff:
+				id=19
+				amount=$Smith
+			secondarybuff:
+				id=20
+				amount=$Tinker
+			secondarybuff:
+				id=21
+				amount=$Alch
+			secondarybuff:
+				id=22
+				amount=$MReflect
+			secondarybuff:
+				id=23
+				amount=$Wand
+		resistbuff: $resist
+			crushing=$crush
+			slashing=$slash
+			piercing=$pierce
+			blasting=$blast
+			hyperborean=$ice
+			conflagratory=$fire
+			voltaic=$electric
+			toxic=$toxic
+			righteous=$holy
+			necromantic=$necro
+			acidic=$acid
+			putrefying=$decay
+			transmutative=$change
+			aethereal=$aether
+			asphyxiative=$choke
+			existential=$mind
+		blockBuff: $buffon
+			!NAME=$type>0
+			percentage=$chance
+			name=$spell
+			after=$after
+			taxa=$taxa
+
+armour-R:
+	name: STR
+	icon(File|): STR
+	special: BOOL
+	price: NUM-INT-CAP=1/
+	description: STR
+	craftouput: BOOL
+	override(Class|)(Name|): STR
+	artifact: BOOL
+	quality: NUM-INT-CAP=1/
+	level: NUM-INT-CAP=0/15
+	type: STR-STRICT-CI
+		(head|helm(|et))
+		chest
+		leg(s|)
+		(hand|glove)(s|)
+		(f(ee|oo)t|shoe)(|s)
+		neck(|lace)
+		ring
+		shield
+		sleeve
+	p(rimary(buff|)|buff): 
+		Bur(liness|): NUM-INT
+		Sag(acity|): NUM-INT
+		Nim(bleness|): NUM-INT
+		Cad(dishness|): NUM-INT
+		Stu(bbornness|): NUM-INT
+		Sav(vy|): NUM-INT
+	s(econdary(buff|)|buff):
+		(Health|HP): NUM-INT
+		(Mana|MP): NUM-INT
+		Melee(_|)Power: NUM-INT
+		Magic(_|)Power: NUM-INT
+		Crit(ical|): NUM-INT
+		Hay(wire|): NUM-INT
+		Dodge: NUM-INT
+		Block: NUM-INT
+		Counter: NUM-INT
+		(Enemy_Dodge_Reduction|EDR): NUM-INT
+		(Armor(_Absorbtion|)|AA): NUM-INT
+		(Magic(_|)|M(|_)|)Resist: NUM-INT
+		Sneak(iness|): NUM-INT
+		(Health|HP)(_|)Regen: NUM-INT
+		(Mana|MP)(_|)Regen: NUM-INT
+		(Wand(_|)Burnout|Blank|Unused): NUM-INT
+		Trap(_|)Aff(inity|): NUM-INT
+		Trap(_|)Sense(_Radius|): NUM-INT
+		Sight((_|)Radius|): NUM-INT
+		Smith(ing|): NUM-INT
+		Tinker(ing|): NUM-INT
+		Alc(h(emy|)|): NUM-INT
+		(Magic(_|)|M(|_)|)Reflect: NUM-INT
+		Wand((_|)Crafting|): NUM-INT
+	damage:
+		Crush(ing|): NUM-INT
+		Slash(ing|): NUM-INT
+		Pierc(ing|e): NUM-INT
+		Blast(ing|): NUM-INT
+		(Hyperborean|Ice|Cold): NUM-INT
+		(Conflagratory|Fire): NUM-INT
+		(Volt(aic|)|Elec(|tric)|Lightning): NUM-INT
+		(Toxic|Poison): NUM-INT
+		(Right(eous|)|Holy): NUM-INT
+		(Necro(mantic|)|death): NUM-INT
+		Acid(ic|): NUM-INT
+		(Putrefy(ing|)|Rot|Decay): NUM-INT
+		(Transmut(ative|e)|Change): NUM-INT
+		(Aether(eal|)|Magic): NUM-INT
+		(Asphyx(iative|)|Choke|Suffocat(e|ion)|Air): NUM-INT
+		(Exist(ential|)|Mind): NUM-INT
+	resist:
+		Crush(ing|): NUM-INT
+		Slash(ing|): NUM-INT
+		Pierc(ing|e): NUM-INT
+		Blast(ing|): NUM-INT
+		(Hyperborean|Ice|Cold): NUM-INT
+		(Conflagratory|Fire): NUM-INT
+		(Volt(aic|)|Elec(|tric)|Lightning): NUM-INT
+		(Toxic|Poison): NUM-INT
+		(Right(eous|)|Holy): NUM-INT
+		(Necro(mantic|)|Death): NUM-INT
+		Acid(ic|): NUM-INT
+		(Putrefy(ing|)|Rot|Decay): NUM-INT
+		(Transmut(ative|e)|Change): NUM-INT
+		(Aether(eal|)|Magic): NUM-INT
+		(Asphyx(iative|)|Choke|Suffocat(e|ion)|Air): NUM-INT
+		(Exist(ential|)|Mind): NUM-INT
+	(on|)buff(|on):
+		(type|on): STR-STRICT-CI
+			block(Buff|)
+			booze(Buff|)
+			consume(Buff|)
+			counter(Buff|)
+			crit(ical|)(Buff|)
+			(cross|)bow(Shot|)(Buff|)
+			dodge(Buff|)
+			food(Buff|)
+			throw(n|)(Buff|)
+			(trigger|)(On|)Cast
+			trigger(On|)Dodge
+			p(layer|)Hit(Effect|)(Buff|)
+			(target|on)Hit(Effect|)(Buff|)
+			(target|on)Kill(Buff|)
+		(percent(age|)|chance): NUM-INT-CAP=0/100
+		(name|spell): STR
+		(after|delay): NUM-INT-CAP=1/
+		taxa: STR
+		
+armour-W:
+	item:
+		name=$name
+		iconFile=$icon
+		special=$special
+		craftoutput=$craftoutput
+		overrideClassName=$override
+		price:amount=$price
+		description:text=$description
+		artifact=$artifact
+		artifact:quality=$quality
+		armour:
+			level=$level
+			type=$type
+		!OBJECT: $pbuff
+			primarybuff:
+				id=0
+				amount=$bur
+			primarybuff:
+				id=1
+				amount=$sag
+			primarybuff:
+				id=2
+				amount=$nim
+			primarybuff:
+				id=3
+				amount=$cad
+			primarybuff:
+				id=4
+				amount=$stu
+			primarybuff:
+				id=5
+				amount=$sav
+		!OBJECT: $sbuff
+			secondarybuff:
+				id=0
+				amount=$HP
+			secondarybuff:
+				id=1
+				amount=$MP
+			secondarybuff:
+				id=2
+				amount=$Melee_Power
+			secondarybuff:
+				id=3
+				amount=$Magic_Power
+			secondarybuff:
+				id=4
+				amount=$crit
+			secondarybuff:
+				id=5
+				amount=$haywire
+			secondarybuff:
+				id=6
+				amount=$Dodge
+			secondarybuff:
+				id=7
+				amount=$Block
+			secondarybuff:
+				id=8
+				amount=$Counter
+			secondarybuff:
+				id=9
+				amount=$EDR
+			secondarybuff:
+				id=10
+				amount=$AA
+			secondarybuff:
+				id=11
+				amount=$MResist
+			secondarybuff:
+				id=12
+				amount=$Sneak
+			secondarybuff:
+				id=13
+				amount=$HPRegen
+			secondarybuff:
+				id=14
+				amount=$MPRegen
+			secondarybuff:
+				id=15
+				amount=$unused
+			secondarybuff:
+				id=16
+				amount=$TrapAff
+			secondarybuff:
+				id=17
+				amount=$TrapSense
+			secondarybuff:
+				id=18
+				amount=$Sight
+			secondarybuff:
+				id=19
+				amount=$Smith
+			secondarybuff:
+				id=20
+				amount=$Tinker
+			secondarybuff:
+				id=21
+				amount=$Alch
+			secondarybuff:
+				id=22
+				amount=$MReflect
+			secondarybuff:
+				id=23
+				amount=$Wand
+		damagebuff: $damage
+			crushing=$crush
+			slashing=$slash
+			piercing=$pierce
+			blasting=$blast
+			hyperborean=$ice
+			conflagratory=$fire
+			voltaic=$electric
+			toxic=$toxic
+			righteous=$holy
+			necromantic=$necro
+			acidic=$acid
+			putrefying=$decay
+			transmutative=$change
+			aethereal=$aether
+			asphyxiative=$choke
+			existential=$mind
+		resistbuff: $resist
+			crushing=$crush
+			slashing=$slash
+			piercing=$pierce
+			blasting=$blast
+			hyperborean=$ice
+			conflagratory=$fire
+			voltaic=$electric
+			toxic=$toxic
+			righteous=$holy
+			necromantic=$necro
+			acidic=$acid
+			putrefying=$decay
+			transmutative=$change
+			aethereal=$aether
+			asphyxiative=$choke
+			existential=$mind
+		blockBuff: $buffon
+			!NAME=$type>0
+			percentage=$chance
+			name=$spell
+			after=$after
+			taxa=$taxa
+
+thrown-R:
+	name: STR
+	icon(File|): STR
+	special: BOOL
+	price: NUM-INT-CAP=1/
+	description: STR
+	craftouput: BOOL
+	override(Class|)(Name|): STR
+	level: NUM-INT-CAP=0/15
+	type: STR-STRICT-CI
+		Sword(s|)
+		Axe(s|)
+		Mace(s|)
+		Sta(ves|ff)
+		Bow(s|)
+		Throw(ing|n)
+		(Bolt|Arrow)(s|)
+		Dagger(s|)
+		Polearm(s|)
+	maxstack: NUM-INT-CAP=1/
+	(|on)hit: STR
+	(can|)TargetFloor: BOOL
+	thrown(|Image): STR
+	damage:
+		Crush(ing|): NUM-INT
+		Slash(ing|): NUM-INT
+		Pierc(ing|e): NUM-INT
+		Blast(ing|): NUM-INT
+		(Hyperborean|Ice|Cold): NUM-INT
+		(Conflagratory|Fire): NUM-INT
+		(Volt(aic|)|Elec(|tric)|Lightning): NUM-INT
+		(Toxic|Poison): NUM-INT
+		(Right(eous|)|Holy): NUM-INT
+		(Necro(mantic|)|death): NUM-INT
+		Acid(ic|): NUM-INT
+		(Putrefy(ing|)|Rot|Decay): NUM-INT
+		(Transmut(ative|e)|Change): NUM-INT
+		(Aether(eal|)|Magic): NUM-INT
+		(Asphyx(iative|)|Choke|Suffocat(e|ion)|Air): NUM-INT
+		(Exist(ential|)|Mind): NUM-INT
+
+thrown-W:
+	item:
+		name=$name
+		iconFile=$icon
+		special=$special
+		craftoutput=$craftoutput
+		overrideClassName=$override
+		price:amount=$price
+		description:text=$description
+		level=$level
+		type=$type?i
+		maxstack=$maxstack
+		weapon: $damage
+			crushing=$crush
+			slashing=$slash
+			piercing=$pierce
+			blasting=$blast
+			hyperborean=$ice
+			conflagratory=$fire
+			voltaic=$electric
+			toxic=$toxic
+			righteous=$holy
+			necromantic=$necro
+			acidic=$acid
+			putrefying=$decay
+			transmutative=$change
+			aethereal=$aether
+			asphyxiative=$choke
+			existential=$mind
+			hit=$onhit
+			thrown=$thrownImage
+			canTargetFloor=$canTargetFloor
+
+potion-R:
+	name: STR
+	icon(File|): STR
+	special: BOOL
+	price: NUM-INT-CAP=1/
+	description: STR
+	craftouput: BOOL
+	override(Class|)(Name|): STR
+	level: NUM-INT-CAP=0/15
+	spell: STR
+
+potion-W:
+	item:
+		name=$name
+		iconFile=$icon
+		special=$special
+		craftoutput=$craftoutput
+		overrideClassName=$override
+		price:amount=$price
+		description:text=$description
+		level=$level
+		potion:
+			spell=$spell
+
+trap-R:
+	name: STR
+	icon(File|): STR
+	special: BOOL
+	price: NUM-INT-CAP=1/
+	description: STR
+	craftouput: BOOL
+	override(Class|)(Name|): STR
+	trigger: STR-STRICT-CI
+		once
+		always
+	(cast(s|)|spell): STR
+	level: NUM-INT-CAP=0/15
+	origin(|image): STR
+	(origin|)Facing: STR-STRICT-CI
+		South
+		East
+		West
+	(origin|)Mount: STR-STRICT-CI
+		Wall
+		Floor
+
+trap-W:
+	item:
+		name=$name
+		iconFile=$icon
+		special=$special
+		craftoutput=$craftoutput
+		overrideClassName=$override
+		price:amount=$price
+		description:text=$description
+		trap:
+			trigger=$trigger
+			casts=$spell
+			level=$level
+			origin=$origin
+			originFacing=$facing>0
+			originMount=$mount>0
+
+material-R:
+	name: STR
+	icon(File|): STR
+	special: BOOL
+	price: NUM-INT-CAP=1/
+	description: STR
+	craftouput: BOOL
+	override(Class|)(Name|): STR
+	level: NUM-INT-CAP=0/15
+	alchemical: BOOL
+	gem:
+		value: NUM-INT
+		worthless: STR
+	mushroom:
+		value: NUM-INT
+		worthless: STR
+		spell: STR
+
+material-W:
+	item:
+		name=$name
+		iconFile=$icon
+		special=$special
+		craftoutput=$craftoutput
+		overrideClassName=$override
+		price:amount=$price
+		description:text=$description
+		level=$level
+		alchemical=$alchemical
+		gem: $gem
+			value=$value
+			worthless=$worthless
+		!OBJECT: $mushroom
+			mushroom:
+				value=$value
+				worthless=$worthless
+			casts:
+				spell=$spell
+
+power-R:
+	name: STR
+	desc(ription|): STR
+	spell: STR
+
+power-W:
+	power:
+		name=$name
+		description=$desc
+		spell=$spell
+
+# Rooms
+rooms-W:
+	!FILENAME=mod/rooms.xml
+	roomDB:
+		@room
+
+room-R:
+	name: STR
+	width: NUM-INT-CAP=1/
+	height: NUM-INT-CAP=1/
+	row: STR
+	min(Level|): NUM-INT-CAP=0/15
+	max(Level|): NUM-INT-CAP=0/15
+	special: BOOL
+	nomonsters: BOOL
+	notraps: BOOL
+	notreasure: BOOL
+	noblockers: BOOL
+	shop: BOOL
+	zoo: BOOL
+	clock:
+	# TODO (Q): Ask if this is correct
+		at: STR
+		x: NUM-INT-CAP=0/
+		y: NUM-INT-CAP=0/
+		percent: NUM-INT-CAP=0/100
+		(can(_|)|)push: BOOL
+		id: STR
+		name: STR
+		desc(ription|): STR
+		pass(able|): BOOL
+		vis(block|): BOOL
+		png: STR
+		# TODO (Q): Ask about these
+		pngSprite: STR
+		pngFirst: STR
+		pngNum: STR
+		pngRate: STR
+		pngAnimate: STR
+		initial: NUM-INT-CAP=0/
+		remaining: NUM-INT-CAP=0/
+		started: BOOL
+	customblocker:
+		at: STR
+		x: NUM-INT-CAP=0/
+		y: NUM-INT-CAP=0/
+		percent: NUM-INT-CAP=0/100
+		(can(_|)|)push: BOOL
+		id: STR
+		name: STR
+		desc(ription|): STR
+		pass(able|): BOOL
+		vis(block|): BOOL
+		png: STR
+		pngSprite: STR
+		pngFirst: STR
+		pngNum: STR
+		pngRate: STR
+		pngAnimate: STR
+	custombreakable:
+		at: STR
+		x: NUM-INT-CAP=0/
+		y: NUM-INT-CAP=0/
+		percent: NUM-INT-CAP=0/100
+		(can(_|)|)push: BOOL
+		id: STR
+		name: STR
+		desc(ription|): STR
+		pass(able|): BOOL
+		vis(block|): BOOL
+		png: STR
+		pngSprite: STR
+		pngFirst: STR
+		pngNum: STR
+		pngRate: STR
+		pngAnimate: STR
+		(hitsNeeded(ToBreak|)|health): NUM-INT-CAP=1/
+		hitsTaken: NUM-INT-CAP=0/
+		breaking: STR
+		breakingSprite: STR
+		breakingFirst: STR
+		breakingNum: STR
+		breakingRate: STR
+		breakingAnimate: STR
+		broken: STR
+		brokenSprite: STR
+		brokenFirst: STR
+		brokenNum: STR
+		brokenRate: STR
+		brokenAnimate: STR
+	customengraving:
+		at: STR
+		x: NUM-INT-CAP=0/
+		y: NUM-INT-CAP=0/
+		percent: NUM-INT-CAP=0/100
+		(can(_|)|)push: BOOL
+		id: STR
+		pass(able|): BOOL
+		vis(block|): BOOL
+		png: STR
+		pngSprite: STR
+		pngFirst: STR
+		pngNum: STR
+		pngRate: STR
+		pngAnimate: STR
+	element:
+		at: STR
+		x: NUM-INT-CAP=0/
+		y: NUM-INT-CAP=0/
+		percent: NUM-INT-CAP=0/100
+		(can(_|)|)push: BOOL
+		id: STR
+		type: STR-STRICT-CI
+			bookshelf
+			lever
+			lutefisk(statue|shrine|)
+			portal
+			anvil
+			(statue|quest|inconsequentia)
+			dredmor(statue|)
+			evilchest
+			freezer
+			bbq
+			fountain
+			craft(vending|)
+			food(vending|)
+			bolt(vending|)
+			drink(vending|)
+			throw(vending|)
+			dirt
+		contents: STR
+	horde:
+		at: STR
+		x: NUM-INT-CAP=0/
+		y: NUM-INT-CAP=0/
+		percent: NUM-INT-CAP=0/100
+		(can(_|)|)push: BOOL
+		id: STR
+		name: STR
+		min: NUM-INT-CAP=1/
+		additional: NUM-INT-CAP=0/
+	monster:
+		at: STR
+		x: NUM-INT-CAP=0/
+		y: NUM-INT-CAP=0/
+		percent: NUM-INT-CAP=0/100
+		(can(_|)|)push: BOOL
+		id: STR
+		name: STR
+	lever:
+		at: STR
+		x: NUM-INT-CAP=0/
+		y: NUM-INT-CAP=0/
+		percent: NUM-INT-CAP=0/100
+		(can(_|)|)push: BOOL
+		id: STR
+		activated: BOOL
+	loot:
+		at: STR
+		x: NUM-INT-CAP=0/
+		y: NUM-INT-CAP=0/
+		percent: NUM-INT-CAP=0/100
+		(can(_|)|)push: BOOL
+		id: STR
+		amount: NUM-INT-CAP=1/
+		type: STR-STRICT-CI
+			potion
+			we(p|apon)
+			armo(u|)r
+			food
+			(zorkmids|money)
+			artifact
+			reagent
+			toolkit
+			component
+			bolts
+			wand
+			misc
+		subtype: STR
+		artifact: BOOL
+	pedestal:
+		at: STR
+		x: NUM-INT-CAP=0/
+		y: NUM-INT-CAP=0/
+		percent: NUM-INT-CAP=0/100
+		(can(_|)|)push: BOOL
+		id: STR
+		name: STR
+		text: STR
+	trap:
+		at: STR
+		x: NUM-INT-CAP=0/
+		y: NUM-INT-CAP=0/
+		percent: NUM-INT-CAP=0/100
+		(can(_|)|)push: BOOL
+		id: STR
+		(name|trap): STR
+
+room-W:
+	room:
+		name=$name
+		width=$width
+		height=$height
+		row:text=$row
+		flags:
+			minLevel=$minLevel
+			maxLevel=$maxLevel
+			special=$special
+			nomonsters=$nomonsters
+			notraps=$notraps
+			notreasure=$notreasure
+			noblockers=$noblockers
+			shop=$shop
+			zoo=$zoo
+		clock: $clock
+			at=$at
+			x=$x
+			y=$y
+			percent=$percent
+			can_push=$push
+			id=$id
+			name=$name
+			description=$desc
+			passable=$pass
+			visblock=$vis
+			png=$png
+			pngSprite=$pngSprite
+			pngFirst=$pngFirst
+			pngNum=$pngNum
+			pngRate=$pngRate
+			pngAnimate=$pngAnimate
+			initial=$initial
+			remaining=$remaining
+			started=$started
+		customblocker: $customblocker
+			at=$at
+			x=$x
+			y=$y
+			percent=$percent
+			can_push=$push
+			id=$id
+			name=$name
+			description=$desc
+			passable=$pass
+			visblock=$vis
+			png=$png
+			pngSprite=$pngSprite
+			pngFirst=$pngFirst
+			pngNum=$pngNum
+			pngRate=$pngRate
+			pngAnimate=$pngAnimate
+		custombreakable: $custombreakable
+			at=$at
+			x=$x
+			y=$y
+			percent=$percent
+			can_push=$push
+			id=$id
+			name=$name
+			description=$desc
+			passable=$pass
+			visblock=$vis
+			png=$png
+			pngSprite=$pngSprite
+			pngFirst=$pngFirst
+			pngNum=$pngNum
+			pngRate=$pngRate
+			pngAnimate=$pngAnimate
+			hitsNeededToBreak=$hitsNeeded
+			hitsTaken=$hitsTaken
+			breaking=$breaking
+			breakingSprite=$breakingSprite
+			breakingFirst=$breakingFirst
+			breakingNum=$breakingNum
+			breakingRate=$breakingRate
+			breakingAnimate=$breakingAnimate
+			broken=$broken
+			brokenSprite=$brokenSprite
+			brokenFirst=$brokenFirst
+			brokenNum=$brokenNum
+			brokenRate=$brokenRate
+			brokenAnimate=$brokenAnimate
+		customengraving: $customengraving
+			at=$at
+			x=$x
+			y=$y
+			percent=$percent
+			can_push=$push
+			id=$id
+			passable=$pass
+			visblock=$vis
+			png=$png
+			pngSprite=$pngSprite
+			pngFirst=$pngFirst
+			pngNum=$pngNum
+			pngRate=$pngRate
+			pngAnimate=$pngAnimate
+		element: $element
+			at=$at
+			x=$x
+			y=$y
+			percent=$percent
+			can_push=$push
+			id=$id
+			type=$type>0
+			contents=$contents
+		horde: $horde
+			at=$at
+			x=$x
+			y=$y
+			percent=$percent
+			can_push=$push
+			id=$id
+			name=$name
+			min=$min
+			additional=$additional
+		monster: $monster
+			at=$at
+			x=$x
+			y=$y
+			percent=$percent
+			can_push=$push
+			id=$id
+			name=$name
+		lever: $lever
+			at=$at
+			x=$x
+			y=$y
+			percent=$percent
+			can_push=$push
+			id=$id
+			activated=$activated
+		loot: $loot
+			at=$at
+			x=$x
+			y=$y
+			percent=$percent
+			can_push=$push
+			id=$id
+			amount=$amount
+			type=$type>0
+			subtype=$subtype
+			artifact=$artifact
+		pedestal: $pedestal
+			at=$at
+			x=$x
+			y=$y
+			percent=$percent
+			can_push=$push
+			id=$id
+			name=$name
+			text=$text
+		trap: $trap
+			at=$at
+			x=$x
+			y=$y
+			percent=$percent
+			can_push=$push
+			id=$id
+			name=$name
+
+# Monsters
+monsters-W:
+	!FILENAME=mod/monDB.xml
+	monDB:
+		@monster
+
+monster-R:
+	name: STR
+	level: NUM-INT-CAP=0/15
+	tiny: BOOL
+# TODO (Q): What are the options for splat?
+	splat: STR
+	taxa: STR
+	idle(Sprite|):
+		left: STR
+		right: STR
+		up: STR
+		down: STR
+	attack(Sprite|):
+		left: STR
+		right: STR
+		up: STR
+		down: STR
+	hit(Sprite|):
+		left: STR
+		right: STR
+		up: STR
+		down: STR
+	morph(sprites|):
+		eat(Sprite|): STR
+		drink(Sprite|): STR
+		levelupm(Sprite|): STR
+		levelupf(Sprite|): STR
+		vanish(Sprite|): STR
+		longidle(Sprite|): STR
+	die(Sprite|): STR
+	sfx:
+		attack: STR
+		hit: STR
+		die: STR
+		spell: STR
+	ai:
+		aggr(esive(ness|)|o): NUM-INT-CAP=0/
+		span: NUM-INT-CAP=1/
+		spell(Percentage|Chance): NUM-INT-CAP=1/100
+		invis(ible|): BOOL
+	drop:
+		(name|item): STR
+		(percent|chance): NUM-INT-CAP=1/100
+	stats:
+		fighter: NUM-INT-CAP=0/
+		rogue: NUM-INT-CAP=0/
+		wizard: NUM-INT-CAP=0/
+		xp: NUM-INT-CAP=0/
+	spell: STR
+	latin: STR
+	desc(ription|): STR
+	onhit:
+		spell: STR
+		onechancein: NUM-INT-CAP=1/
+	p(rimary(buff|)|buff): 
+		Bur(liness|): NUM-INT
+		Sag(acity|): NUM-INT
+		Nim(bleness|): NUM-INT
+		Cad(dishness|): NUM-INT
+		Stu(bbornness|): NUM-INT
+		Sav(vy|): NUM-INT
+	s(econdary(buff|)|buff):
+		(Health|HP): NUM-INT
+		(Mana|MP): NUM-INT
+		Melee(_|)Power: NUM-INT
+		Magic(_|)Power: NUM-INT
+		Crit(ical|): NUM-INT
+		Hay(wire|): NUM-INT
+		Dodge: NUM-INT
+		Block: NUM-INT
+		Counter: NUM-INT
+		(Enemy_Dodge_Reduction|EDR): NUM-INT
+		(Armor(_Absorbtion|)|AA): NUM-INT
+		(Magic(_|)|M(|_)|)Resist: NUM-INT
+		Sneak(iness|): NUM-INT
+		(Health|HP)(_|)Regen: NUM-INT
+		(Mana|MP)(_|)Regen: NUM-INT
+		(Wand(_|)Burnout|Blank|Unused): NUM-INT
+		Trap(_|)Aff(inity|): NUM-INT
+		Trap(_|)Sense(_Radius|): NUM-INT
+		Sight((_|)Radius|): NUM-INT
+		Smith(ing|): NUM-INT
+		Tinker(ing|): NUM-INT
+		Alc(h(emy|)|): NUM-INT
+		(Magic(_|)|M(|_)|)Reflect: NUM-INT
+		Wand((_|)Crafting|): NUM-INT
+	damage:
+		Crush(ing|): NUM-INT
+		Slash(ing|): NUM-INT
+		Pierc(ing|e): NUM-INT
+		Blast(ing|): NUM-INT
+		(Hyperborean|Ice|Cold): NUM-INT
+		(Conflagratory|Fire): NUM-INT
+		(Volt(aic|)|Elec(|tric)|Lightning): NUM-INT
+		(Toxic|Poison): NUM-INT
+		(Right(eous|)|Holy): NUM-INT
+		(Necro(mantic|)|death): NUM-INT
+		Acid(ic|): NUM-INT
+		(Putrefy(ing|)|Rot|Decay): NUM-INT
+		(Transmut(ative|e)|Change): NUM-INT
+		(Aether(eal|)|Magic): NUM-INT
+		(Asphyx(iative|)|Choke|Suffocat(e|ion)|Air): NUM-INT
+		(Exist(ential|)|Mind): NUM-INT
+	resist(ance|)(s|):
+		Crush(ing|): NUM-INT
+		Slash(ing|): NUM-INT
+		Pierc(ing|e): NUM-INT
+		Blast(ing|): NUM-INT
+		(Hyperborean|Ice|Cold): NUM-INT
+		(Conflagratory|Fire): NUM-INT
+		(Volt(aic|)|Elec(|tric)|Lightning): NUM-INT
+		(Toxic|Poison): NUM-INT
+		(Right(eous|)|Holy): NUM-INT
+		(Necro(mantic|)|Death): NUM-INT
+		Acid(ic|): NUM-INT
+		(Putrefy(ing|)|Rot|Decay): NUM-INT
+		(Transmut(ative|e)|Change): NUM-INT
+		(Aether(eal|)|Magic): NUM-INT
+		(Asphyx(iative|)|Choke|Suffocat(e|ion)|Air): NUM-INT
+		(Exist(ential|)|Mind): NUM-INT
+	monster:
+		tint: NUM-INT-CAP=-360/360
+		name: STR
+		level: NUM-INT-CAP=0/15
+		tiny: BOOL
+		splat: STR
+		taxa: STR
+		idle(Sprite|):
+			left: STR
+			right: STR
+			up: STR
+			down: STR
+		attack(Sprite|):
+			left: STR
+			right: STR
+			up: STR
+			down: STR
+		hit(Sprite|):
+			left: STR
+			right: STR
+			up: STR
+			down: STR
+		morph(sprites|):
+			eat(Sprite|): STR
+			drink(Sprite|): STR
+			levelupm(Sprite|): STR
+			levelupf(Sprite|): STR
+			vanish(Sprite|): STR
+			longidle(Sprite|): STR
+		die(Sprite|): STR
+		sfx:
+			attack: STR
+			hit: STR
+			die: STR
+			spell: STR
+		ai:
+			aggr(esive(ness|)|o): NUM-INT-CAP=0/
+			span: NUM-INT-CAP=1/
+			spell(Percentage|Chance): NUM-INT-CAP=1/100
+			invis(ible|): BOOL
+		drop:
+			(name|item): STR
+			(percent|chance): NUM-INT-CAP=1/100
+		stats:
+			fighter: NUM-INT-CAP=0/
+			rogue: NUM-INT-CAP=0/
+			wizard: NUM-INT-CAP=0/
+			xp: NUM-INT-CAP=0/
+		spell: STR
+		latin: STR
+		desc(ription|): STR
+		onhit:
+			spell: STR
+			onechancein: NUM-INT-CAP=1/
+		p(rimary(buff|)|buff): 
+			Bur(liness|): NUM-INT
+			Sag(acity|): NUM-INT
+			Nim(bleness|): NUM-INT
+			Cad(dishness|): NUM-INT
+			Stu(bbornness|): NUM-INT
+			Sav(vy|): NUM-INT
+		s(econdary(buff|)|buff):
+			(Health|HP): NUM-INT
+			(Mana|MP): NUM-INT
+			Melee(_|)Power: NUM-INT
+			Magic(_|)Power: NUM-INT
+			Crit(ical|): NUM-INT
+			Hay(wire|): NUM-INT
+			Dodge: NUM-INT
+			Block: NUM-INT
+			Counter: NUM-INT
+			(Enemy_Dodge_Reduction|EDR): NUM-INT
+			(Armor(_Absorbtion|)|AA): NUM-INT
+			(Magic(_|)|M(|_)|)Resist: NUM-INT
+			Sneak(iness|): NUM-INT
+			(Health|HP)(_|)Regen: NUM-INT
+			(Mana|MP)(_|)Regen: NUM-INT
+			(Wand(_|)Burnout|Blank|Unused): NUM-INT
+			Trap(_|)Aff(inity|): NUM-INT
+			Trap(_|)Sense(_Radius|): NUM-INT
+			Sight((_|)Radius|): NUM-INT
+			Smith(ing|): NUM-INT
+			Tinker(ing|): NUM-INT
+			Alc(h(emy|)|): NUM-INT
+			(Magic(_|)|M(|_)|)Reflect: NUM-INT
+			Wand((_|)Crafting|): NUM-INT
+		damage:
+			Crush(ing|): NUM-INT
+			Slash(ing|): NUM-INT
+			Pierc(ing|e): NUM-INT
+			Blast(ing|): NUM-INT
+			(Hyperborean|Ice|Cold): NUM-INT
+			(Conflagratory|Fire): NUM-INT
+			(Volt(aic|)|Elec(|tric)|Lightning): NUM-INT
+			(Toxic|Poison): NUM-INT
+			(Right(eous|)|Holy): NUM-INT
+			(Necro(mantic|)|death): NUM-INT
+			Acid(ic|): NUM-INT
+			(Putrefy(ing|)|Rot|Decay): NUM-INT
+			(Transmut(ative|e)|Change): NUM-INT
+			(Aether(eal|)|Magic): NUM-INT
+			(Asphyx(iative|)|Choke|Suffocat(e|ion)|Air): NUM-INT
+			(Exist(ential|)|Mind): NUM-INT
+		resist(ance|)(s|):
+			Crush(ing|): NUM-INT
+			Slash(ing|): NUM-INT
+			Pierc(ing|e): NUM-INT
+			Blast(ing|): NUM-INT
+			(Hyperborean|Ice|Cold): NUM-INT
+			(Conflagratory|Fire): NUM-INT
+			(Volt(aic|)|Elec(|tric)|Lightning): NUM-INT
+			(Toxic|Poison): NUM-INT
+			(Right(eous|)|Holy): NUM-INT
+			(Necro(mantic|)|Death): NUM-INT
+			Acid(ic|): NUM-INT
+			(Putrefy(ing|)|Rot|Decay): NUM-INT
+			(Transmut(ative|e)|Change): NUM-INT
+			(Aether(eal|)|Magic): NUM-INT
+			(Asphyx(iative|)|Choke|Suffocat(e|ion)|Air): NUM-INT
+			(Exist(ential|)|Mind): NUM-INT
+
+
+
+monster-W:
+	monster:
+		name=$name
+		level=$level
+		tiny=$tiny
+		splat=$splat
+		taxa=$taxa
+		idleSprite: $idle
+			left=$left
+			right=$right
+			up=$up
+			down=$down
+		attackSprite: $attack
+			left=$left
+			right=$right
+			up=$up
+			down=$down
+		hitSprite: $hit
+			left=$left
+			right=$right
+			up=$up
+			down=$down
+		morphsprites: $morph
+			eatSprite=$eat
+			drinkSprite=$drink
+			levelupmSprite=$levelupm
+			levelupfSprite=$levelupf
+			vanishSprite=$vanish
+			longidleSprite=$longidle
+		dieSprite: name=$die
+		sfx: $sfx
+			attack=$attack
+			hit=$hit
+			die=$die
+			spell=$spell
+		ai: $ai
+			aggresiveness=$aggro
+			span=$span
+			spellPercentage=$spellChance
+			invisible=$invisible
+		drop: $drop
+			name=$item
+			precent=$chance
+		stats: $stats
+			numFig=$fighter
+			numRog=$rogue
+			numWiz=$wizard
+			xpValue=$xp
+		spell: name=$spell
+		info:
+			latin=$latin
+			description=$desc
+		onhit: $onhit
+			spell=$spell
+			onechancein=$chance
+		damage: $damage
+			crushing=$crush
+			slashing=$slash
+			piercing=$pierce
+			blasting=$blast
+			hyperborean=$ice
+			conflagratory=$fire
+			voltaic=$electric
+			toxic=$toxic
+			righteous=$holy
+			necromantic=$necro
+			acidic=$acid
+			putrefying=$decay
+			transmutative=$change
+			aethereal=$aether
+			asphyxiative=$choke
+			existential=$mind
+		!OBJECT: $pbuff
+			primarybuff:
+				id=0
+				amount=$bur
+			primarybuff:
+				id=1
+				amount=$sag
+			primarybuff:
+				id=2
+				amount=$nim
+			primarybuff:
+				id=3
+				amount=$cad
+			primarybuff:
+				id=4
+				amount=$stu
+			primarybuff:
+				id=5
+				amount=$sav
+		!OBJECT: $sbuff
+			secondarybuff:
+				id=0
+				amount=$HP
+			secondarybuff:
+				id=1
+				amount=$MP
+			secondarybuff:
+				id=2
+				amount=$Melee_Power
+			secondarybuff:
+				id=3
+				amount=$Magic_Power
+			secondarybuff:
+				id=4
+				amount=$crit
+			secondarybuff:
+				id=5
+				amount=$haywire
+			secondarybuff:
+				id=6
+				amount=$Dodge
+			secondarybuff:
+				id=7
+				amount=$Block
+			secondarybuff:
+				id=8
+				amount=$Counter
+			secondarybuff:
+				id=9
+				amount=$EDR
+			secondarybuff:
+				id=10
+				amount=$AA
+			secondarybuff:
+				id=11
+				amount=$MResist
+			secondarybuff:
+				id=12
+				amount=$Sneak
+			secondarybuff:
+				id=13
+				amount=$HPRegen
+			secondarybuff:
+				id=14
+				amount=$MPRegen
+			secondarybuff:
+				id=15
+				amount=$unused
+			secondarybuff:
+				id=16
+				amount=$TrapAff
+			secondarybuff:
+				id=17
+				amount=$TrapSense
+			secondarybuff:
+				id=18
+				amount=$Sight
+			secondarybuff:
+				id=19
+				amount=$Smith
+			secondarybuff:
+				id=20
+				amount=$Tinker
+			secondarybuff:
+				id=21
+				amount=$Alch
+			secondarybuff:
+				id=22
+				amount=$MReflect
+			secondarybuff:
+				id=23
+				amount=$Wand
+		resistances: $resist
+			crushing=$crush
+			slashing=$slash
+			piercing=$pierce
+			blasting=$blast
+			hyperborean=$ice
+			conflagratory=$fire
+			voltaic=$electric
+			toxic=$toxic
+			righteous=$holy
+			necromantic=$necro
+			acidic=$acid
+			putrefying=$decay
+			transmutative=$change
+			aethereal=$aether
+			asphyxiative=$choke
+			existential=$mind
+		monster: $monster
+			name=$name
+			level=$level
+			tiny=$tiny
+			splat=$splat
+			taxa=$taxa
+			palette: tint=$tint
+			idleSprite: $idle
+				left=$left
+				right=$right
+				up=$up
+				down=$down
+			attackSprite: $attack
+				left=$left
+				right=$right
+				up=$up
+				down=$down
+			hitSprite: $hit
+				left=$left
+				right=$right
+				up=$up
+				down=$down
+			morphsprites: $morph
+				eatSprite=$eat
+				drinkSprite=$drink
+				levelupmSprite=$levelupm
+				levelupfSprite=$levelupf
+				vanishSprite=$vanish
+				longidleSprite=$longidle
+			dieSprite: name=$die
+			sfx: $sfx
+				attack=$attack
+				hit=$hit
+				die=$die
+				spell=$spell
+			ai: $ai
+				aggresiveness=$aggro
+				span=$span
+				spellPercentage=$spellChance
+				invisible=$invisible
+			drop: $drop
+				name=$item
+				precent=$chance
+			stats: $stats
+				numFig=$fighter
+				numRog=$rogue
+				numWiz=$wizard
+				xpValue=$xp
+			spell: name=$spell
+			info:
+				latin=$latin
+				description=$desc
+			onhit: $onhit
+				spell=$spell
+				onechancein=$chance
+			damage: $damage
+				crushing=$crush
+				slashing=$slash
+				piercing=$pierce
+				blasting=$blast
+				hyperborean=$ice
+				conflagratory=$fire
+				voltaic=$electric
+				toxic=$toxic
+				righteous=$holy
+				necromantic=$necro
+				acidic=$acid
+				putrefying=$decay
+				transmutative=$change
+				aethereal=$aether
+				asphyxiative=$choke
+				existential=$mind
+			!OBJECT: $pbuff
+				primarybuff:
+					id=0
+					amount=$bur
+				primarybuff:
+					id=1
+					amount=$sag
+				primarybuff:
+					id=2
+					amount=$nim
+				primarybuff:
+					id=3
+					amount=$cad
+				primarybuff:
+					id=4
+					amount=$stu
+				primarybuff:
+					id=5
+					amount=$sav
+			!OBJECT: $sbuff
+				secondarybuff:
+					id=0
+					amount=$HP
+				secondarybuff:
+					id=1
+					amount=$MP
+				secondarybuff:
+					id=2
+					amount=$Melee_Power
+				secondarybuff:
+					id=3
+					amount=$Magic_Power
+				secondarybuff:
+					id=4
+					amount=$crit
+				secondarybuff:
+					id=5
+					amount=$haywire
+				secondarybuff:
+					id=6
+					amount=$Dodge
+				secondarybuff:
+					id=7
+					amount=$Block
+				secondarybuff:
+					id=8
+					amount=$Counter
+				secondarybuff:
+					id=9
+					amount=$EDR
+				secondarybuff:
+					id=10
+					amount=$AA
+				secondarybuff:
+					id=11
+					amount=$MResist
+				secondarybuff:
+					id=12
+					amount=$Sneak
+				secondarybuff:
+					id=13
+					amount=$HPRegen
+				secondarybuff:
+					id=14
+					amount=$MPRegen
+				secondarybuff:
+					id=15
+					amount=$unused
+				secondarybuff:
+					id=16
+					amount=$TrapAff
+				secondarybuff:
+					id=17
+					amount=$TrapSense
+				secondarybuff:
+					id=18
+					amount=$Sight
+				secondarybuff:
+					id=19
+					amount=$Smith
+				secondarybuff:
+					id=20
+					amount=$Tinker
+				secondarybuff:
+					id=21
+					amount=$Alch
+				secondarybuff:
+					id=22
+					amount=$MReflect
+				secondarybuff:
+					id=23
+					amount=$Wand
+			resistances: $resist
+				crushing=$crush
+				slashing=$slash
+				piercing=$pierce
+				blasting=$blast
+				hyperborean=$ice
+				conflagratory=$fire
+				voltaic=$electric
+				toxic=$toxic
+				righteous=$holy
+				necromantic=$necro
+				acidic=$acid
+				putrefying=$decay
+				transmutative=$change
+				aethereal=$aether
+				asphyxiative=$choke
+				existential=$mind
