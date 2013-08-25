@@ -19,6 +19,8 @@ skill:
 		desc: The journey of a thousand spells beings with a single word.
 		sbuff:
 			Magic_Power: 1
+			EDR: -1
+			MPRegen: 1
 		buffon:
 			on: cast
 			chance: 100
