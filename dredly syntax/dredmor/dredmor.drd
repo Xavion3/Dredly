@@ -1,82 +1,22 @@
 # DoD Syntax file.
 # Line Numbers
-# Tests     - 22
-# Mod Info  - 81
-# Recipes   - 103
-# Encrusts  - 135
-# Skills    - 380
-# Spells    - 662
-# Templates - 1317
-# Items     - 1338
-#   Food      - 1351
-#   Weapons   - 1381
-#   Armour    - 1635
-#   Thrown    - 1890
-#   Potions   - 1964
-#   Traps     - 1988
-#   Materials - 2027
-# Powers    - 2066
-# Rooms     - 2077
-# Monsters  - 2438
-
-# TESTING
-test-R:
-	gvar: STR
-	gobj1:
-		ovar1: STR
-		ovar2: STR
-		on: STR
-	n: STR
-	tobj:
-		t1: STR
-		t2: STR
-		t3: STR
-		t4: STR
-
-test-W:
-	!FILENAME=test.xml
-	test:
-		gvar=$gvar
-		obj1: $gobj1
-			v1=$ovar1
-			v2:v=$ovar2
-			g=$gvar
-		ntest1:
-			!NAME=$n
-		ntest2: $gobj1
-			!NAME=$on
-		ntest3: $gobj1
-			!NAME=$n
-		!OBJECT: $tobj
-			pb:
-				v=t1
-				t1=$t1
-			pb:
-				v=t2
-				t2=$t2
-			pb:
-				v=t3
-				t3=$t3
-			pb:
-				v=t4
-				t4=$t4
-		@t1
-		@t2
-
-t1-R:
-	A:STR
-	B:STR
-t1-W:
-	t1:
-		A:V=$A
-		B:V=$B
-t2-R:
-	C:STR
-	D:STR
-t2-W:
-	t2:
-		C:V=$C
-		D:V=$D
+# Mod Info  - 21
+# Recipes   - 43
+# Encrusts  - 75
+# Skills    - 320
+# Spells    - 602
+# Templates - 1257
+# Items     - 1278
+#   Food      - 1291
+#   Weapons   - 1321
+#   Armour    - 1575
+#   Thrown    - 1830
+#   Potions   - 1904
+#   Traps     - 1928
+#   Materials - 1967
+# Powers    - 2006
+# Rooms     - 2017
+# Monsters  - 2378
 
 # mod.xml
 info-R:

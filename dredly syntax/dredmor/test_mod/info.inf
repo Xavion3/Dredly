@@ -6,24 +6,3 @@ info:
 	requires: rotdg
 	requires: yhtntep
 	requires: cotw
-
-test:
-	gvar: GVAR
-	gobj1:
-		ovar1: O11
-		ovar2: O12
-		on: onn
-	n: nn
-	tobj:
-		t1: ya
-		t2: ye
-		t4: yo
-
-t1:
-	a:alpha
-	b:beta
-t1:
-	a:ALPHA
-	b:BETA
-t2:
-	d:delta
