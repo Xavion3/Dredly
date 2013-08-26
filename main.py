@@ -60,7 +60,7 @@ def main():
 	if not DEBUG:
 		path = raw_input('Please enter syntax filepath:')
 	else:
-		path = './dredly syntax/dredmor/dredmor.drd'
+		path = './dredly syntax/tests/test.drd'
 	f = open(path ,'r')
 	global Parser
 	Parser = parsers.Parser(f)
@@ -68,5 +68,5 @@ def main():
 	if not DEBUG:
 		path = raw_input('Please enter mod filepath:')
 	else:
-		path = './dredly syntax/dredmor/test_mod'
+		path = './dredly syntax/tests/content'
 	parseFolder(path,Parser)
