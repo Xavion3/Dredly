@@ -316,7 +316,7 @@ class RWBlock:
 
 	def __parseContentRead__(self, useContent, readRules = None):
 		''' Parses the content using the read info. '''
-		if readRules == None:
+		if readRules is None:
 			readRules = self.read
 		pContent = []
 		for i in xrange(len(useContent)):
@@ -372,7 +372,7 @@ class RWBlock:
 								if re.search(self.TYPES['STR'], attr[1]):
 									pContent[j].append(attr[1])
 						else:
-							print "Unknown type: " + readRules[j][0]
+							print 'Unknown type: ' + readRules[j][0]
 						break
 			elif type(attr) == list:
 				attrName = attr[0].split(':')[0].strip()
@@ -442,7 +442,7 @@ class RWBlock:
 	def __parseContentWrite__(self, scope, writeRules = None, parElement = None, pars = []):
 		''' Parses the read content into xml. '''
 		# print '--B--'
-		if writeRules == None:
+		if writeRules is None:
 			writeRules = self.write
 		elif writeRules == {}:
 			return {}
@@ -472,7 +472,7 @@ class RWBlock:
 								eles = eles[:-1] + list(eles[-1])
 						if tag == '!OBJECT':
 							parElement.extend(eles)
-						elif parElement == None:
+						elif parElement is None:
 							elements.extend(eles)
 						else:
 							parElement.extend(eles)
@@ -508,7 +508,7 @@ class RWBlock:
 				# Finally add sub tags before adding them to the parent element
 				for e in eles:
 					self.__parseContentWrite__(scope, p[2], e, pars)
-				if parElement == None:
+				if parElement is None:
 					elements.extend(eles)
 				else:
 					if tag == '!OBJECT':
