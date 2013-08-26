@@ -312,8 +312,10 @@ class RWBlock:
 		if not elements:
 			return None
 		elif 'FILENAME' in self.flags:
-			return elements[0]
-		else:
+			if len(elements) > 1:
+				raise Exception('Multiple Top Level elements in one file detected. '+self.name)
+			return elements[0] # TODO (H): This prevents multiple tags at the top level.
+		else:                  # Figure out how to deal with that.
 			return elements
 
 	def __parseContentRead__(self, useContent, readRules = None):
@@ -481,14 +483,15 @@ class RWBlock:
 						continue # Skip the rest of the loop
 					elif p[0][0][0] == '@': # If there is a macro.
 						result = self.parsers[p[0][0][1:]].parseContent()
-						eles.extend(result)
-						if parElement == None: # I wonder if this will work?
-							if len(eles) != 1:
-								raise Exception("Serious Problem")
-							return eles[0]
-						else:
-							parElement.extend(eles)
-						continue # Skip the rest of the loop
+						if result is not None: # If the referenced block actually existed
+							eles.extend(result)
+							if parElement is None: # I wonder if this will work?
+								if len(eles) != 1:
+									raise Exception('Serious Problem')
+								return eles[0]
+							else:
+								parElement.extend(eles)
+							continue # Skip the rest of the loop
 					elif p[0][0][0] == '!':
 						print 'Y',p[0]
 					else:
