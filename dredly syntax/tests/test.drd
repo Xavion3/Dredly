@@ -40,6 +40,7 @@ test-W:
 				v=t4
 				t4=$t4
 		@t1
+		@content
 		@t2
 
 t1-R:
@@ -56,3 +57,10 @@ t2-W:
 	t2:
 		C:V=$C
 		D:V=$D
+
+content-R:
+	val: STR
+
+content-W:
+	content:
+		!CONTENT=$val
