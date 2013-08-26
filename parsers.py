@@ -243,6 +243,8 @@ class RWBlock:
 						self.flags['FILENAME'] = i.split('=')[1].replace('/',pathsep)
 					elif i.startswith('!NAME'):
 						parsedAttrs['!NAME'] = i.split('=')[1]
+					elif i.startswith('!CONTENT'):
+						parsedAttrs['!CONTENT'] = i.split('=')[1]
 					else:
 						parsedFlags.append(i)
 						print 'Unknown special attribute:', i
@@ -501,6 +503,8 @@ class RWBlock:
 						if attr:
 							if i == '!NAME':
 								eles[-1].tag = attr
+							elif i == '!CONTENT':
+								eles[-1].text = attr
 							else:
 								eles[-1].attrib[i] = attr
 						else:
