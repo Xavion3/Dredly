@@ -4,19 +4,19 @@
 # Recipes   - 43
 # Encrusts  - 75
 # Skills    - 320
-# Spells    - 602
-# Templates - 1257
-# Items     - 1278
-#   Food      - 1291
-#   Weapons   - 1321
-#   Armour    - 1575
-#   Thrown    - 1830
-#   Potions   - 1904
-#   Traps     - 1928
-#   Materials - 1967
-# Powers    - 2006
-# Rooms     - 2017
-# Monsters  - 2378
+# Spells    - 605
+# Templates - 1260
+# Items     - 1281
+#   Food      - 1294
+#   Weapons   - 1324
+#   Armour    - 1578
+#   Thrown    - 1833
+#   Potions   - 1907
+#   Traps     - 1931
+#   Materials - 1970
+# Powers    - 2009
+# Rooms     - 2020
+# Monsters  - 2381
 
 # mod.xml
 info-R:
@@ -321,6 +321,7 @@ encrusts-W:
 skill-R:
 	name: STR
 	id: NUM-INT-CAP=0/
+	skillName: STR
 	(type|class): STR-STRICT-CI
 		war(rior|)
 		rog(ue|)
@@ -444,6 +445,7 @@ skill-W:
 	skill:
 		name=$name
 		id=$id
+		skillName=$skillName
 		type=$type>0
 		description=$desc
 		art:icon=$icon
@@ -454,6 +456,7 @@ skill-W:
 			amount=$amount
 	ability: $ability
 		skill=$id
+		skillName=$skillName
 		startSkill=$start
 		name=$name
 		icon=$icon
