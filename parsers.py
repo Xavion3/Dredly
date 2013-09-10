@@ -10,8 +10,8 @@ import xml.etree.ElementTree as ET
 # THE PARSER #
 ##############
 
-class Parser(object):
-	'''The generic parser.'''
+class Parser:
+	''' The generic parser. '''
 	SYS = {'NAME':r'^[a-zA-Z][a-zA-Z0-9_]*$'} # Name, alphanumeric and _ starts with alpha
 
 	def __init__(self, f = None):
@@ -26,7 +26,7 @@ class Parser(object):
 	##############################
 
 	def getBlocks(self, lines, line = 0, ind = 0):
-		'''Turns processed lines into blocks.'''
+		''' Turns processed lines into blocks. '''
 		bits = []
 		while line < len(lines):
 			if lines[line][0] == ind: # If it's the same level add to list and move on
@@ -41,7 +41,7 @@ class Parser(object):
 		return bits
 
 	def rIn(self, b):
-		'''Removes indentation part of lines.'''
+		''' Removes indentation part of lines. '''
 		b = b[:] # Prevent direct editing of b
 		for i in range(len(b)):
 			if type(b[i][0]) == list: # If it's an indented block strip that too
@@ -51,7 +51,7 @@ class Parser(object):
 		return b
 
 	def getFlags(self, s):
-		'''Gets the flags from a valid name.'''
+		''' Gets the flags from a valid name. '''
 		# TODO: (VL) Add error checking to check if it's a name.
 		return s.split(':')[1].strip().split('-')
 
@@ -60,14 +60,13 @@ class Parser(object):
 	##########
 
 	def parseFile(self, f):
-		'''Parses a dredly file.'''
+		''' Parses a dredly file. '''
 		f.seek(0) # Reset file to start just in case
 		# Pull the parts out of the file as blocks
 		# Extract the blocks with indentation preserved
-		lines = [[len(x)-len(x.lstrip('\t')), str.strip(x)] for x in f 
-		if (str.strip(x) and str.strip(x)[0] != '#')] # Process file into list of lines with indentation
+		lines = [[len(x)-len(x.lstrip('\t')),str.strip(x)] for x in f if (str.strip(x) and str.strip(x)[0] != '#')] # Process file into list of lines with indentation
 		blocks = self.getBlocks(lines)
-
+		
 		blocks = self.rIn(blocks) # Strips indentation parts out
 
 		# Now parse the blocks!
@@ -77,7 +76,7 @@ class Parser(object):
 			blocktype = 'C' if len(tmp) == 1 else tmp[1] # Gets the R/W/T/C flag, Default to C
 
 			# Check name
-			if not re.match(Parser.SYS['NAME'], tmp[0]):
+			if not re.match(Parser.SYS['NAME'],tmp[0]):
 				raise Exception('Invalid name '+tmp[0])
 
 			# Check blocktype and create spot if none
@@ -115,23 +114,23 @@ class Parser(object):
 				self.content[name].append(block)
 
 	def createXML(self):
-		'''Fills self.xml with the xml.'''
+		''' Fills self.xml with the xml. '''
 		# Create the xml!
 		for p in self.parsers.itervalues():
 			if 'FILENAME' in p.flags:
 				element = p.parseContent()
 				self.xml.append([element, p.flags['FILENAME']])
 
-
+		
 class RWBlock:
-	'''A parsed read/write block for use with content parsing.'''
+	''' A parsed read/write block for use with content parsing. '''
 	TYPES = {'INT':r'^[-+]?[0-9]+$', # Integer, postive or negative
 	         'FLOAT':r'^[-+]?[0-9]*\.?[0-9]+$', # Floating point number, postive or negative
 	         'STR':r'^[^:]*$', # String, no restrictions
 	         'BOOL':r'^(0|1|TRUE|FALSE)$'} # Boolean, 0, 1, true, or false
 
 	def __init__(self, name, parsers, content):
-		'''Creates the block.'''
+		''' Creates the block. '''
 		self.name = name
 		self.parsers = parsers
 		self.content = content
@@ -142,14 +141,14 @@ class RWBlock:
 		self.macrosNeeded = []
 
 	def getFlags(self, s):
-		'''Gets the flags from a valid name.'''
+		''' Gets the flags from a valid name. '''
 		# TODO: (VL) Add error checking to check if it's a name.
 		# TODO: (L) Figure out why I've got two copies of this.
 		return s.split(':')[1].strip().split('-')
 
 	def parseName(self, s):
-		'''Turns a dredly name into a valid regex string.
-		    Returns false if invalid.'''
+		''' Turns a dredly name into a valid regex string. 
+		    Returns false if invalid. '''
 		# TODO: (M) Error checking, particularly in relevance to balancing brackets
 		pattern = '^'
 		blank = []
@@ -165,9 +164,9 @@ class RWBlock:
 		return pattern
 
 	def getInName(self, s, check):
-		'''Gets an option from a multi-option name.
+		''' Gets an option from a multi-option name. 
 		    check is index for option to get from name s'''
-		# Commented code shows how to swap to getting all options instead of just one.
+		# Commented code shows how to swap to getting all options instead of just one. 
 		# parts = []
 		# check = 0
 		part = ''
@@ -192,7 +191,7 @@ class RWBlock:
 		return part
 
 	def parseBlock(self, block, blocktype):
-		'''Interface function, redirects to correct parsing function.'''
+		''' Interface function, redirects to correct parsing function. '''
 		if blocktype == 'R':
 			if self.complete[0]:
 				raise Exception('Read block '+self.name+' already exists. Cannot overwrite.')
@@ -205,7 +204,7 @@ class RWBlock:
 				self.parseWrite(block)
 
 	def parseRead(self, block):
-		'''Parses a block for use.'''
+		''' Parses a block for use. '''
 		parsedBlock = {}
 		for i in block[1]:
 			if type(i) == str:
@@ -232,7 +231,7 @@ class RWBlock:
 			return parsedBlock
 
 	def parseWrite(self, block, outermost = True):
-		'''Parses a block for use.'''
+		''' Parses a block for use. '''
 		parsedBlock = defaultdict(list)
 		parsedAttrs = {}
 		parsedFlags = []
@@ -287,7 +286,7 @@ class RWBlock:
 			return parsedFlags, parsedAttrs, parsedBlock
 
 	def parseContent(self):
-		'''Parses content using the read and write blocks. Generates a file if required.'''
+		''' Parses content using the read and write blocks. Generates a file if required. '''
 		# First get the relevant blocks.
 		print '\nSTARTING: '+self.name
 		try:
@@ -320,7 +319,7 @@ class RWBlock:
 			return elements
 
 	def __parseContentRead__(self, useContent, readRules = None):
-		'''Parses the content using the read info.'''
+		''' Parses the content using the read info. '''
 		if readRules is None:
 			readRules = self.read
 		pContent = []
@@ -338,7 +337,7 @@ class RWBlock:
 		for attr in block[1]:
 			if type(attr) == str:
 				attr = map(str.strip,attr.split(':')) # TODO: (VL) Allow for colons in strings.
-				if attr[1][0] == attr[1][-1] and attr[1][0] in ['"', "'"]:
+				if attr[1][0] == attr[1][-1] and attr[1][0] in ['"',"'"]:
 					attr[1] = attr[1][1:-1]
 				for j in readRules:
 					if re.search(self.parseName(j), attr[0], re.I):
@@ -418,7 +417,7 @@ class RWBlock:
 					k, N = self.getAttrName(scope, attrName)
 					tagNum = max(tagNum, N)
 					attrs = True
-				elif i:
+				elif i: 
 					const = True
 			if const and not attrs: # If there was a constant value and no variable values
 				tagNum = max(tagNum, 1)
@@ -437,18 +436,16 @@ class RWBlock:
 		raise KeyError('Attr "'+name+'" not found in list.')
 
 	def sg(self, scope, key):
-		'''Gets the value from the scope.'''
+		''' Gets the value from the scope. '''
 		for s in scope:
 			if key in s:
 				return s[key]
 		print scope, key
 		raise KeyError(str(key))
 
-	def __parseContentWrite__(self, scope, writeRules = None, parElement = None, pars = None):
-		'''Parses the read content into xml.'''
+	def __parseContentWrite__(self, scope, writeRules = None, parElement = None, pars = []):
+		''' Parses the read content into xml. '''
 		# print '--B--'
-		if pars is None:
-			pars = []
 		if writeRules is None:
 			writeRules = self.write
 		elif writeRules == {}:
@@ -462,7 +459,7 @@ class RWBlock:
 				if p[0]:
 					# if self.name=='test':
 					# 	print 'S',p[0]
-					ref = [x for x in p[0] if x[0]=='$']
+					ref = filter(lambda x:x[0]=='$',p[0])
 					if ref: # If there is a object reference
 						objName = ref[0][1:]
 						objName, tagNum = self.getAttrName(scope, objName)
@@ -529,10 +526,10 @@ class RWBlock:
 		return elements
 
 	def __parseContentWriteAttr__(self, attrValue, scope, pars, j = 0):
-		'''Creates an attribute.'''
+		''' Creates an attribute. '''
 		attrName = attrValue[1:].split('?')[0].split('>')[0]
 		if attrValue[0] == '$':
-			attrName, N = self.getAttrName(scope, attrName)
+			attrName, N = self.getAttrName(scope, attrName)			
 			if N == 0:
 				return # If the attr wasn't used skip it.
 			if attrValue.find('?i') != -1: # If it's a special one.
